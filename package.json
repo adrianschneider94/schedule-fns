@@ -1,0 +1,23 @@
+{
+  "name": "schedule-fns",
+  "version": "0.0.1",
+  "scripts": {
+    "prepublish": "tsc",
+    "test": "jest"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "type": "module",
+  "types": "build/index.d.ts",
+  "dependencies": {
+    "date-fns": "^2.16.1"
+  },
+  "devDependencies": {
+    "@types/jest": "^26.0.14",
+    "jest": "^26.4.2",
+    "ts-jest": "^26.3.0",
+    "typescript": "^4.0.2"
+  }
+}
