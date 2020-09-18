@@ -63,6 +63,10 @@ test('No intervals are always connected', () => {
     expect(areIntervalsConnected()).toStrictEqual(true)
 })
 
+test('No intervals are always equal', () => {
+    expect(areIntervalsEqual()).toStrictEqual(true)
+})
+
 test('Intervals are equal', () => {
     let interval1 = {start: 0, end: 10}
     let interval2 = {start: 0, end: 10}
@@ -73,6 +77,10 @@ test('Intervals are not equal', () => {
     let interval1 = {start: 0, end: 10}
     let interval2 = {start: 0, end: 11}
     expect(areIntervalsEqual(interval1, interval2)).toStrictEqual(false)
+})
+
+test('Try to join no intervals', () => {
+    expect(() => joinIntervals()).toThrowError()
 })
 
 test('Join two intervals', () => {
