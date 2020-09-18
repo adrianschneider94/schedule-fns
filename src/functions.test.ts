@@ -3,10 +3,19 @@ import {
     areIntervalsEqual,
     catchInfiniteDate,
     catchInfiniteInterval,
+    isEmpty,
     joinIntervals,
     mergeIntervals
 } from "./functions"
 import {isEqual} from "date-fns"
+
+test('Empty array', () => {
+    expect(isEmpty([])).toStrictEqual(true)
+})
+
+test('Not empty array', () => {
+    expect(isEmpty([1])).toStrictEqual(false)
+})
 
 test('Positive infinite date', () => {
     expect(isEqual(catchInfiniteDate(Infinity), new Date(8640000000000000))).toStrictEqual(true)

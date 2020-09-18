@@ -2,6 +2,10 @@ import {compareAsc, compareDesc, isEqual} from "date-fns"
 
 export const MAX_DATE = 8640000000000000
 
+export function isEmpty<T>(array: Array<T>) {
+    return array.length === 0
+}
+
 export function catchInfiniteDate(date: Date | number): Date | number {
     if (date === Infinity) {
         return new Date(MAX_DATE)
@@ -20,7 +24,7 @@ export function catchInfiniteInterval(interval: Interval): Interval {
 }
 
 export function areIntervalsConnected(...intervals: Array<Interval>): boolean {
-    if (intervals.length === 0) {
+    if (isEmpty(intervals)) {
         return true
     }
     intervals = intervals.map(catchInfiniteInterval)
@@ -28,7 +32,7 @@ export function areIntervalsConnected(...intervals: Array<Interval>): boolean {
 }
 
 export function areIntervalsEqual(...intervals: Array<Interval>): boolean {
-    if (intervals.length === 0) {
+    if (isEmpty(intervals)) {
         return true
     }
     intervals = intervals.map(catchInfiniteInterval)
@@ -36,7 +40,7 @@ export function areIntervalsEqual(...intervals: Array<Interval>): boolean {
 }
 
 export function joinIntervals(...intervals: Array<Interval>): Interval {
-    if (intervals.length === 0) {
+    if (isEmpty(intervals)) {
         throw Error("Need to provide at least one interval to join.")
     }
     intervals = intervals.map(catchInfiniteInterval)
@@ -50,7 +54,7 @@ export function joinIntervals(...intervals: Array<Interval>): Interval {
 }
 
 export function mergeIntervals(intervals: Array<Interval>): Array<Interval> {
-    if (intervals.length === 0) {
+    if (isEmpty(intervals)) {
         return []
     }
     intervals = intervals.map(catchInfiniteInterval)
