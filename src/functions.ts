@@ -103,3 +103,15 @@ export function durationToMilliseconds(duration: Duration): number {
     ]
     return values.reduce((a, b) => a + b)
 }
+
+export function multiplyDuration(duration: Duration, factor: number): Duration {
+    return {
+        years: duration.years ? duration.years * factor : 0,
+        months: duration.months ? duration.months * factor : 0,
+        weeks: duration.weeks ? duration.weeks * factor : 0,
+        days: duration.days ? duration.days * factor : 0,
+        hours: duration.hours ? duration.hours * factor : 0,
+        minutes: duration.minutes ? duration.minutes * factor : 0,
+        seconds: duration.seconds ? duration.seconds * factor : 0,
+    }
+}
