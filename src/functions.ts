@@ -77,3 +77,16 @@ export function mergeIntervals(...intervals: Array<Interval>): Array<Interval> {
     let sortedIntervals = [...intervals].sort((a, b) => compareAsc(a.start, b.start))
     return sortedIntervals.slice(1).reduce(reducer, [sortedIntervals[0]])
 }
+
+export function intersectIntervals(...intervals: Array<Interval>): Interval {
+    if (isEmpty(intervals)) {
+        throw Error("Please provide at least one interval!")
+    }
+    if (!areIntervalsIntersecting(...intervals)) {
+        throw Error("Can't intersect the given intervals!")
+    }
+    return {
+        start: [...intervals].sort((a, b) => compareDesc(a.start, b.start))[0].start,
+        end: [...intervals].sort((a, b) => compareAsc(a.end, b.end))[0].end
+    }
+}

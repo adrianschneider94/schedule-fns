@@ -4,6 +4,7 @@ import {
     areIntervalsIntersecting,
     catchInfiniteDate,
     catchInfiniteInterval,
+    intersectIntervals,
     isEmpty,
     joinIntervals,
     mergeIntervals
@@ -133,28 +134,60 @@ test('Merge single interval', () => {
     expect(mergeIntervals({start: 0, end: 1})).toStrictEqual([{start: 0, end: 1}])
 })
 
-test('No interval is intersecting', () => {
+test('areIntervalsIntersecting: No interval is intersecting', () => {
     expect(areIntervalsIntersecting()).toBe(true)
 })
 
-test('Single interval is intersecting', () => {
+test('areIntervalsIntersecting: Single interval is intersecting', () => {
     expect(areIntervalsIntersecting({start: 0, end: 1})).toBe(true)
 })
 
-test('Two intersecting intervals', () => {
+test('areIntervalsIntersecting: Two intersecting intervals', () => {
     expect(areIntervalsIntersecting({start: 0, end: 2}, {start: 1, end: 3})).toBe(true)
     expect(areIntervalsIntersecting({start: 0, end: 1}, {start: 1, end: 2})).toBe(true)
 })
 
-test('Two disjoint intervals', () => {
+test('areIntervalsIntersecting: Two disjoint intervals', () => {
     expect(areIntervalsIntersecting({start: 0, end: 1}, {start: 2, end: 3})).toBe(false)
 })
 
-test('Three intersecting intervals', () => {
+test('areIntervalsIntersecting: Three intersecting intervals', () => {
     expect(areIntervalsIntersecting({start: 0, end: 2}, {start: 1, end: 3}, {start: 1, end: 4})).toBe(true)
 })
 
-test('Three connected but not intersecting intervals', () => {
+test('areIntervalsIntersecting: Three connected but not intersecting intervals', () => {
     expect(areIntervalsIntersecting({start: 0, end: 2}, {start: 1, end: 4}, {start: 3, end: 5})).toBe(false)
 })
+
+test('intersectIntervals: Empty interval throws error', () => {
+    expect(() => intersectIntervals()).toThrowError()
+})
+
+test('intersectIntervals: Single interval intersects to itself', () => {
+    expect(areIntervalsEqual(intersectIntervals({start: 0, end: 1}), {start: 0, end: 1})).toBe(true)
+})
+
+test('intersectIntervals: Intersect two intervals', () => {
+    expect(
+        areIntervalsEqual(
+            intersectIntervals({start: 0, end: 2}, {start: 1, end: 3}),
+            {start: 1, end: 2}
+        )
+    ).toBe(true)
+})
+
+test('intersectIntervals: Intersecting disjoint intervals throws error', () => {
+    expect(() => intersectIntervals({start: 0, end: 1}, {start: 2, end: 3})).toThrowError()
+})
+
+test('intersectIntervals: Intersect three intervals', () => {
+    expect(
+        areIntervalsEqual(
+            intersectIntervals({start: 0, end: 3}, {start: 2, end: 5}, {start: 2.5, end: 4}),
+            {start: 2.4, end: 3}
+        )
+    ).toBe(true)
+})
+
+
 
