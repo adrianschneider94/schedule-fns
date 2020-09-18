@@ -1,4 +1,4 @@
-import {ScheduleFromIntervals} from "./schedules"
+import {RegularSchedule, ScheduleFromIntervals} from "./schedules"
 import {
     intersectSchedules,
     invertSchedule,
@@ -7,6 +7,7 @@ import {
     symmetricDifferenceOfSchedules
 } from "./operations"
 import {areIntervalsEqual} from "./functions"
+import {DateInfinity} from "./index"
 
 test('Invert simple schedule', () => {
     let schedule = ScheduleFromIntervals({start: 0, end: 10}, {start: 20, end: 30})
@@ -141,6 +142,7 @@ test('Join no schedules', () => {
     expect(generator.next()).toStrictEqual({value: undefined, done: true})
 })
 
+
 test('Intersect no schedules', () => {
     let intersectedSchedule = intersectSchedules()
     let generator = intersectedSchedule(0)
@@ -243,4 +245,21 @@ test('Symmetric difference of schedules', () => {
     expect(areIntervalsEqual(value.value, {start: 2, end: 3})).toBe(true)
 
     expect(generator.next()).toStrictEqual({value: undefined, done: true})
+})
+
+test('Join schedules: Reach maximal number of recursions', () => {
+    let schedule1 = RegularSchedule(0, {seconds: 1}, {seconds: 2})
+    let schedule2 = ScheduleFromIntervals({start: -DateInfinity, end: DateInfinity - 1})
+    let joinedSchedule = joinSchedules(schedule1, schedule2)
+    let generator = joinedSchedule(0)
+    expect(() => generator.next()).toThrowError()
+})
+
+test('Intersect schedules: Reach maximal number of recursions', () => {
+    let schedule1 = RegularSchedule(0, {seconds: 0.5}, {seconds: 2})
+    let schedule2 = RegularSchedule(1000, {seconds: 0.5}, {seconds: 2})
+    let intersectedSchedule = intersectSchedules(schedule1, schedule2)
+    let generator = intersectedSchedule(0)
+
+    expect(() => generator.next()).toThrowError()
 })

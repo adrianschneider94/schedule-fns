@@ -1,4 +1,4 @@
-import {DateInfinity, Schedule} from "./index"
+import {DateInfinity, MAX_RECURSIONS, Schedule} from "./index"
 import {compareAsc, isEqual} from "date-fns"
 import {areIntervalsConnected, intersectIntervals, isEmpty, joinIntervals} from "./functions"
 
@@ -30,8 +30,9 @@ export function joinSchedules(...schedules: Array<Schedule>): Schedule {
         let generators = schedules.map(schedule => schedule(startDate))
         let currentEntries = generators.map(generator => generator.next())
         let currentInterval: Interval = [...currentEntries].filter(x => x?.value !== undefined).sort((a, b) => compareAsc(a.value.start, b.value.start))[0].value
+        let recursions = 0
 
-        while (true) {
+        while (recursions <= MAX_RECURSIONS) {
             let updated = false
             for (const [i, entry] of currentEntries.entries()) {
                 if (entry?.value && areIntervalsConnected(currentInterval, entry.value)) {
@@ -42,12 +43,15 @@ export function joinSchedules(...schedules: Array<Schedule>): Schedule {
             }
             if (!updated) {
                 yield currentInterval
+                recursions = 0
                 if (currentEntries.every(x => x.done) || isEqual(currentInterval.end, Infinity)) {
                     return
                 }
                 currentInterval = [...currentEntries].filter(x => x?.value !== undefined).sort((a, b) => compareAsc(a.value.start, b.value.start))[0].value
             }
+            recursions++
         }
+        throw Error("Maximal number of recursions reached.")
     }
 }
 
@@ -59,14 +63,15 @@ export function intersectSchedules(...schedules: Array<Schedule>): Schedule {
 
         let generators = schedules.map(schedule => schedule(startDate))
         let currentEntries = generators.map(generator => generator.next())
-
-        while (true) {
+        let recursions = 0
+        while (recursions <= MAX_RECURSIONS) {
             if (currentEntries.some(entry => entry?.value === undefined)) {
                 return
             }
             try {
                 let intersection = intersectIntervals(...currentEntries.map(x => x.value))
                 yield intersection
+                recursions = 0
                 currentEntries = currentEntries.map((entry, i) => {
                     if (entry.value.end <= intersection.end) {
                         return generators[i].next()
@@ -79,7 +84,9 @@ export function intersectSchedules(...schedules: Array<Schedule>): Schedule {
                 let i = currentEntries.findIndex(x => isEqual(x.value.end, firstEnd))
                 currentEntries[i] = generators[i].next()
             }
+            recursions++
         }
+        throw Error("Maximal number of recursions reached.")
     }
 }
 
