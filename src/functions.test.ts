@@ -1,6 +1,7 @@
 import {
     areIntervalsConnected,
     areIntervalsEqual,
+    areIntervalsIntersecting,
     catchInfiniteDate,
     catchInfiniteInterval,
     isEmpty,
@@ -131,3 +132,29 @@ test('Merge infinite intervals', () => {
 test('Merge single interval', () => {
     expect(mergeIntervals({start: 0, end: 1})).toStrictEqual([{start: 0, end: 1}])
 })
+
+test('No interval is intersecting', () => {
+    expect(areIntervalsIntersecting()).toBe(true)
+})
+
+test('Single interval is intersecting', () => {
+    expect(areIntervalsIntersecting({start: 0, end: 1})).toBe(true)
+})
+
+test('Two intersecting intervals', () => {
+    expect(areIntervalsIntersecting({start: 0, end: 2}, {start: 1, end: 3})).toBe(true)
+    expect(areIntervalsIntersecting({start: 0, end: 1}, {start: 1, end: 2})).toBe(true)
+})
+
+test('Two disjoint intervals', () => {
+    expect(areIntervalsIntersecting({start: 0, end: 1}, {start: 2, end: 3})).toBe(false)
+})
+
+test('Three intersecting intervals', () => {
+    expect(areIntervalsIntersecting({start: 0, end: 2}, {start: 1, end: 3}, {start: 1, end: 4})).toBe(true)
+})
+
+test('Three connected but not intersecting intervals', () => {
+    expect(areIntervalsIntersecting({start: 0, end: 2}, {start: 1, end: 4}, {start: 3, end: 5})).toBe(false)
+})
+

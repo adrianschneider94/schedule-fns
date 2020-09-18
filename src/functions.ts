@@ -22,6 +22,13 @@ export function catchInfiniteInterval(interval: Interval): Interval {
     }
 }
 
+export function areIntervalsIntersecting(...intervals: Array<Interval>): boolean {
+    if (isEmpty(intervals) || intervals.length === 1) {
+        return true
+    }
+    return intervals.every(left => intervals.every(right => left.start <= right.end))
+}
+
 export function areIntervalsConnected(...intervals: Array<Interval>): boolean {
     if (isEmpty(intervals)) {
         return true
