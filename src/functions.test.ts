@@ -4,6 +4,7 @@ import {
     areIntervalsIntersecting,
     catchInfiniteDate,
     catchInfiniteInterval,
+    durationToMilliseconds,
     intersectIntervals,
     isEmpty,
     joinIntervals,
@@ -189,5 +190,14 @@ test('intersectIntervals: Intersect three intervals', () => {
     ).toBe(true)
 })
 
-
-
+test('durationToMilliseconds: 1 year, 2 weeks, 3 months, 4 days, 5 hours, 6 minutes, 7 seconds', () => {
+    expect(durationToMilliseconds({
+        years: 1,
+        months: 2,
+        weeks: 3,
+        days: 4,
+        hours: 5,
+        minutes: 6,
+        seconds: 7
+    })).toStrictEqual(38919319000)
+})

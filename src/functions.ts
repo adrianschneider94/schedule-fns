@@ -90,3 +90,16 @@ export function intersectIntervals(...intervals: Array<Interval>): Interval {
         end: [...intervals].sort((a, b) => compareAsc(a.end, b.end))[0].end
     }
 }
+
+export function durationToMilliseconds(duration: Duration): number {
+    let values = [
+        duration.years ? duration.years * 31556952000 : 0,
+        duration.months ? duration.months * 2592000000 : 0,
+        duration.weeks ? duration.weeks * 604800000 : 0,
+        duration.days ? duration.days * 86400000 : 0,
+        duration.hours ? duration.hours * 3600000 : 0,
+        duration.minutes ? duration.minutes * 60000 : 0,
+        duration.seconds ? duration.seconds * 1000 : 0
+    ]
+    return values.reduce((a, b) => a + b)
+}
