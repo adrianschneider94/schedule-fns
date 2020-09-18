@@ -77,7 +77,7 @@ export function intersectSchedules(...schedules: Array<Schedule>): Schedule {
             } catch (e) {
                 let firstEnd = [...currentEntries].sort((a, b) => compareAsc(a.value.end, b.value.end))[0].value.end
                 let i = currentEntries.findIndex(x => isEqual(x.value.end, firstEnd))
-                currentEntries[i] = generators[i].next().value
+                currentEntries[i] = generators[i].next()
             }
         }
     }
