@@ -3,7 +3,7 @@ import {invertSchedule, joinSchedules} from "./operations"
 import {areIntervalsEqual} from "./functions"
 
 test('Invert simple schedule', () => {
-    let schedule = ScheduleFromIntervals([{start: 0, end: 10}, {start: 20, end: 30}])
+    let schedule = ScheduleFromIntervals({start: 0, end: 10}, {start: 20, end: 30})
     let invertedSchedule = invertSchedule(schedule)
     let generator = invertedSchedule(0)
     let value = generator.next()
@@ -18,7 +18,7 @@ test('Invert simple schedule', () => {
 })
 
 test('Invert empty schedule', () => {
-    let schedule = ScheduleFromIntervals([])
+    let schedule = ScheduleFromIntervals()
     let invertedSchedule = invertSchedule(schedule)
     let generator = invertedSchedule(0)
     let x1 = generator.next()
@@ -29,7 +29,7 @@ test('Invert empty schedule', () => {
 
 
 test("Invert schedule with first interval after startDate", () => {
-    let schedule = ScheduleFromIntervals([{start: 0, end: 20}])
+    let schedule = ScheduleFromIntervals({start: 0, end: 20})
     let invertedSchedule = invertSchedule(schedule)
     let generator = invertedSchedule(-20)
 
@@ -45,7 +45,7 @@ test("Invert schedule with first interval after startDate", () => {
 })
 
 test("Invert schedule with infinity", () => {
-    let schedule = ScheduleFromIntervals([{start: 0, end: Infinity}])
+    let schedule = ScheduleFromIntervals({start: 0, end: Infinity})
     let invertedSchedule = invertSchedule(schedule)
     let generator = invertedSchedule(0)
 
@@ -53,7 +53,7 @@ test("Invert schedule with infinity", () => {
 })
 
 test('Join single schedule', () => {
-    let schedule = ScheduleFromIntervals([{start: 0, end: 1}, {start: 2, end: 3}])
+    let schedule = ScheduleFromIntervals({start: 0, end: 1}, {start: 2, end: 3})
     let joinedSchedule = joinSchedules(schedule)
     let generator = joinedSchedule(0)
 
@@ -69,8 +69,8 @@ test('Join single schedule', () => {
 })
 
 test('Join two simple schedules', () => {
-    let schedule1 = ScheduleFromIntervals([{start: 0, end: 10}, {start: 19, end: 30}])
-    let schedule2 = ScheduleFromIntervals([{start: 9, end: 20}])
+    let schedule1 = ScheduleFromIntervals({start: 0, end: 10}, {start: 19, end: 30})
+    let schedule2 = ScheduleFromIntervals({start: 9, end: 20})
     let joinedSchedule = joinSchedules(schedule1, schedule2)
 
     let generator = joinedSchedule(0)
@@ -81,9 +81,9 @@ test('Join two simple schedules', () => {
 })
 
 test('Join three simple schedules', () => {
-    let schedule1 = ScheduleFromIntervals([{start: 0, end: 1}, {start: 3, end: 4}])
-    let schedule2 = ScheduleFromIntervals([{start: 1, end: 2}, {start: 5, end: 6}])
-    let schedule3 = ScheduleFromIntervals([{start: 2, end: 3}, {start: 6, end: 7}])
+    let schedule1 = ScheduleFromIntervals({start: 0, end: 1}, {start: 3, end: 4})
+    let schedule2 = ScheduleFromIntervals({start: 1, end: 2}, {start: 5, end: 6})
+    let schedule3 = ScheduleFromIntervals({start: 2, end: 3}, {start: 6, end: 7})
     let joinedSchedule = joinSchedules(schedule1, schedule2, schedule3)
     let generator = joinedSchedule(-10)
 
@@ -99,8 +99,8 @@ test('Join three simple schedules', () => {
 })
 
 test('Join two schedules (with infinity)', () => {
-    let schedule1 = ScheduleFromIntervals([{start: 0, end: Infinity}])
-    let schedule2 = ScheduleFromIntervals([{start: 1, end: 2}])
+    let schedule1 = ScheduleFromIntervals({start: 0, end: Infinity})
+    let schedule2 = ScheduleFromIntervals({start: 1, end: 2})
     let joinedSchedule = joinSchedules(schedule1, schedule2)
     let generator = joinedSchedule(-10)
 
@@ -112,14 +112,12 @@ test('Join two schedules (with infinity)', () => {
 })
 
 test('Join two schedules (one long-running)', () => {
-    let schedule1 = ScheduleFromIntervals([{start: 0, end: 1000}])
+    let schedule1 = ScheduleFromIntervals({start: 0, end: 1000})
     let schedule2 = ScheduleFromIntervals(
-        [
-            {start: 1, end: 2},
-            {start: 3, end: 4},
-            {start: 5, end: 6},
-            {start: 7, end: 8}
-        ]
+        {start: 1, end: 2},
+        {start: 3, end: 4},
+        {start: 5, end: 6},
+        {start: 7, end: 8}
     )
     let joinedSchedule = joinSchedules(schedule1, schedule2)
     let generator = joinedSchedule(-10)

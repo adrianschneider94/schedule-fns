@@ -52,7 +52,7 @@ export function joinIntervals(...intervals: Array<Interval>): Interval {
     }
 }
 
-export function mergeIntervals(intervals: Array<Interval>): Array<Interval> {
+export function mergeIntervals(...intervals: Array<Interval>): Array<Interval> {
     if (isEmpty(intervals)) {
         return []
     }

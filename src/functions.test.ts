@@ -116,18 +116,18 @@ test('Merge intervals', () => {
     let interval1 = {start: 0, end: 10}
     let interval2 = {start: 9, end: 20}
     let interval3 = {start: 21, end: 30}
-    expect(mergeIntervals([interval1, interval2, interval3])).toStrictEqual([{start: 0, end: 20}, {start: 21, end: 30}])
+    expect(mergeIntervals(interval1, interval2, interval3)).toStrictEqual([{start: 0, end: 20}, {start: 21, end: 30}])
 })
 
 test('Merge infinite intervals', () => {
     let interval1 = {start: -Infinity, end: 0}
     let interval2 = {start: 0, end: Infinity}
-    expect(areIntervalsEqual(mergeIntervals([interval1, interval2])[0], {
+    expect(areIntervalsEqual(mergeIntervals(interval1, interval2)[0], {
         start: -DateInfinity,
         end: DateInfinity
     })).toStrictEqual(true)
 })
 
 test('Merge single interval', () => {
-    expect(mergeIntervals([{start: 0, end: 1}])).toStrictEqual([{start: 0, end: 1}])
+    expect(mergeIntervals({start: 0, end: 1})).toStrictEqual([{start: 0, end: 1}])
 })

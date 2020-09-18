@@ -2,7 +2,7 @@ import {ScheduleFromIntervals} from "./schedules"
 
 test('Basic schedule from intervals', () => {
     let intervals = [{start: 0, end: 10}, {start: 20, end: 30}]
-    let schedule = ScheduleFromIntervals(intervals)
+    let schedule = ScheduleFromIntervals(...intervals)
     let generator = schedule(0)
     expect(generator.next()).toStrictEqual({value: {start: 0, end: 10}, done: false})
     expect(generator.next()).toStrictEqual({value: {start: 20, end: 30}, done: false})
@@ -10,20 +10,20 @@ test('Basic schedule from intervals', () => {
 })
 
 test('Schedule from empty list of intervals', () => {
-    let schedule = ScheduleFromIntervals([])
+    let schedule = ScheduleFromIntervals()
     let generator = schedule(0)
     expect(generator.next()).toStrictEqual({value: undefined, done: true})
 })
 
 test('Schedule from intervals with startDate in interval', () => {
-    let schedule = ScheduleFromIntervals([{start: 0, end: 10}, {start: 20, end: 30}])
+    let schedule = ScheduleFromIntervals({start: 0, end: 10}, {start: 20, end: 30})
     let generator = schedule(25)
     expect(generator.next()).toStrictEqual({value: {start: 25, end: 30}, done: false})
     expect(generator.next()).toStrictEqual({value: undefined, done: true})
 })
 
 test('Schedule from intervals with startDate after all intervals', () => {
-    let schedule = ScheduleFromIntervals([{start: 0, end: 10}, {start: 20, end: 30}])
+    let schedule = ScheduleFromIntervals({start: 0, end: 10}, {start: 20, end: 30})
     let generator = schedule(35)
     expect(generator.next()).toStrictEqual({value: undefined, done: true})
 })
