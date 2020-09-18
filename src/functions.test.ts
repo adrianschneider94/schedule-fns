@@ -8,6 +8,7 @@ import {
     mergeIntervals
 } from "./functions"
 import {isEqual} from "date-fns"
+import {DateInfinity} from "./index"
 
 test('Empty array', () => {
     expect(isEmpty([])).toStrictEqual(true)
@@ -18,11 +19,11 @@ test('Not empty array', () => {
 })
 
 test('Positive infinite date', () => {
-    expect(isEqual(catchInfiniteDate(Infinity), new Date(8640000000000000))).toStrictEqual(true)
+    expect(isEqual(catchInfiniteDate(Infinity), DateInfinity)).toStrictEqual(true)
 })
 
 test('Negative infinite date', () => {
-    expect(isEqual(catchInfiniteDate(-Infinity), new Date(-8640000000000000))).toStrictEqual(true)
+    expect(isEqual(catchInfiniteDate(-Infinity), -DateInfinity)).toStrictEqual(true)
 })
 
 test('Finite date', () => {
@@ -32,8 +33,8 @@ test('Finite date', () => {
 test('Catch Infinite interval', () => {
     let dirtyInterval = {start: -Infinity, end: Infinity}
     let cleanInterval = catchInfiniteInterval(dirtyInterval)
-    expect(isEqual(cleanInterval.start, new Date(-8640000000000000))).toStrictEqual(true)
-    expect(isEqual(cleanInterval.end, new Date(8640000000000000))).toStrictEqual(true)
+    expect(isEqual(cleanInterval.start, -DateInfinity)).toStrictEqual(true)
+    expect(isEqual(cleanInterval.end, DateInfinity)).toStrictEqual(true)
 })
 
 test('Two connected intervals', () => {
@@ -121,10 +122,10 @@ test('Merge intervals', () => {
 test('Merge infinite intervals', () => {
     let interval1 = {start: -Infinity, end: 0}
     let interval2 = {start: 0, end: Infinity}
-    expect(mergeIntervals([interval1, interval2])).toStrictEqual([{
-        start: -Infinity,
-        end: Infinity
-    }].map(catchInfiniteInterval))
+    expect(areIntervalsEqual(mergeIntervals([interval1, interval2])[0], {
+        start: -DateInfinity,
+        end: DateInfinity
+    })).toStrictEqual(true)
 })
 
 test('Merge single interval', () => {

@@ -1,6 +1,5 @@
 import {compareAsc, compareDesc, isEqual} from "date-fns"
-
-export const MAX_DATE = 8640000000000000
+import {DateInfinity} from "./index"
 
 export function isEmpty<T>(array: Array<T>) {
     return array.length === 0
@@ -8,9 +7,9 @@ export function isEmpty<T>(array: Array<T>) {
 
 export function catchInfiniteDate(date: Date | number): Date | number {
     if (date === Infinity) {
-        return new Date(MAX_DATE)
+        return new Date(DateInfinity)
     } else if (date === -Infinity) {
-        return new Date(-MAX_DATE)
+        return new Date(-DateInfinity)
     } else {
         return date
     }
