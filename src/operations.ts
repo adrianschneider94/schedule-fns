@@ -86,3 +86,7 @@ export function intersectSchedules(...schedules: Array<Schedule>): Schedule {
 export function subtractSchedules(scheduleLeft: Schedule, scheduleRight: Schedule): Schedule {
     return intersectSchedules(scheduleLeft, invertSchedule(scheduleRight))
 }
+
+export function symmetricDifferenceOfSchedules(scheduleLeft: Schedule, scheduleRight: Schedule) {
+    return subtractSchedules(joinSchedules(scheduleLeft, scheduleRight), intersectSchedules(scheduleLeft, scheduleRight))
+}

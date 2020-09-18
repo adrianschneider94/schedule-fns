@@ -1,5 +1,11 @@
 import {ScheduleFromIntervals} from "./schedules"
-import {intersectSchedules, invertSchedule, joinSchedules, subtractSchedules} from "./operations"
+import {
+    intersectSchedules,
+    invertSchedule,
+    joinSchedules,
+    subtractSchedules,
+    symmetricDifferenceOfSchedules
+} from "./operations"
 import {areIntervalsEqual} from "./functions"
 
 test('Invert simple schedule', () => {
@@ -217,6 +223,24 @@ test('Subtract schedules', () => {
     value = generator.next()
     expect(value.done).toBe(false)
     expect(areIntervalsEqual(value.value, {start: 5, end: 10})).toBe(true)
+
+    expect(generator.next()).toStrictEqual({value: undefined, done: true})
+})
+
+test('Symmetric difference of schedules', () => {
+    let schedule1 = ScheduleFromIntervals({start: 0, end: 2})
+    let schedule2 = ScheduleFromIntervals({start: 1, end: 3})
+    let schedule = symmetricDifferenceOfSchedules(schedule1, schedule2)
+
+    let generator = schedule(0)
+
+    let value = generator.next()
+    expect(value.done).toBe(false)
+    expect(areIntervalsEqual(value.value, {start: 0, end: 1})).toBe(true)
+
+    value = generator.next()
+    expect(value.done).toBe(false)
+    expect(areIntervalsEqual(value.value, {start: 2, end: 3})).toBe(true)
 
     expect(generator.next()).toStrictEqual({value: undefined, done: true})
 })
