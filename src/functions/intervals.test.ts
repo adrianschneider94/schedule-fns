@@ -2,44 +2,11 @@ import {
     areIntervalsConnected,
     areIntervalsEqual,
     areIntervalsIntersecting,
-    catchInfiniteDate,
-    catchInfiniteInterval,
-    durationToMilliseconds,
     intersectIntervals,
-    isEmpty,
     joinIntervals,
-    mergeIntervals,
-    multiplyDuration
-} from "./functions"
-import {isEqual} from "date-fns"
-import {DateInfinity} from "./index"
-
-test('Empty array', () => {
-    expect(isEmpty([])).toStrictEqual(true)
-})
-
-test('Not empty array', () => {
-    expect(isEmpty([1])).toStrictEqual(false)
-})
-
-test('Positive infinite date', () => {
-    expect(isEqual(catchInfiniteDate(Infinity), DateInfinity)).toStrictEqual(true)
-})
-
-test('Negative infinite date', () => {
-    expect(isEqual(catchInfiniteDate(-Infinity), -DateInfinity)).toStrictEqual(true)
-})
-
-test('Finite date', () => {
-    expect(38914).toBe(38914)
-})
-
-test('Catch Infinite interval', () => {
-    let dirtyInterval = {start: -Infinity, end: Infinity}
-    let cleanInterval = catchInfiniteInterval(dirtyInterval)
-    expect(isEqual(cleanInterval.start, -DateInfinity)).toStrictEqual(true)
-    expect(isEqual(cleanInterval.end, DateInfinity)).toStrictEqual(true)
-})
+    mergeIntervals
+} from "./intervals"
+import {DateInfinity} from "../index"
 
 test('Two connected intervals', () => {
     let interval1 = {start: 0, end: 11}
@@ -189,36 +156,4 @@ test('intersectIntervals: Intersect three intervals', () => {
             {start: 2.4, end: 3}
         )
     ).toBe(true)
-})
-
-test('durationToMilliseconds: 1 year, 2 weeks, 3 months, 4 days, 5 hours, 6 minutes, 7 seconds', () => {
-    expect(durationToMilliseconds({
-        years: 1,
-        months: 2,
-        weeks: 3,
-        days: 4,
-        hours: 5,
-        minutes: 6,
-        seconds: 7
-    })).toStrictEqual(38919319000)
-})
-
-test('multiplyDuration', () => {
-    expect(multiplyDuration({
-        years: 1,
-        months: 2,
-        weeks: 3,
-        days: 4,
-        hours: 5,
-        minutes: 6,
-        seconds: 7
-    }, 2)).toStrictEqual({
-        years: 2,
-        months: 4,
-        weeks: 6,
-        days: 8,
-        hours: 10,
-        minutes: 12,
-        seconds: 14
-    })
 })

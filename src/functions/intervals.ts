@@ -1,26 +1,5 @@
 import {compareAsc, compareDesc, isEqual} from "date-fns"
-import {DateInfinity} from "./index"
-
-export function isEmpty<T>(array: Array<T>) {
-    return array.length === 0
-}
-
-export function catchInfiniteDate(date: Date | number): Date | number {
-    if (date === Infinity) {
-        return new Date(DateInfinity)
-    } else if (date === -Infinity) {
-        return new Date(-DateInfinity)
-    } else {
-        return date
-    }
-}
-
-export function catchInfiniteInterval(interval: Interval): Interval {
-    return {
-        start: catchInfiniteDate(interval.start),
-        end: catchInfiniteDate(interval.end)
-    }
-}
+import {catchInfiniteInterval, isEmpty} from "./misc"
 
 export function areIntervalsIntersecting(...intervals: Array<Interval>): boolean {
     if (isEmpty(intervals) || intervals.length === 1) {
@@ -88,30 +67,5 @@ export function intersectIntervals(...intervals: Array<Interval>): Interval {
     return {
         start: [...intervals].sort((a, b) => compareDesc(a.start, b.start))[0].start,
         end: [...intervals].sort((a, b) => compareAsc(a.end, b.end))[0].end
-    }
-}
-
-export function durationToMilliseconds(duration: Duration): number {
-    let values = [
-        duration.years ? duration.years * 31556952000 : 0,
-        duration.months ? duration.months * 2592000000 : 0,
-        duration.weeks ? duration.weeks * 604800000 : 0,
-        duration.days ? duration.days * 86400000 : 0,
-        duration.hours ? duration.hours * 3600000 : 0,
-        duration.minutes ? duration.minutes * 60000 : 0,
-        duration.seconds ? duration.seconds * 1000 : 0
-    ]
-    return values.reduce((a, b) => a + b)
-}
-
-export function multiplyDuration(duration: Duration, factor: number): Duration {
-    return {
-        years: duration.years ? duration.years * factor : 0,
-        months: duration.months ? duration.months * factor : 0,
-        weeks: duration.weeks ? duration.weeks * factor : 0,
-        days: duration.days ? duration.days * factor : 0,
-        hours: duration.hours ? duration.hours * factor : 0,
-        minutes: duration.minutes ? duration.minutes * factor : 0,
-        seconds: duration.seconds ? duration.seconds * factor : 0,
     }
 }
