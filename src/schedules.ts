@@ -15,18 +15,18 @@ export function ScheduleFromIntervals(...intervals: Array<Interval>): Schedule {
     }
 }
 
-export function RegularSchedule(firstOccurence: Date | number, duration: Duration, period: Duration): Schedule {
+export function RegularSchedule(firstOccurrence: Date | number, duration: Duration, period: Duration): Schedule {
     return function* (startDate) {
-        if (firstOccurence <= startDate) {
-            let fullPeriodsBeforeStartDate = Math.floor(differenceInMilliseconds(startDate, firstOccurence) / durationToMilliseconds(period))
-            firstOccurence = add(firstOccurence, multiplyDuration(period, fullPeriodsBeforeStartDate))
-            if (add(firstOccurence, duration) <= startDate) {
-                firstOccurence = add(firstOccurence, period)
+        if (firstOccurrence <= startDate) {
+            let fullPeriodsBeforeStartDate = Math.floor(differenceInMilliseconds(startDate, firstOccurrence) / durationToMilliseconds(period))
+            firstOccurrence = add(firstOccurrence, multiplyDuration(period, fullPeriodsBeforeStartDate))
+            if (add(firstOccurrence, duration) <= startDate) {
+                firstOccurrence = add(firstOccurrence, period)
             }
         }
         let i = 0
         while (true) {
-            let start = add(firstOccurence, multiplyDuration(period, i))
+            let start = add(firstOccurrence, multiplyDuration(period, i))
             let interval = {
                 start: start,
                 end: add(start, duration)
