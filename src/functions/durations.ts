@@ -1,3 +1,6 @@
+import {MAX_RECURSIONS, Schedule} from "../index"
+import {differenceInMilliseconds, isWithinInterval} from "date-fns"
+
 export function durationToMilliseconds(duration: Duration): number {
     let values = [
         duration.years ? duration.years * 31556952000 : 0,
@@ -21,4 +24,23 @@ export function multiplyDuration(duration: Duration, factor: number): Duration {
         minutes: duration.minutes ? duration.minutes * factor : 0,
         seconds: duration.seconds ? duration.seconds * factor : 0,
     }
+}
+
+export function addDuration(date: Date | number, duration: Duration, schedule: Schedule) {
+    let millisecondsLeft = durationToMilliseconds(duration)
+    let generator = schedule(date)
+    let i = 0
+    while (i <= MAX_RECURSIONS) {
+        i++
+        let block = generator.next()
+        if (block.value === undefined) {
+            throw Error("Duration does not fit into the given schedule!")
+        }
+        if (isWithinInterval(block.value.start.valueOf() + millisecondsLeft, block.value)) {
+            return new Date(block.value.start.valueOf() + millisecondsLeft)
+        } else {
+            millisecondsLeft -= differenceInMilliseconds(block.value.end, block.value.start)
+        }
+    }
+    throw Error("Maximal number of recursions reached.")
 }

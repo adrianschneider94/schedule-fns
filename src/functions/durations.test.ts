@@ -1,4 +1,5 @@
-import {durationToMilliseconds, multiplyDuration} from "./durations"
+import {addDuration, durationToMilliseconds, multiplyDuration} from "./durations"
+import {RegularSchedule, ScheduleFromIntervals} from "../schedules"
 
 test('durationToMilliseconds: 1 year, 2 weeks, 3 months, 4 days, 5 hours, 6 minutes, 7 seconds', () => {
     expect(durationToMilliseconds({
@@ -30,4 +31,26 @@ test('multiplyDuration', () => {
         minutes: 12,
         seconds: 14
     })
+})
+
+test('addDuration 1', () => {
+    let schedule = ScheduleFromIntervals({start: 0, end: 10}, {start: 20, end: 30})
+    let result = addDuration(0, {seconds: 0.015}, schedule)
+    expect(result.valueOf()).toStrictEqual(25)
+})
+
+test('addDuration 2', () => {
+    let schedule = ScheduleFromIntervals({start: 5, end: 10}, {start: 20, end: 30})
+    let result = addDuration(0, {seconds: 0.015}, schedule)
+    expect(result.valueOf()).toStrictEqual(30)
+})
+
+test('addDuration 3', () => {
+    let schedule = ScheduleFromIntervals({start: 5, end: 10}, {start: 20, end: 30})
+    expect(() => addDuration(0, {seconds: 0.030}, schedule)).toThrowError()
+})
+
+test('addDuration 4', () => {
+    let schedule = RegularSchedule(new Date(), {seconds: 1}, {seconds: 2})
+    expect(() => addDuration(0, {years: 1}, schedule)).toThrowError()
 })

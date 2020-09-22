@@ -18,3 +18,7 @@ export {
     symmetricDifferenceOfSchedules,
     joinSchedules
 } from "./operations"
+
+export {
+    addDuration
+} from "./functions"
