@@ -20,5 +20,6 @@ export {
 } from "./operations"
 
 export {
-    addDuration
+    addDuration,
+    isWithinSchedule
 } from "./functions"

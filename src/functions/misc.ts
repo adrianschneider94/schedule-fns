@@ -1,4 +1,5 @@
-import {DateInfinity} from "../index"
+import {DateInfinity, Schedule} from "../index"
+import {isWithinInterval} from "date-fns"
 
 export function isEmpty<T>(array: Array<T>) {
     return array.length === 0
@@ -18,5 +19,17 @@ export function catchInfiniteInterval(interval: Interval): Interval {
     return {
         start: catchInfiniteDate(interval.start),
         end: catchInfiniteDate(interval.end)
+    }
+}
+
+export function isWithinSchedule(date: Date | number, schedule: Schedule) {
+    let generator = schedule(date)
+    while (true) {
+        let entry = generator.next()
+        if (entry.value === undefined) {
+            return false
+        } else if (isWithinInterval(date, entry.value)) {
+            return true
+        }
     }
 }
