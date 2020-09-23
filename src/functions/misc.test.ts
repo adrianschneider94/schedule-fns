@@ -1,5 +1,5 @@
-import {catchInfiniteDate, catchInfiniteInterval, directionToInt, isEmpty, isWithinSchedule} from "./misc"
-import {isEqual} from "date-fns"
+import {catchInfiniteDate, catchInfiniteInterval, directionToInt, isEmpty, isWithinSchedule, stripTime} from "./misc"
+import {isEqual, parseISO} from "date-fns"
 import {DateInfinity, ScheduleFromIntervals} from "../index"
 
 test('Empty array', () => {
@@ -50,4 +50,8 @@ test('directionToInt', () => {
     expect(directionToInt(-1)).toStrictEqual(-1)
     // @ts-ignore
     expect(() => directionToInt("Test")).toThrowError()
+})
+
+test('stripTime', () => {
+    expect(isEqual(stripTime(parseISO("2020-10-01T18:23Z")), parseISO("2020-10-01T00:00Z"))).toStrictEqual(true)
 })

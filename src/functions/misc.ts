@@ -1,5 +1,5 @@
 import {DateInfinity, direction, Schedule} from "../index"
-import {isWithinInterval} from "date-fns"
+import {isWithinInterval, parseISO} from "date-fns"
 
 export function isEmpty<T>(array: Array<T>) {
     return array.length === 0
@@ -46,4 +46,8 @@ export function directionToInt(direction: direction): 1 | -1 {
     } else {
         throw Error(`${direction} is not a valid direction.`)
     }
+}
+
+export function stripTime(date: Date | number) {
+    return parseISO((new Date(date)).toISOString().slice(0, 11) + "00:00:00Z")
 }
