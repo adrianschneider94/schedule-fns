@@ -7,7 +7,8 @@
       "dom"
     ],
     "declaration": true,
-    "outDir": "./build/",
+    "rootDir": "./src",
+    "outDir": "./build",
     "downlevelIteration": true,
     "strict": true,
     "esModuleInterop": true,
