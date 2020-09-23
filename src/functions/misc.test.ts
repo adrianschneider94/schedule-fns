@@ -1,4 +1,12 @@
-import {catchInfiniteDate, catchInfiniteInterval, directionToInt, isEmpty, isWithinSchedule, stripTime} from "./misc"
+import {
+    catchInfiniteDate,
+    catchInfiniteInterval,
+    directionToInt,
+    getUserTimeZone,
+    isEmpty,
+    isWithinSchedule,
+    stripTime
+} from "./misc"
 import {isEqual, parseISO} from "date-fns"
 import {DateInfinity, ScheduleFromIntervals} from "../index"
 
@@ -54,4 +62,8 @@ test('directionToInt', () => {
 
 test('stripTime', () => {
     expect(isEqual(stripTime(parseISO("2020-10-01T18:23Z")), parseISO("2020-10-01T00:00Z"))).toStrictEqual(true)
+})
+
+test('getUserTimeZone', () => {
+    expect(getUserTimeZone().length).toBeGreaterThan(0)
 })

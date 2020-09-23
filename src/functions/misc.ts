@@ -51,3 +51,7 @@ export function directionToInt(direction: direction): 1 | -1 {
 export function stripTime(date: Date | number) {
     return parseISO((new Date(date)).toISOString().slice(0, 11) + "00:00:00Z")
 }
+
+export function getUserTimeZone() {
+    return Intl.DateTimeFormat().resolvedOptions().timeZone
+}
