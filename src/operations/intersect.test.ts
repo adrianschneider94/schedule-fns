@@ -38,6 +38,20 @@ test('Intersect two simple schedules', () => {
     expect(generator.next()).toStrictEqual({value: undefined, done: true})
 })
 
+test('Intersect two simple schedules, reverse direction', () => {
+    let schedule1 = ScheduleFromIntervals({start: 0, end: 2})
+    let schedule2 = ScheduleFromIntervals({start: 1, end: 3})
+    let intersectedSchedule = intersectSchedules(schedule1, schedule2)
+
+    let generator = intersectedSchedule(4, "backward")
+
+    let value = generator.next()
+    expect(value.done).toBe(false)
+    expect(areIntervalsEqual(value.value, {start: 1, end: 2})).toBe(true)
+
+    expect(generator.next()).toStrictEqual({value: undefined, done: true})
+})
+
 test('Intersect two schedules', () => {
     let schedule1 = ScheduleFromIntervals({start: 0, end: 10})
     let schedule2 = ScheduleFromIntervals({start: 1, end: 2}, {start: 3, end: 4})
@@ -52,6 +66,24 @@ test('Intersect two schedules', () => {
     value = generator.next()
     expect(value.done).toBe(false)
     expect(areIntervalsEqual(value.value, {start: 3, end: 4})).toBe(true)
+
+    expect(generator.next()).toStrictEqual({value: undefined, done: true})
+})
+
+test('Intersect two schedules, reverse direction', () => {
+    let schedule1 = ScheduleFromIntervals({start: -5, end: -2}, {start: 0, end: 10})
+    let schedule2 = ScheduleFromIntervals({start: 1, end: 2}, {start: 3, end: 4}, {start: 12, end: 13})
+    let intersectedSchedule = intersectSchedules(schedule1, schedule2)
+
+    let generator = intersectedSchedule(12.5, "backward")
+
+    let value = generator.next()
+    expect(value.done).toBe(false)
+    expect(areIntervalsEqual(value.value, {start: 3, end: 4})).toBe(true)
+
+    value = generator.next()
+    expect(value.done).toBe(false)
+    expect(areIntervalsEqual(value.value, {start: 1, end: 2})).toBe(true)
 
     expect(generator.next()).toStrictEqual({value: undefined, done: true})
 })

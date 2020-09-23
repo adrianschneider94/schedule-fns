@@ -44,3 +44,33 @@ test('RegularSchedule with offset start 2', () => {
     expect(areIntervalsEqual(value.value, {start: 2000, end: 3000})).toBeTruthy()
 })
 
+
+test('RegularSchedule backward', () => {
+    let schedule = RegularSchedule(0, {seconds: 1}, {seconds: 2})
+    let generator = schedule(500, "backward")
+
+    let value = generator.next()
+    expect(value.done).toBeFalsy()
+    expect(areIntervalsEqual(value.value, {start: 0, end: 500})).toBeTruthy()
+
+    value = generator.next()
+    expect(value.done).toBeFalsy()
+    expect(areIntervalsEqual(value.value, {start: -2000, end: -1000})).toBeTruthy()
+})
+
+
+test('RegularSchedule backward with offset start', () => {
+    let schedule = RegularSchedule(6000, {seconds: 1}, {seconds: 2})
+    let generator = schedule(500, "backward")
+
+    let value = generator.next()
+    expect(value.done).toBeFalsy()
+    expect(areIntervalsEqual(value.value, {start: 0, end: 500})).toBeTruthy()
+
+    value = generator.next()
+    expect(value.done).toBeFalsy()
+    expect(areIntervalsEqual(value.value, {start: -2000, end: -1000})).toBeTruthy()
+})
+
+
+

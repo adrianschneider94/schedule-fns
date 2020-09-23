@@ -111,3 +111,56 @@ test('Daily schedule with timezone: Format with timezone raises error', () => {
 
     expect(() => generator.next()).toThrowError()
 })
+
+
+test('Daily schedule with timezone: Backward', () => {
+    let schedule = DailyScheduleWithTimezone("08:00", "16:00", "Europe/Berlin", "HH:mm")
+    let generator = schedule(new Date("2020-01-01T10:00Z"), "backward")
+
+    let value = generator.next()
+    expect(value.done).toBeFalsy()
+    expect(areIntervalsEqual(value.value, {
+        start: parseISO("2020-01-01T07:00Z"),
+        end: parseISO("2020-01-01T10:00Z")
+    })).toStrictEqual(true)
+
+    value = generator.next()
+    expect(value.done).toBeFalsy()
+    expect(areIntervalsEqual(value.value, {
+        start: parseISO("2019-12-31T07:00Z"),
+        end: parseISO("2019-12-31T15:00Z")
+    })).toStrictEqual(true)
+
+    value = generator.next()
+    expect(value.done).toBeFalsy()
+    expect(areIntervalsEqual(value.value, {
+        start: parseISO("2019-12-30T07:00Z"),
+        end: parseISO("2019-12-30T15:00Z")
+    })).toStrictEqual(true)
+})
+
+test('Daily schedule with timezone: Backward, first interval before startDate', () => {
+    let schedule = DailyScheduleWithTimezone("08:00", "16:00", "Europe/Berlin", "HH:mm")
+    let generator = schedule(new Date("2020-01-01T17:00Z"), "backward")
+
+    let value = generator.next()
+    expect(value.done).toBeFalsy()
+    expect(areIntervalsEqual(value.value, {
+        start: parseISO("2020-01-01T07:00Z"),
+        end: parseISO("2020-01-01T15:00Z")
+    })).toStrictEqual(true)
+
+    value = generator.next()
+    expect(value.done).toBeFalsy()
+    expect(areIntervalsEqual(value.value, {
+        start: parseISO("2019-12-31T07:00Z"),
+        end: parseISO("2019-12-31T15:00Z")
+    })).toStrictEqual(true)
+
+    value = generator.next()
+    expect(value.done).toBeFalsy()
+    expect(areIntervalsEqual(value.value, {
+        start: parseISO("2019-12-30T07:00Z"),
+        end: parseISO("2019-12-30T15:00Z")
+    })).toStrictEqual(true)
+})

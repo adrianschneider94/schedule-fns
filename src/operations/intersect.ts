@@ -1,15 +1,17 @@
 import {MAX_RECURSIONS, Schedule} from "../index"
-import {isEmpty} from "../functions/misc"
+import {directionToInt, isEmpty} from "../functions/misc"
 import {intersectIntervals} from "../functions/intervals"
-import {compareAsc, isEqual} from "date-fns"
+import {compareAsc, compareDesc, isEqual} from "date-fns"
 
 export function intersectSchedules(...schedules: Array<Schedule>): Schedule {
-    return function* (startDate) {
+    return function* (startDate, direction = "forward") {
         if (isEmpty(schedules)) {
             return
         }
 
-        let generators = schedules.map(schedule => schedule(startDate))
+        let directionInt = directionToInt(direction)
+
+        let generators = schedules.map(schedule => schedule(startDate, direction))
         let currentEntries = generators.map(generator => generator.next())
         let recursions = 0
         while (recursions <= MAX_RECURSIONS) {
@@ -21,15 +23,21 @@ export function intersectSchedules(...schedules: Array<Schedule>): Schedule {
                 yield intersection
                 recursions = 0
                 currentEntries = currentEntries.map((entry, i) => {
-                    if (entry.value.end <= intersection.end) {
+                    if ((directionInt === 1 && entry.value.end <= intersection.end) || (directionInt === -1 && entry.value.start >= intersection.start)) {
                         return generators[i].next()
                     } else {
                         return entry
                     }
                 })
             } catch (e) {
-                let firstEnd = [...currentEntries].sort((a, b) => compareAsc(a.value.end, b.value.end))[0].value.end
-                let i = currentEntries.findIndex(x => isEqual(x.value.end, firstEnd))
+                let i: number
+                if (directionInt === 1) {
+                    let firstEnd = [...currentEntries].sort((a, b) => compareAsc(a.value.end, b.value.end))[0].value.end
+                    i = currentEntries.findIndex(x => isEqual(x.value.end, firstEnd))
+                } else {
+                    let lastStart = [...currentEntries].sort((a, b) => compareDesc(a.value.start, b.value.start))[0].value.start
+                    i = currentEntries.findIndex(x => isEqual(x.value.start, lastStart))
+                }
                 currentEntries[i] = generators[i].next()
             }
             recursions++

@@ -1,5 +1,5 @@
 import {MAX_RECURSIONS, Schedule} from "../index"
-import {differenceInMilliseconds, isWithinInterval} from "date-fns"
+import {differenceInMilliseconds, Duration, isWithinInterval} from "date-fns"
 
 export function durationToMilliseconds(duration: Duration): number {
     let values = [
@@ -23,6 +23,18 @@ export function multiplyDuration(duration: Duration, factor: number): Duration {
         hours: duration.hours ? duration.hours * factor : 0,
         minutes: duration.minutes ? duration.minutes * factor : 0,
         seconds: duration.seconds ? duration.seconds * factor : 0,
+    }
+}
+
+export function addDurations(...durations: Array<Duration>) {
+    return {
+        years: durations.reduce((aggregate, duration) => aggregate + (duration.years || 0), 0),
+        months: durations.reduce((aggregate, duration) => aggregate + (duration.months || 0), 0),
+        weeks: durations.reduce((aggregate, duration) => aggregate + (duration.weeks || 0), 0),
+        days: durations.reduce((aggregate, duration) => aggregate + (duration.days || 0), 0),
+        hours: durations.reduce((aggregate, duration) => aggregate + (duration.hours || 0), 0),
+        minutes: durations.reduce((aggregate, duration) => aggregate + (duration.minutes || 0), 0),
+        seconds: durations.reduce((aggregate, duration) => aggregate + (duration.seconds || 0), 0),
     }
 }
 
