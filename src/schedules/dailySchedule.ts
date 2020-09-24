@@ -3,7 +3,7 @@ import {add, isWithinInterval, parse} from "date-fns"
 import {utcToZonedTime} from "date-fns-tz"
 import {directionToInt} from "../functions/misc"
 
-export function DailyScheduleWithTimezone(startTime: string, endTime: string, timeZone: string = "Etc/UTC", format: string = "HH:mm"): Schedule {
+export function DailySchedule(startTime: string, endTime: string, timeZone: string = "Etc/UTC", format: string = "HH:mm"): Schedule {
     return function* (startDate, direction = 1) {
         startDate = new Date(startDate)
         let directionInt = directionToInt(direction)
