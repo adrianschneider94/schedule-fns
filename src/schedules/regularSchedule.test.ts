@@ -1,4 +1,4 @@
-import {RegularSchedule} from "./RegularSchedule"
+import {RegularSchedule} from "./regularSchedule"
 import {areIntervalsEqual} from "../functions/intervals"
 
 test('RegularSchedule', () => {

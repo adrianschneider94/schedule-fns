@@ -1,4 +1,4 @@
-import {DailyScheduleWithTimezone} from "./DailyScheduleWithTimezone"
+import {DailyScheduleWithTimezone} from "./dailyScheduleWithTimezone"
 import {parseISO} from "date-fns"
 import {areIntervalsEqual} from "../functions/intervals"
 

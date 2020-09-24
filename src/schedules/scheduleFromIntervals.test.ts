@@ -1,4 +1,4 @@
-import {ScheduleFromIntervals} from "./ScheduleFromIntervals"
+import {ScheduleFromIntervals} from "./scheduleFromIntervals"
 
 test('Basic schedule from intervals', () => {
     let intervals = [{start: 0, end: 10}, {start: 20, end: 30}]

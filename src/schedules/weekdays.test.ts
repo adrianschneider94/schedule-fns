@@ -1,4 +1,4 @@
-import {Fridays, Mondays, OnSpecificWeekday, Saturdays, Sundays, Thursdays, Tuesdays, Wednesdays} from "./Weekdays"
+import {Fridays, Mondays, OnSpecificWeekday, Saturdays, Sundays, Thursdays, Tuesdays, Wednesdays} from "./weekdays"
 import {parseISO} from "date-fns"
 import {areIntervalsEqual} from "../functions/intervals"
 import {Schedule} from "../index"
