@@ -1,16 +1,29 @@
 {
   "name": "schedule-fns",
   "version": "0.0.1",
+  "keywords": [
+    "schedules",
+    "work shift",
+    "calendar",
+    "date",
+    "holidays",
+    "typescript"
+  ],
+  "author": "Adrian Schneider",
+  "license": "MIT",
+  "description": "Schedule-fns provides a set of functions to work with schedules (e.g. work shifts).",
+  "main": "lib/index.js",
+  "types": "lib/index.d.ts",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/adrianschneider94/schedule-fns.git"
+  },
   "scripts": {
-    "prepublish": "tsc",
+    "build": "tsc",
+    "prepare": "npm run build",
+    "prepublishOnly": "npm run test",
     "test": "jest"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "description": "",
-  "type": "module",
-  "types": "build/index.d.ts",
   "dependencies": {
     "date-fns": "^2.16.1",
     "date-fns-tz": "^1.0.10"

@@ -1,4 +1,4 @@
-export default {
+module.exports = {
     "roots": [
         "<rootDir>/src"
     ],
@@ -9,4 +9,4 @@ export default {
     "transform": {
         "^.+\\.(ts|tsx)$": "ts-jest"
     },
-}
+};
