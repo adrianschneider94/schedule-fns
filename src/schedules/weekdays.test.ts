@@ -1,4 +1,15 @@
-import {Fridays, Mondays, OnSpecificWeekday, Saturdays, Sundays, Thursdays, Tuesdays, Wednesdays} from "./weekdays"
+import {
+    Fridays,
+    Mondays,
+    OnSpecificWeekday,
+    Saturdays,
+    Sundays,
+    Thursdays,
+    Tuesdays,
+    Wednesdays,
+    Weekends,
+    WorkingDays
+} from "./weekdays"
 import {parseISO} from "date-fns"
 import {areIntervalsEqual} from "../functions/intervals"
 import {Schedule} from "../index"
@@ -93,5 +104,27 @@ test('Weekdays', () => {
     expect(areIntervalsEqual(nextInterval, {
         start: parseISO("2020-10-04T00:00Z"),
         end: parseISO("2020-10-05T00:00Z")
+    })).toStrictEqual(true)
+})
+
+test('Weekends', () => {
+    let schedule = Weekends("Etc/UTC")
+    let startDate = parseISO("2020-09-28T00:00Z")
+
+    let nextInterval = schedule(startDate).next().value
+    expect(areIntervalsEqual(nextInterval, {
+        start: parseISO("2020-10-03T00:00Z"),
+        end: parseISO("2020-10-05T00:00Z")
+    })).toStrictEqual(true)
+})
+
+test('WorkingDays', () => {
+    let schedule = WorkingDays("Etc/UTC")
+    let startDate = parseISO("2020-09-28T00:00Z")
+
+    let nextInterval = schedule(startDate).next().value
+    expect(areIntervalsEqual(nextInterval, {
+        start: parseISO("2020-09-28T00:00Z"),
+        end: parseISO("2020-10-03T00:00Z")
     })).toStrictEqual(true)
 })

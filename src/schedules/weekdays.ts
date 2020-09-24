@@ -1,4 +1,4 @@
-import {RegularSchedule, Schedule} from "../index"
+import {invertSchedule, joinSchedules, RegularSchedule, Schedule} from "../index"
 import {setISODay} from "date-fns"
 import {zonedTimeToUtc} from "date-fns-tz"
 import {getUserTimeZone, stripTime} from "../functions/misc"
@@ -39,4 +39,12 @@ export function Saturdays(timeZone: string = getUserTimeZone()): Schedule {
 
 export function Sundays(timeZone: string = getUserTimeZone()): Schedule {
     return OnSpecificWeekday(7, timeZone)
+}
+
+export function Weekends(timeZone: string = getUserTimeZone()): Schedule {
+    return joinSchedules(Saturdays(timeZone), Sundays(timeZone))
+}
+
+export function WorkingDays(timeZone: string = getUserTimeZone()): Schedule {
+    return invertSchedule(Weekends(timeZone))
 }
