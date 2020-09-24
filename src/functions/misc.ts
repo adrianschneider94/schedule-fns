@@ -24,14 +24,8 @@ export function catchInfiniteInterval(interval: Interval): Interval {
 
 export function isWithinSchedule(date: Date | number, schedule: Schedule) {
     let generator = schedule(date)
-    while (true) {
-        let entry = generator.next()
-        if (entry.value === undefined) {
-            return false
-        } else if (isWithinInterval(date, entry.value)) {
-            return true
-        }
-    }
+    let interval = generator.next().value
+    return isWithinInterval(date, interval)
 }
 
 export function directionToInt(direction: direction): 1 | -1 {

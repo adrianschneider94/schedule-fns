@@ -8,7 +8,7 @@ import {
     stripTime
 } from "./misc"
 import {isEqual, parseISO} from "date-fns"
-import {DateInfinity, ScheduleFromIntervals} from "../index"
+import {DateInfinity, RegularSchedule, ScheduleFromIntervals} from "../index"
 
 test('Empty array', () => {
     expect(isEmpty([])).toStrictEqual(true)
@@ -48,6 +48,13 @@ test('isWithinSchedule 2', () => {
     let schedule = ScheduleFromIntervals({start: 0, end: 10}, {start: 30, end: 40}, {start: 60, end: 70})
     let date = new Date(65)
     expect(isWithinSchedule(date, schedule)).toBeTruthy()
+})
+
+
+test('isWithinSchedule 3', () => {
+    let schedule = RegularSchedule(new Date(0), {seconds: 1}, {seconds: 2})
+    let date = new Date(121500)
+    expect(isWithinSchedule(date, schedule)).toBeFalsy()
 })
 
 
