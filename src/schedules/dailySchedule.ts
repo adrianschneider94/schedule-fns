@@ -9,7 +9,10 @@ type options = {
     timeFormat?: string
 }
 
-export function DailySchedule(startTime: string, endTime: string, {timeZone = getUserTimeZone(), timeFormat = "HH:mm"}: options): Schedule {
+export function DailySchedule(startTime: string, endTime: string, options?: options): Schedule {
+    let timeFormat = options?.timeFormat || "HH:mm"
+    let timeZone = options?.timeZone || getUserTimeZone()
+
     return function* (startDate, direction = 1) {
         // Bring times into ISO format HH:mm:ss.SSS
         startTime = isoFormatTime(startTime, timeFormat)
