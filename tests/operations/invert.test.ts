@@ -1,6 +1,5 @@
-import {ScheduleFromIntervals} from "../schedules"
-import {invertSchedule} from "./invert"
-import {areIntervalsEqual} from "../functions/intervals"
+import {invertSchedule, ScheduleFromIntervals} from "schedule-fns"
+import {areIntervalsEqual} from "schedule-fns/functions/intervals"
 
 test('Invert simple schedule', () => {
     let schedule = ScheduleFromIntervals({start: 0, end: 10}, {start: 20, end: 30})

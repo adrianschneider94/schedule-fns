@@ -1,5 +1,8 @@
 .idea
 src
+tests
 jest.config.js
 tsconfig.json
 node_modules
+lib/tests
+lib/examples

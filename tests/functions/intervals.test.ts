@@ -1,3 +1,4 @@
+import {DateInfinity} from "schedule-fns"
 import {
     areIntervalsConnected,
     areIntervalsEqual,
@@ -5,8 +6,7 @@ import {
     intersectIntervals,
     joinIntervals,
     mergeIntervals
-} from "./intervals"
-import {DateInfinity} from "../index"
+} from "schedule-fns/functions/intervals"
 
 test('Two connected intervals', () => {
     let interval1 = {start: 0, end: 11}

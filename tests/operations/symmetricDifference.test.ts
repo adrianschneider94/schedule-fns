@@ -1,6 +1,5 @@
-import {ScheduleFromIntervals} from "../schedules"
-import {areIntervalsEqual} from "../functions/intervals"
-import {symmetricDifferenceOfSchedules} from "./symmetricDifference"
+import {ScheduleFromIntervals, symmetricDifferenceOfSchedules} from "schedule-fns"
+import {areIntervalsEqual} from "schedule-fns/functions/intervals"
 
 test('Symmetric difference of schedules', () => {
     let schedule1 = ScheduleFromIntervals({start: 0, end: 2})

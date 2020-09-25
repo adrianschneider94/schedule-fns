@@ -1,6 +1,5 @@
-import {ScheduleFromIntervals} from "../schedules"
-import {shiftSchedule} from "./shift"
-import {areIntervalsEqual} from "../functions/intervals"
+import {ScheduleFromIntervals, shiftSchedule} from "schedule-fns"
+import {areIntervalsEqual} from "schedule-fns/functions/intervals"
 
 test('Shift schedule', () => {
     let schedule = ScheduleFromIntervals({start: 0, end: 10000}, {start: 20000, end: 30000})

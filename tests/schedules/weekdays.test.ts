@@ -1,18 +1,19 @@
+import {parseISO} from "date-fns"
+
 import {
     Fridays,
     Mondays,
-    OnSpecificWeekday,
     Saturdays,
+    Schedule,
     Sundays,
     Thursdays,
     Tuesdays,
     Wednesdays,
     Weekends,
     WorkingDays
-} from "./weekdays"
-import {parseISO} from "date-fns"
-import {areIntervalsEqual} from "../functions/intervals"
-import {Schedule} from "../index"
+} from "schedule-fns"
+import {OnSpecificWeekday} from "schedule-fns/schedules/weekdays"
+import {areIntervalsEqual} from "schedule-fns/functions/intervals"
 
 test('SpecificDay', () => {
     let schedule = OnSpecificWeekday(1, "Etc/UTC")

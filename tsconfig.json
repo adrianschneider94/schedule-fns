@@ -1,16 +1,22 @@
 {
   "include": [
-    "src"
-  ],
-  "exclude": [
-    "**/*.test.ts"
+    "src",
+    "tests"
   ],
   "compilerOptions": {
     "target": "es5",
     "module": "commonjs",
     "declaration": true,
-    "rootDir": "./src",
     "outDir": "./lib",
+    "baseUrl": "./",
+    "paths": {
+      "schedule-fns": [
+        "src"
+      ],
+      "schedule-fns/*": [
+        "src/*"
+      ]
+    },
     "downlevelIteration": true,
     "strict": true,
     "esModuleInterop": true,

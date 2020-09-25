@@ -1,6 +1,5 @@
-import {ScheduleFromIntervals} from "../schedules"
-import {subtractSchedules} from "./subtract"
-import {areIntervalsEqual} from "../functions/intervals"
+import {ScheduleFromIntervals, subtractSchedules} from "schedule-fns"
+import {areIntervalsEqual} from "schedule-fns/functions/intervals"
 
 test('Subtract schedules', () => {
     let schedule1 = ScheduleFromIntervals({start: 0, end: 10})

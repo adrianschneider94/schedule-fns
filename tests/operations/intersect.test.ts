@@ -1,6 +1,6 @@
-import {intersectSchedules} from "./intersect"
-import {RegularSchedule, ScheduleFromIntervals} from "../schedules"
-import {areIntervalsEqual} from "../functions/intervals"
+import {RegularSchedule, ScheduleFromIntervals} from "schedule-fns"
+import {intersectSchedules} from "schedule-fns/operations"
+import {areIntervalsEqual} from "schedule-fns/functions/intervals"
 
 test('Intersect no schedules', () => {
     let intersectedSchedule = intersectSchedules()

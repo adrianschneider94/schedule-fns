@@ -1,6 +1,7 @@
-import {Holidays} from "./holidays"
 import {parseISO} from "date-fns"
-import {areIntervalsEqual} from "../functions/intervals"
+
+import {Holidays} from "schedule-fns"
+import {areIntervalsEqual} from "schedule-fns/functions/intervals"
 
 test('Holidays in Bavaria', () => {
     let schedule = Holidays("DE", "BY", {types: ["public"]})

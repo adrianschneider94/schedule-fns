@@ -1,6 +1,5 @@
-import {RegularSchedule, ScheduleFromIntervals} from "../schedules"
-import {areIntervalsEqual} from "../functions/intervals"
-import {DateInfinity, joinSchedules} from "../index"
+import {DateInfinity, joinSchedules, RegularSchedule, ScheduleFromIntervals} from "schedule-fns"
+import {areIntervalsEqual} from "schedule-fns/functions/intervals"
 
 test('Join single schedule', () => {
     let schedule = ScheduleFromIntervals({start: 0, end: 1}, {start: 2, end: 3})

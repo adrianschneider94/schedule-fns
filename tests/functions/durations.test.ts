@@ -1,5 +1,5 @@
-import {addDuration, addDurations, durationToMilliseconds, multiplyDuration} from "./durations"
-import {RegularSchedule, ScheduleFromIntervals} from "../schedules"
+import {RegularSchedule, ScheduleFromIntervals} from "schedule-fns"
+import {addDuration, addDurations, durationToMilliseconds, multiplyDuration} from "schedule-fns/functions/durations"
 
 test('durationToMilliseconds: 1 year, 2 weeks, 3 months, 4 days, 5 hours, 6 minutes, 7 seconds', () => {
     expect(durationToMilliseconds({

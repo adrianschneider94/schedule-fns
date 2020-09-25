@@ -1,5 +1,5 @@
-import {RegularSchedule} from "./regularSchedule"
-import {areIntervalsEqual} from "../functions/intervals"
+import {RegularSchedule} from "schedule-fns"
+import {areIntervalsEqual} from "schedule-fns/functions/intervals"
 
 test('RegularSchedule', () => {
     let schedule = RegularSchedule(0, {seconds: 1}, {seconds: 2})

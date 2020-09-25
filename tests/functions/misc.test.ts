@@ -1,3 +1,6 @@
+import {isEqual, parseISO} from "date-fns"
+
+import {DateInfinity, RegularSchedule, ScheduleFromIntervals} from "schedule-fns"
 import {
     catchInfiniteDate,
     catchInfiniteInterval,
@@ -7,9 +10,7 @@ import {
     isoFormatTime,
     isWithinSchedule,
     stripTime
-} from "./misc"
-import {isEqual, parseISO} from "date-fns"
-import {DateInfinity, RegularSchedule, ScheduleFromIntervals} from "../index"
+} from "schedule-fns/functions/misc"
 
 test('Empty array', () => {
     expect(isEmpty([])).toStrictEqual(true)
