@@ -26,7 +26,8 @@
   },
   "dependencies": {
     "date-fns": "^2.16.1",
-    "date-fns-tz": "^1.0.10"
+    "date-fns-tz": "^1.0.10",
+    "date-holidays": "^1.6.2"
   },
   "devDependencies": {
     "@types/jest": "^26.0.14",

@@ -10,23 +10,27 @@ Its implementation and style are based on [date-fns](https://github.com/date-fns
 ## Usage
 
 ```typescript
-import {addDuration, DailySchedule, joinSchedules, subtractSchedules, Weekends} from "schedule-fns"
+import {addDuration, DailySchedule, joinSchedules, subtractSchedules, Weekends, Holidays} from "schedule-fns"
 import {parseISO} from "date-fns"
 
-// Define the schedule: Mo-Fr, 08:00-16:00, break from 12:30 to 13:30, German timezone
+// Define the schedule: Mo-Fr, 08:00-16:00, break from 12:30 to 13:30, German timezone.
+// Our worker doesn't work on weekends and holidays.
 let workHours = DailySchedule("08:00", "17:00", {timeZone: "Europe/Berlin"})
+
 let breaks = DailySchedule("12:30", "13:30")  // You can drop the timezone, schedule-fns will use the system timezone then
 let weekends = Weekends()
+let holidays = Holidays("DE", "BY") // Exclude holidays
 
-let schedule = subtractSchedules(workHours, joinSchedules(weekends, breaks))
+let schedule = subtractSchedules(workHours, joinSchedules(weekends, breaks, holidays))
 
-// We want to know when 46 hours have passed in the schedule to determine the project deadline
-// We start at 15:20 on Monday, August the 31st (German timezone)
-let projectStart = parseISO("2020-08-31T15:20:00.000+0200")
+// We want to know when 47 hours have passed in the schedule to determine the project deadline
+// We start at 15:20 on Tuesday, April the 28st (German timezone)
+let projectStart = parseISO("2020-04-28T15:20:00.000+0200")
 
-// 46 hours are 5 full working days and 71 hours. So we should finish on Tuesday, September the 5th at 14:20.
+// 47 hours are 5 full working days and 7 hours. But May the 1st is a bank holiday in Germany.
+// So we should finish on Thursday, May the 7th at 14:20.
 let projectEnd = addDuration(projectStart, {hours: 47}, schedule)
-console.log(projectEnd.toISOString()) // 2020-09-08T12:20:00.000Z which is 14:20 in German time
+console.log(projectEnd.toISOString()) // 2020-05-07T12:20:00.000Z which is 14:20 in German time
 ```
 
 ## API
@@ -38,7 +42,7 @@ import {DailySchedule} from "schedule-fns"
 
 let workHours = DailySchedule("08:00", "17:00") // Uses the system timezone
 let workHoursInNewYork = DailySchedule("08:00", "17:00", {timeZone: "America/New_York"})
-let partyHoursInTokyoWithOtherFormat = DailySchedule("10 pm", "3 pm", {timeZone: "Asia/Tokyo", timeFormat: "h a"})
+let partyHoursInTokyoWithOtherFormat = DailySchedule("10 pm", "3 am", {timeZone: "Asia/Tokyo", timeFormat: "h a"})
 ```
 
 #### RegularSchedule
@@ -64,6 +68,16 @@ let intervals: Array<Interval> = [
 ]
 let myHolidays = ScheduleFromIntervals(...intervals)
 ```
+
+#### Holidays
+```typescript
+import {Holidays} from "schedule-fns"
+
+let holidaysInBavaria = Holidays("DE", "BY", {types: ["school"]})
+```
+
+The holiday calender is created by the excellent [date-holidays](https://github.com/commenthol/date-holidays) package.
+The signature of `Holidays` matches the signature of date-holidays `init` method. For details consult date-holidays documentation.
 
 #### Weekdays
 ```typescript
