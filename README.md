@@ -14,7 +14,7 @@ import {addDuration, DailySchedule, joinSchedules, subtractSchedules, Weekends} 
 import {parseISO} from "date-fns"
 
 // Define the schedule: Mo-Fr, 08:00-16:00, break from 12:30 to 13:30, German timezone
-let workHours = DailySchedule("08:00", "17:00", "Europe/Berlin")
+let workHours = DailySchedule("08:00", "17:00", {timeZone: "Europe/Berlin"})
 let breaks = DailySchedule("12:30", "13:30")  // You can drop the timezone, schedule-fns will use the system timezone then
 let weekends = Weekends()
 
@@ -37,7 +37,8 @@ console.log(projectEnd.toISOString()) // 2020-09-08T12:20:00.000Z which is 14:20
 import {DailySchedule} from "schedule-fns"
 
 let workHours = DailySchedule("08:00", "17:00") // Uses the system timezone
-let workHoursInNewYork = DailySchedule("08:00", "17:00", "America/New_York")
+let workHoursInNewYork = DailySchedule("08:00", "17:00", {timeZone: "America/New_York"})
+let partyHoursInTokyoWithOtherFormat = DailySchedule("10 pm", "3 pm", {timeZone: "Asia/Tokyo", timeFormat: "h a"})
 ```
 
 #### RegularSchedule
@@ -78,7 +79,7 @@ let workingDays = WorkingDays()
 ```typescript
 import {DailySchedule, invertSchedule} from "schedule-fns"
 
-let workHours = DailySchedule("08:00", "17:00", "Europe/Berlin")
+let workHours = DailySchedule("08:00", "17:00", {timeZone: "Europe/Berlin"})
 let offHours = invertSchedule(workHours)
 ```
 #### Join

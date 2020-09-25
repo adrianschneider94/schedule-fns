@@ -4,6 +4,7 @@ import {
     directionToInt,
     getUserTimeZone,
     isEmpty,
+    isoFormatTime,
     isWithinSchedule,
     stripTime
 } from "./misc"
@@ -73,4 +74,9 @@ test('stripTime', () => {
 
 test('getUserTimeZone', () => {
     expect(getUserTimeZone().length).toBeGreaterThan(0)
+})
+
+test('isoFormatTime', () => {
+    expect(isoFormatTime("08:00", "HH:mm")).toStrictEqual("08:00:00.000")
+    expect(isoFormatTime("1:35 PM", "h:m a")).toStrictEqual("13:35:00.000")
 })

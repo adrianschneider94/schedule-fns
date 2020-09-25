@@ -1,5 +1,5 @@
 import {DateInfinity, direction, Schedule} from "../index"
-import {isWithinInterval, parseISO} from "date-fns"
+import {isWithinInterval, parse, parseISO} from "date-fns"
 
 export function isEmpty<T>(array: Array<T>) {
     return array.length === 0
@@ -49,3 +49,12 @@ export function stripTime(date: Date | number) {
 export function getUserTimeZone() {
     return Intl.DateTimeFormat().resolvedOptions().timeZone
 }
+
+export function isoFormatTime(time: string, format: string): string {
+    if (format.indexOf('x') !== -1 || format.indexOf('X') !== -1) {
+        throw Error("Can only parse time without timezone information.")
+    }
+    let timeAsDate = parse(time + "Z", format + "X", new Date(0))
+    return timeAsDate.toISOString().slice(11, -1)
+}
+
