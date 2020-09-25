@@ -33,7 +33,7 @@ test('SpecificDay', () => {
     })).toStrictEqual(true)
 })
 
-test('SpecificDay with timezone', () => {
+test('SpecificDay, German timezone', () => {
     let schedule = OnSpecificWeekday(1, "Europe/Berlin")
     let generator = schedule(parseISO("2020-09-23"))
 
@@ -49,6 +49,25 @@ test('SpecificDay with timezone', () => {
     expect(areIntervalsEqual(entry.value, {
         start: parseISO("2020-10-04T22:00Z"),
         end: parseISO("2020-10-05T22:00Z")
+    })).toStrictEqual(true)
+})
+
+test('SpecificDay, Tokyo timezone', () => {
+    let schedule = OnSpecificWeekday(1, "Asia/Tokyo")
+    let generator = schedule(parseISO("2020-09-23"))
+
+    let entry = generator.next()
+    expect(entry.done).toBeFalsy()
+    expect(areIntervalsEqual(entry.value, {
+        start: parseISO("2020-09-27T15:00Z"),
+        end: parseISO("2020-09-28T15:00Z")
+    })).toStrictEqual(true)
+
+    entry = generator.next()
+    expect(entry.done).toBeFalsy()
+    expect(areIntervalsEqual(entry.value, {
+        start: parseISO("2020-10-04T15:00Z"),
+        end: parseISO("2020-10-05T15:00Z")
     })).toStrictEqual(true)
 })
 
