@@ -1,8 +1,15 @@
+import {compareAsc, compareDesc, isEqual} from "date-fns"
+
 import {MAX_RECURSIONS, Schedule} from "../index"
 import {directionToInt, isEmpty} from "../functions/misc"
 import {intersectIntervals} from "../functions/intervals"
-import {compareAsc, compareDesc, isEqual} from "date-fns"
 
+/**
+ * Intersects schedules.
+ *
+ * @param schedules
+ * @category Operations
+ */
 export function intersectSchedules(...schedules: Array<Schedule>): Schedule {
     return function* (startDate, direction = "forward") {
         if (isEmpty(schedules)) {

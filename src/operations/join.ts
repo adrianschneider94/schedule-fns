@@ -1,16 +1,35 @@
-import {MAX_RECURSIONS, Schedule} from "../index"
-import {directionToInt, isEmpty} from "../functions/misc"
 import {compareAsc, compareDesc, isEqual} from "date-fns"
+
+import {Interval, MAX_RECURSIONS, Schedule} from "../index"
+import {directionToInt, isEmpty} from "../functions/misc"
 import {areIntervalsConnected, joinIntervals} from "../functions/intervals"
 
+/**
+ * Get the interval that starts first of a given set of intervals.
+ *
+ * @param intervals
+ * @internal
+ */
 function getFirstInterval(intervals: Array<Interval>) {
     return [...intervals].filter(x => x !== undefined).sort((a, b) => compareAsc(a.start, b.start))[0]
 }
 
+/**
+ * Getz the interval that ends last of a given set of intervals.
+ *
+ * @param intervals
+ * @internal
+ */
 function getLastInterval(intervals: Array<Interval>) {
     return [...intervals].filter(x => x !== undefined).sort((a, b) => compareDesc(a.end, b.end))[0]
 }
 
+/**
+ * Joins a set of schedules.
+ *
+ * @param schedules
+ * @category Operations
+ */
 export function joinSchedules(...schedules: Array<Schedule>): Schedule {
     return function* (startDate, direction = "forward") {
         if (isEmpty(schedules)) {

@@ -1,22 +1,31 @@
-import {Schedule} from "../index"
-import {directionToInt, getUserTimeZone, isoFormatTime} from "../functions/misc"
 import {add, isWithinInterval, parse} from "date-fns"
 import {format, zonedTimeToUtc} from "date-fns-tz"
 
+import {Interval, Schedule} from "../index"
+import {directionToInt, getUserTimeZone, isoFormatTime} from "../functions/misc"
 
-type options = {
-    timeZone?: string
-    timeFormat?: string
-}
-
-export function DailySchedule(startTime: string, endTime: string, options?: options): Schedule {
-    let timeFormat = options?.timeFormat || "HH:mm"
-    let timeZone = options?.timeZone || getUserTimeZone()
+/**
+ * Creates a daily schedule.
+ *
+ * If the start time is **after** the end time, the interval will pass midnight.
+ *
+ * @param startTime The start time in the format specified by timeFormat.
+ * @param endTime The start time in the format specified by timeFormat.
+ * @param Options
+ * @param Options.timeZone The time zone as an IANA code (e.g. Etc/UTC).
+ * @param Options.timeFormat The time format according to the (https://date-fns.org/docs/parse)[parse specification of date-fns].
+ * @constructor
+ * @category Schedules
+ */
+export function DailySchedule(startTime: string, endTime: string, {timeZone, timeFormat}: { timeZone?: string, timeFormat?: string } = {}): Schedule {
+    // Apply default value
+    let timeFormatParsed = timeFormat || "HH:mm"
+    let timeZoneParsed = timeZone || getUserTimeZone()
 
     return function* (startDate, direction = 1) {
         // Bring times into ISO format HH:mm:ss.SSS
-        startTime = isoFormatTime(startTime, timeFormat)
-        endTime = isoFormatTime(endTime, timeFormat)
+        startTime = isoFormatTime(startTime, timeFormatParsed)
+        endTime = isoFormatTime(endTime, timeFormatParsed)
         let directionInt = directionToInt(direction)
 
         let i = 0
@@ -42,8 +51,8 @@ export function DailySchedule(startTime: string, endTime: string, options?: opti
             }
 
             let interval: Interval = {
-                start: zonedTimeToUtc(intervalString.start, timeZone),
-                end: zonedTimeToUtc(intervalString.end, timeZone)
+                start: zonedTimeToUtc(intervalString.start, timeZoneParsed),
+                end: zonedTimeToUtc(intervalString.end, timeZoneParsed)
             }
 
             if ((directionInt === 1 && startDate > interval.end) || (directionInt === -1 && startDate < interval.start)) {

@@ -1,6 +1,13 @@
-import {MAX_RECURSIONS, Schedule} from "../index"
-import {differenceInMilliseconds, Duration, isWithinInterval} from "date-fns"
+import {Duration, MAX_RECURSIONS, Schedule} from "../index"
+import {differenceInMilliseconds, isWithinInterval} from "date-fns"
 
+/**
+ * Converts a duration into milliseconds.
+ *
+ * @param duration The duration to convert
+ *
+ * @internal
+ */
 export function durationToMilliseconds(duration: Duration): number {
     let values = [
         duration.years ? duration.years * 31556952000 : 0,
@@ -14,6 +21,14 @@ export function durationToMilliseconds(duration: Duration): number {
     return values.reduce((a, b) => a + b)
 }
 
+/**
+ * Multiplies a duration with a factor.
+ *
+ * @param duration
+ * @param factor
+ *
+ * @internal
+ */
 export function multiplyDuration(duration: Duration, factor: number): Duration {
     return {
         years: duration.years ? duration.years * factor : 0,
@@ -26,6 +41,13 @@ export function multiplyDuration(duration: Duration, factor: number): Duration {
     }
 }
 
+/**
+ * Sums up durations.
+ *
+ * @param durations
+ *
+ * @internal
+ */
 export function addDurations(...durations: Array<Duration>) {
     return {
         years: durations.reduce((aggregate, duration) => aggregate + (duration.years || 0), 0),
@@ -38,6 +60,15 @@ export function addDurations(...durations: Array<Duration>) {
     }
 }
 
+/**
+ * Adds a duration to a given moment according to a schedule.
+ *
+ *
+ * @param date The moment, the duration should be calculated from.
+ * @param duration The duration that is added
+ * @param schedule The schedule, that defines which time counts into the calculation.
+ * @category Helper functions
+ */
 export function addDuration(date: Date | number, duration: Duration, schedule: Schedule) {
     let millisecondsLeft = durationToMilliseconds(duration)
     let generator = schedule(date)

@@ -1,10 +1,25 @@
-import {DateInfinity, direction, Schedule} from "../index"
 import {isWithinInterval, parse, parseISO} from "date-fns"
 
+import {DateInfinity, direction, Interval, Schedule} from "../index"
+
+/**
+ * Determines if an array is empty.
+ *
+ * @param array
+ * @internal
+ * @category Miscellaneous
+ */
 export function isEmpty<T>(array: Array<T>) {
     return array.length === 0
 }
 
+/**
+ * Transforms Infinity into the maximal number, a date can have in javascript (DateInfinity)
+ *
+ * @param date
+ * @internal
+ * @category Miscellaneous
+ */
 export function catchInfiniteDate(date: Date | number): Date | number {
     if (date === Infinity) {
         return new Date(DateInfinity)
@@ -15,6 +30,13 @@ export function catchInfiniteDate(date: Date | number): Date | number {
     }
 }
 
+/**
+ * Transforms Infinity into DateInfinity for intervals.
+ *
+ * @param interval
+ * @internal
+ * @category Miscellaneous
+ */
 export function catchInfiniteInterval(interval: Interval): Interval {
     return {
         start: catchInfiniteDate(interval.start),
@@ -22,12 +44,27 @@ export function catchInfiniteInterval(interval: Interval): Interval {
     }
 }
 
+
+/**
+ * Determines if a given date is within a schedule.
+ *
+ * @param date
+ * @param schedule
+ * @category Helper functions
+ */
 export function isWithinSchedule(date: Date | number, schedule: Schedule) {
     let generator = schedule(date)
     let interval = generator.next().value
     return isWithinInterval(date, interval)
 }
 
+/**
+ * Convert "forward" and "backward" into 1 and -1 respectively.
+ *
+ * @param direction
+ * @category Miscellaneous
+ * @internal
+ */
 export function directionToInt(direction: direction): 1 | -1 {
     if (direction === "forward") {
         return 1
@@ -42,14 +79,33 @@ export function directionToInt(direction: direction): 1 | -1 {
     }
 }
 
+/**
+ * Remove the time portion of a date.
+ *
+ * @param date
+ * @category Miscellaneous
+ * @internal
+ */
 export function stripTime(date: Date | number) {
     return parseISO((new Date(date)).toISOString().slice(0, 11) + "00:00:00Z")
 }
 
-export function getUserTimeZone() {
+/**
+ * Get the system timezone.
+ *
+ * @category Helper functions
+ */
+export function getUserTimeZone(): string {
     return Intl.DateTimeFormat().resolvedOptions().timeZone
 }
 
+/**
+ * Takes a time string and a format string and returns an string with the time portion of the ISO format.
+ *
+ * @param time
+ * @param format
+ * @internal
+ */
 export function isoFormatTime(time: string, format: string): string {
     if (format.indexOf('x') !== -1 || format.indexOf('X') !== -1) {
         throw Error("Can only parse time without timezone information.")

@@ -1,8 +1,22 @@
-import {Schedule} from "../index"
 import {add, differenceInMilliseconds, isWithinInterval} from "date-fns"
+
+import {Duration, Schedule} from "../index"
 import {addDurations, durationToMilliseconds, multiplyDuration} from "../functions/durations"
 import {directionToInt} from "../functions/misc"
 
+/**
+ * Constructs a regularly occurring schedule.
+ *
+ * The function takes a date, a duration and a period to construct the schedule. The schedule will contain
+ * the interval defined by the date and the duration and all intervals that are shifted by n * period.
+ * It extends into the future and the past.
+ *
+ * @param oneStartMoment
+ * @param duration
+ * @param period
+ * @constructor
+ * @category Schedules
+ */
 export function RegularSchedule(oneStartMoment: Date | number, duration: Duration, period: Duration): Schedule {
     return function* (startDate, direction = "forward") {
         let directionInt = directionToInt(direction)

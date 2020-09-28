@@ -1,8 +1,16 @@
-import {Schedule} from "../index"
 import {isWithinInterval} from "date-fns"
+
+import {Interval, Schedule} from "../index"
 import {mergeIntervals} from "../functions/intervals"
 import {directionToInt} from "../functions/misc"
 
+/**
+ * Returns a schedule from the given intervals.
+ *
+ * @param intervals
+ * @constructor
+ * @category Schedules
+ */
 export function ScheduleFromIntervals(...intervals: Array<Interval>): Schedule {
     return function* (startDate, direction = "forward") {
         let directionInt = directionToInt(direction)

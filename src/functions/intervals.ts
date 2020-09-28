@@ -1,6 +1,17 @@
 import {compareAsc, compareDesc, isEqual} from "date-fns"
+
+import {Interval} from "../index"
 import {catchInfiniteInterval, isEmpty} from "./misc"
 
+/**
+ * Determines if the given intervals are intersecting.
+ *
+ * If true, all given intervals intersect with each other.
+ *
+ * @param intervals
+ * @category Interval functions
+ * @internal
+ */
 export function areIntervalsIntersecting(...intervals: Array<Interval>): boolean {
     if (isEmpty(intervals) || intervals.length === 1) {
         return true
@@ -8,6 +19,13 @@ export function areIntervalsIntersecting(...intervals: Array<Interval>): boolean
     return intervals.every(left => intervals.every(right => left.start <= right.end))
 }
 
+/**
+ * Determines if the union of all intervals forms a single interval.
+ *
+ * @param intervals
+ * @category Interval functions
+ * @internal
+ */
 export function areIntervalsConnected(...intervals: Array<Interval>): boolean {
     if (isEmpty(intervals)) {
         return true
@@ -16,6 +34,13 @@ export function areIntervalsConnected(...intervals: Array<Interval>): boolean {
     return intervals.every((leftInterval, i) => intervals.some((rightInterval, j) => (compareAsc(leftInterval.start, rightInterval.end) <= 0) && (i !== j)))
 }
 
+/**
+ * Determines if all given intervals are equal.
+ *
+ * @param intervals
+ * @category Interval functions
+ * @internal
+ */
 export function areIntervalsEqual(...intervals: Array<Interval>): boolean {
     if (isEmpty(intervals)) {
         return true
@@ -24,6 +49,15 @@ export function areIntervalsEqual(...intervals: Array<Interval>): boolean {
     return intervals.every(interval => isEqual(interval.start, intervals[0].start)) && intervals.every(interval => isEqual(interval.end, intervals[0].end))
 }
 
+/**
+ * Returns the union of connected intervals.
+ *
+ * If the intervals are not connected (i.e. the form not a single interval but multiple), an error is thrown.
+ *
+ * @param intervals
+ * @category Interval functions
+ * @internal
+ */
 export function joinIntervals(...intervals: Array<Interval>): Interval {
     if (isEmpty(intervals)) {
         throw Error("Need to provide at least one interval to join.")
@@ -38,6 +72,13 @@ export function joinIntervals(...intervals: Array<Interval>): Interval {
     }
 }
 
+/**
+ * Returns a union (array of intervals) of disjoint intervals.
+ *
+ * @param intervals
+ * @category Interval functions
+ * @internal
+ */
 export function mergeIntervals(...intervals: Array<Interval>): Array<Interval> {
     if (isEmpty(intervals)) {
         return []
@@ -57,6 +98,13 @@ export function mergeIntervals(...intervals: Array<Interval>): Array<Interval> {
     return sortedIntervals.slice(1).reduce(reducer, [sortedIntervals[0]])
 }
 
+/**
+ * Returns the intersection of a set of intervals.
+ *
+ * @param intervals
+ * @category Interval functions
+ * @internal
+ */
 export function intersectIntervals(...intervals: Array<Interval>): Interval {
     if (isEmpty(intervals)) {
         throw Error("Please provide at least one interval!")

@@ -1,7 +1,15 @@
-import {DateInfinity, Schedule} from "../index"
 import {isEqual} from "date-fns"
+
+
+import {DateInfinity, Schedule} from "../index"
 import {directionToInt} from "../functions/misc"
 
+/**
+ * Inverts a schedule
+ *
+ * @param schedule
+ * @category Operations
+ */
 export function invertSchedule(schedule: Schedule): Schedule {
     return function* (startDate, direction = "forward") {
         let directionInt = directionToInt(direction)

@@ -22,6 +22,13 @@ test('Daily schedule', () => {
     })).toStrictEqual(true)
 })
 
+test('Daily schedule without options', () => {
+    expect(() => {
+        DailySchedule("8:00", "16:00")
+    }).not.toThrowError()
+
+})
+
 test('Daily schedule UTC', () => {
     let schedule = DailySchedule("08:00", "16:00", {timeZone: "Etc/UTC"})
     let generator = schedule(parseISO("2020-01-01T20:00:00.000Z"))
