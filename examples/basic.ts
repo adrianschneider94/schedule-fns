@@ -1,4 +1,4 @@
-import {addDuration, DailySchedule, joinSchedules, subtractSchedules, Weekends, Holidays} from "schedule-fns"
+import {addDuration, DailySchedule, Holidays, joinSchedules, subtractSchedules, Weekends} from "schedule-fns"
 import {parseISO} from "date-fns"
 
 // Define the schedule: Mo-Fr, 08:00-16:00, break from 12:30 to 13:30, German timezone.

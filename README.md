@@ -10,7 +10,7 @@ Its implementation and style are based on [date-fns](https://github.com/date-fns
 ## Usage
 
 ```typescript
-import {addDuration, DailySchedule, joinSchedules, subtractSchedules, Weekends, Holidays} from "schedule-fns"
+import {addDuration, DailySchedule, Holidays, joinSchedules, subtractSchedules, Weekends} from "schedule-fns"
 import {parseISO} from "date-fns"
 
 // Define the schedule: Mo-Fr, 08:00-16:00, break from 12:30 to 13:30, German timezone.
@@ -31,6 +31,7 @@ let projectStart = parseISO("2020-04-28T15:20:00.000+0200")
 // So we should finish on Thursday, May the 7th at 14:20.
 let projectEnd = addDuration(projectStart, {hours: 47}, schedule)
 console.log(projectEnd.toISOString()) // 2020-05-07T12:20:00.000Z which is 14:20 in German time
+
 ```
 
 ## API
@@ -42,7 +43,7 @@ import {DailySchedule} from "schedule-fns"
 
 let workHours = DailySchedule("08:00", "17:00") // Uses the system timezone
 let workHoursInNewYork = DailySchedule("08:00", "17:00", {timeZone: "America/New_York"})
-let partyHoursInTokyoWithOtherFormat = DailySchedule("10 pm", "3 am", {timeZone: "Asia/Tokyo", timeFormat: "h a"})
+let partyHoursInTokyo = DailySchedule("10 pm", "3 am", {timeZone: "Asia/Tokyo", timeFormat: "h a"})
 ```
 
 #### RegularSchedule
@@ -66,14 +67,14 @@ let intervals: Array<Interval> = [
     {start: parseISO("2020-08-22T00:00:00.000+0200"), end: parseISO("2020-08-31T00:00:00.000+0200")},
     {start: parseISO("2020-12-24T14:00:00.000+0200"), end: parseISO("2021-01-08T00:00:00.000+0200")}
 ]
-let myHolidays = ScheduleFromIntervals(...intervals)
+let myHolidays = ScheduleFromIntervals(...intervals) 
 ```
 
 #### Holidays
 ```typescript
 import {Holidays} from "schedule-fns"
 
-let holidaysInBavaria = Holidays("DE", "BY", {types: ["school"]})
+let holidaysInBavaria = Holidays("DE", "BY", {types: ["school"]}) 
 ```
 
 The holiday calender is created by the excellent [date-holidays](https://github.com/commenthol/date-holidays) package.
@@ -86,7 +87,7 @@ import {Mondays, Thursdays, Weekends, WorkingDays} from "schedule-fns"
 let mondays = Mondays()
 let thursdaysInJapan = Thursdays("Asia/Tokyo")
 let weekends = Weekends()
-let workingDays = WorkingDays()
+let workingDays = WorkingDays() 
 ```
 ### Operations
 #### Invert
@@ -94,20 +95,20 @@ let workingDays = WorkingDays()
 import {DailySchedule, invertSchedule} from "schedule-fns"
 
 let workHours = DailySchedule("08:00", "17:00", {timeZone: "Europe/Berlin"})
-let offHours = invertSchedule(workHours)
+let offHours = invertSchedule(workHours) 
 ```
 #### Join
 ```typescript
 import {Weekends, Thursdays, joinSchedules} from "schedule-fns"
 
-let weekendOrThursday = joinSchedules(Weekends(), Thursdays())
+let weekendOrThursday = joinSchedules(Weekends(), Thursdays()) 
 ```
 
 #### Intersect
 ```typescript
 import {Mondays, DailySchedule, intersectSchedules} from "schedule-fns"
 
-let mondayEvenings = intersectSchedules(DailySchedule("20:00", "02:00"), Mondays())
+let mondayEvenings = intersectSchedules(DailySchedule("20:00", "02:00"), Mondays()) 
 ```
 
 #### Subtract
@@ -116,7 +117,7 @@ import {DailySchedule, subtractSchedules} from "schedule-fns"
 
 let workHours = DailySchedule("08:00", "17:00")
 let breaks = DailySchedule("12:30", "13:30")
-let workTime = subtractSchedules(workHours, breaks)
+let workTime = subtractSchedules(workHours, breaks) 
 ```
 
 #### Symmetric Difference
@@ -125,16 +126,17 @@ import {DailySchedule, symmetricDifferenceOfSchedules} from "schedule-fns"
 
 let hoursWorker1 = DailySchedule("08:00", "17:00")
 let hoursWorker2 = DailySchedule("09:00", "18:00")
-let onlyOneWorkerAvailable = symmetricDifferenceOfSchedules(hoursWorker1, hoursWorker2)
+let onlyOneWorkerAvailable = symmetricDifferenceOfSchedules(hoursWorker1, hoursWorker2) 
 ```
 
 ### Miscellaneous
 #### Add Duration
 ```typescript
-import {DailySchedule, addDuration} from "schedule-fns"
+import {addDuration, DailySchedule} from "schedule-fns"
 
 let schedule = DailySchedule("08:00", "17:00")
 let projectEnd = addDuration(new Date(), {hours: 13}, schedule)
+ 
 ```
 #### isWithinSchedule
 ```typescript
@@ -144,4 +146,5 @@ import {DailySchedule, isWithinSchedule} from "schedule-fns"
 let schedule = DailySchedule("08:00", "17:00")
 console.log(isWithinSchedule(parseISO("2020-01-08T111:00:00.000+0100"), schedule)) // true
 console.log(isWithinSchedule(parseISO("2020-01-08T03:00:00.000+0100"), schedule)) // false
+ 
 ```
