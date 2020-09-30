@@ -44,6 +44,12 @@ The signature of `Holidays` matches the signature of date-holidays `init` method
 ```typescript
 // #include<examples/schedules/weekdays.ts> 
 ```
+
+#### Simple Schedules
+```typescript
+// #include<examples/schedules/simple.ts> 
+```
+
 ### Operations
 #### Invert
 ```typescript
