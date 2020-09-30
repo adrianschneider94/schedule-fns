@@ -22,10 +22,11 @@ export function DailySchedule(startTime: string, endTime: string, {timeZone, tim
     let timeFormatParsed = timeFormat || "HH:mm"
     let timeZoneParsed = timeZone || getUserTimeZone()
 
+    // Bring times into ISO format HH:mm:ss.SSS
+    startTime = isoFormatTime(startTime, timeFormatParsed)
+    endTime = isoFormatTime(endTime, timeFormatParsed)
+
     return function* (startDate, direction = 1) {
-        // Bring times into ISO format HH:mm:ss.SSS
-        startTime = isoFormatTime(startTime, timeFormatParsed)
-        endTime = isoFormatTime(endTime, timeFormatParsed)
         let directionInt = directionToInt(direction)
 
         let i = 0

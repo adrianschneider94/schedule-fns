@@ -135,10 +135,7 @@ test('Daily schedule: Custom time format', () => {
 
 
 test('Daily schedule: Format with timezone raises error', () => {
-    let schedule = DailySchedule("08:00", "16:00", {timeZone: "Europe/Berlin", timeFormat: "HH:mmX"})
-    let generator = schedule(new Date("2020-01-01T10:00Z"))
-
-    expect(() => generator.next()).toThrowError()
+    expect(() => DailySchedule("08:00", "16:00", {timeZone: "Europe/Berlin", timeFormat: "HH:mmX"})).toThrowError()
 })
 
 
