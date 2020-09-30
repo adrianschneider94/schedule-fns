@@ -5,38 +5,54 @@ Its implementation and style are based on [date-fns](https://github.com/date-fns
 
 ## Contents
 * [Installation](#installation)
-* [Usage](#usage)
+* [Example](#example)
 * [API](#api)
-    * [Schedules](#schedules)
-    * [Operations](#operations)
-    * [Miscellaneous](#miscellaneous)
 * [Implementation](#implementation)
-   * [Definition of a schedule](#definition-of-a-schedule)
 
 ## Installation
 
     npm i schedule-fns
     
-## Usage
+## Example
 
 ```typescript
 // #include<examples/basic.ts>
 ```
 
 ## API
+### Overview
+
+* [Schedules](#schedules)
+  * [Daily Schedule](#daily-schedule)
+  * [Regular Schedule](#regular-schedule)
+  * [Schedule from Intervals](#schedule-from-intervals)
+  * [Holidays](#holidays)
+  * [Weekdays](#weekdays)
+  * [Simple Schedules](#simple-schedules)
+* [Operations](#operations)
+  * [Invert](#invert)
+  * [Join](#join)
+  * [Intersect](#intersect)
+  * [Subtract](#subtract)
+  * [Symmetric Difference](#symmetric-difference)
+  * [Shift](#shift)
+* [Miscellaneous](#miscellaneous)
+  * [Add Duration](#add-duration)
+  * [Is within Schedule](#iswithinschedule)
+
 ### Schedules
-#### DailySchedule
+#### Daily Schedule
 
 ```typescript
 // #include<examples/schedules/dailySchedule.ts>
 ```
 
-#### RegularSchedule
+#### Regular Schedule
 ```typescript
 // #include<examples/schedules/regularSchedule.ts> 
 ```
 
-#### ScheduleFromIntervals
+#### Schedule from Intervals
 
 ```typescript
 // #include<examples/schedules/scheduleFromIntervals.ts> 
@@ -108,7 +124,7 @@ The basis of schedule-fns is the definition of a schedule:
 type Schedule = (startDate: Date | number, direction?: direction) => IterableIterator<Interval>
 ```
 
-It is a function that receives a date and a direction (defaults to "forward") and returns a generator which yields intervals.
+It is a generator that receives a date and a direction (defaults to "forward") and yields intervals.
 
 So the simplest formal schedule would be
 

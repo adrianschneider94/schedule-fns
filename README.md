@@ -5,19 +5,15 @@ Its implementation and style are based on [date-fns](https://github.com/date-fns
 
 ## Contents
 * [Installation](#installation)
-* [Usage](#usage)
+* [Example](#example)
 * [API](#api)
-    * [Schedules](#schedules)
-    * [Operations](#operations)
-    * [Miscellaneous](#miscellaneous)
 * [Implementation](#implementation)
-   * [Definition of a schedule](#definition-of-a-schedule)
 
 ## Installation
 
     npm i schedule-fns
     
-## Usage
+## Example
 
 ```typescript
 import {addDuration, DailySchedule, Holidays, joinSchedules, subtractSchedules, take, Weekends} from "schedule-fns"
@@ -55,8 +51,28 @@ console.log(projectEnd) // 2020-05-07T12:20:00.000Z which is 14:20 in German tim
 ```
 
 ## API
+### Overview
+
+* [Schedules](#schedules)
+  * [Daily Schedule](#daily-schedule)
+  * [Regular Schedule](#regular-schedule)
+  * [Schedule from Intervals](#schedule-from-intervals)
+  * [Holidays](#holidays)
+  * [Weekdays](#weekdays)
+  * [Simple Schedules](#simple-schedules)
+* [Operations](#operations)
+  * [Invert](#invert)
+  * [Join](#join)
+  * [Intersect](#intersect)
+  * [Subtract](#subtract)
+  * [Symmetric Difference](#symmetric-difference)
+  * [Shift](#shift)
+* [Miscellaneous](#miscellaneous)
+  * [Add Duration](#add-duration)
+  * [Is within Schedule](#iswithinschedule)
+
 ### Schedules
-#### DailySchedule
+#### Daily Schedule
 
 ```typescript
 import {DailySchedule, take} from "schedule-fns"
@@ -89,7 +105,7 @@ for (let interval of take(partyHoursInTokyo(startDate), 3)) {
 // { start: 2020-09-03T13:00:00.000Z, end: 2020-09-03T18:00:00.000Z }
 ```
 
-#### RegularSchedule
+#### Regular Schedule
 ```typescript
 import {parseISO} from "date-fns"
 import {RegularSchedule, take} from "schedule-fns"
@@ -106,7 +122,7 @@ for (let interval of take(everySixWeeksForOneDay(startDate), 3)) {
 // { start: 2020-12-01T22:00:00.000Z, end: 2020-12-02T22:00:00.000Z } 
 ```
 
-#### ScheduleFromIntervals
+#### Schedule from Intervals
 
 ```typescript
 import {Interval, parseISO} from "date-fns"
@@ -336,7 +352,7 @@ The basis of schedule-fns is the definition of a schedule:
 type Schedule = (startDate: Date | number, direction?: direction) => IterableIterator<Interval>
 ```
 
-It is a function that receives a date and a direction (defaults to "forward") and returns a generator which yields intervals.
+It is a generator that receives a date and a direction (defaults to "forward") and yields intervals.
 
 So the simplest formal schedule would be
 
