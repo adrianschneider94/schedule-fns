@@ -112,8 +112,15 @@ export function intersectIntervals(...intervals: Array<Interval>): Interval {
     if (!areIntervalsIntersecting(...intervals)) {
         throw Error("Can't intersect the given intervals!")
     }
+    let start = [...intervals].sort((a, b) => compareDesc(a.start, b.start))[0].start
+    let end = [...intervals].sort((a, b) => compareAsc(a.end, b.end))[0].end
+
+    if (isEqual(start, end)) {
+        throw Error("Result is not a valid interval as it is just a point in time.")
+    }
+
     return {
-        start: [...intervals].sort((a, b) => compareDesc(a.start, b.start))[0].start,
-        end: [...intervals].sort((a, b) => compareAsc(a.end, b.end))[0].end
+        start,
+        end
     }
 }

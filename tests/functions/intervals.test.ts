@@ -145,6 +145,11 @@ test('intersectIntervals: Intersect two intervals', () => {
     ).toBe(true)
 })
 
+test('intersectIntervals: Intersect two tangent intervals', () => {
+    expect(() => intersectIntervals({start: 0, end: 2}, {start: 2, end: 4})
+    ).toThrowError()
+})
+
 test('intersectIntervals: Intersecting disjoint intervals throws error', () => {
     expect(() => intersectIntervals({start: 0, end: 1}, {start: 2, end: 3})).toThrowError()
 })
