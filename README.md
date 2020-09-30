@@ -3,6 +3,16 @@
 This package provides functions to work with schedules (work hours, opening hours etc.).
 Its implementation and style are based on [date-fns](https://github.com/date-fns/date-fns).
 
+## Contents
+* [Installation](#installation)
+* [Usage](#usage)
+* [API](#api)
+    * [Schedules](#schedules)
+    * [Operations](#operations)
+    * [Miscellaneous](#miscellaneous)
+* [Implementation](#implementation)
+   * [Definition of a schedule](#definition-of-a-schedule)
+
 ## Installation
 
     npm i schedule-fns
@@ -13,7 +23,7 @@ Its implementation and style are based on [date-fns](https://github.com/date-fns
 import {addDuration, DailySchedule, Holidays, joinSchedules, subtractSchedules, take, Weekends} from "schedule-fns"
 import {parseISO} from "date-fns"
 
-// Define the schedule: Mo-Fr, 08:00-16:00, break from 12:30 to 13:30, German timezone.
+// Define the schedule: Mo-Fr, 08:00-17:00, break from 12:30 to 13:30, German timezone.
 // Our worker doesn't work on weekends and holidays.
 let workHours = DailySchedule("08:00", "17:00", {timeZone: "Europe/Berlin"})
 
@@ -317,3 +327,62 @@ console.log(isWithinSchedule(parseISO("2020-01-08T111:00:00.000+0100"), schedule
 console.log(isWithinSchedule(parseISO("2020-01-08T03:00:00.000+0100"), schedule)) // false
  
 ```
+
+## Implementation
+### Definition of a schedule
+The basis of schedule-fns is the definition of a schedule:
+
+```typescript
+type Schedule = (startDate: Date | number, direction?: direction) => IterableIterator<Interval>
+```
+
+It is a function that receives a date and a direction (defaults to "forward") and returns a generator which yields intervals.
+
+So the simplest formal schedule would be
+
+```typescript
+import {Schedule} from "schedule-fns"
+
+let mySchedule: Schedule = function* (startDate, direction = "forward") {
+    yield {start: 0, end: 1}
+} 
+```
+
+However, it is not a valid schedule, as there are further specifications that define a schedule.<br/> 
+If the direction is ``"forward"`` or ``1``:
+  * ``interval[i].start > interval[i-1].end``
+  * ``interval[i].start >= startDate``
+  
+If the direction is ``backward`` or ``-1``:
+  * ``interval[i].end < interval[i-1].start``
+  * ``interval[i].end <= startDate``
+  
+So to make our schedule valid, we have to handle the edge cases.
+
+```typescript
+import {Schedule} from "schedule-fns"
+
+let mySchedule: Schedule = function* (startDate, direction = "forward") {
+    if (0 < startDate && startDate < 1 && (direction === "forward" || direction === 1)){
+        yield {start: startDate, end: 1}
+    } else if (0 < startDate && startDate < 1 && (direction === "backward" || direction === -1)) {
+        yield {start: 0, end: startDate}
+    } else if (
+        (startDate >= 1 && (direction === "forward" || direction === 1)) ||
+        (startDate <= 1 && (direction === "backward" || direction === -1))
+    ) {
+        return
+    } else {
+        yield {start: 0, end: 1}
+    }
+} 
+```
+
+But most of the time, we would just use a predefined schedule to achieve what 
+we want:
+
+```typescript
+let mySchedule = ScheduleFromIntervals({start: 0, end: 1})
+```
+
+which already handles all the edge cases.

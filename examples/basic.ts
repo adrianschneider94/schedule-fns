@@ -1,7 +1,7 @@
 import {addDuration, DailySchedule, Holidays, joinSchedules, subtractSchedules, take, Weekends} from "schedule-fns"
 import {parseISO} from "date-fns"
 
-// Define the schedule: Mo-Fr, 08:00-16:00, break from 12:30 to 13:30, German timezone.
+// Define the schedule: Mo-Fr, 08:00-17:00, break from 12:30 to 13:30, German timezone.
 // Our worker doesn't work on weekends and holidays.
 let workHours = DailySchedule("08:00", "17:00", {timeZone: "Europe/Berlin"})
 
