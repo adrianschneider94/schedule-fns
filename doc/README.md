@@ -26,7 +26,6 @@ Its implementation and style are based on [date-fns](https://github.com/date-fns
 // #include<examples/schedules/regularSchedule.ts> 
 ```
 
-
 #### ScheduleFromIntervals
 
 ```typescript
@@ -68,6 +67,11 @@ The signature of `Holidays` matches the signature of date-holidays `init` method
 #### Symmetric Difference
 ```typescript
 // #include<examples/operations/symmetricDifference.ts> 
+```
+
+#### Shift
+```typescript
+// #include<examples/operations/shift.ts> 
 ```
 
 ### Miscellaneous
