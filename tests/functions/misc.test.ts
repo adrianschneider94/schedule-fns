@@ -59,6 +59,11 @@ test('isWithinSchedule 3', () => {
     expect(isWithinSchedule(date, schedule)).toBeFalsy()
 })
 
+test('isWithinSchedule 4', () => {
+    let schedule = ScheduleFromIntervals({start: 0, end: 10}, {start: 30, end: 40}, {start: 60, end: 70})
+    let date = new Date(80)
+    expect(isWithinSchedule(date, schedule)).toBeFalsy()
+})
 
 test('directionToInt', () => {
     expect(directionToInt("forward")).toStrictEqual(1)

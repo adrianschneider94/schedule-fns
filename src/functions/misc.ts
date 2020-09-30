@@ -54,7 +54,12 @@ export function catchInfiniteInterval(interval: Interval): Interval {
  */
 export function isWithinSchedule(date: Date | number, schedule: Schedule) {
     let generator = schedule(date)
-    let interval = generator.next().value
+    let interval = generator.next()?.value
+
+    if (interval === undefined) {
+        return false
+    }
+
     return isWithinInterval(date, interval)
 }
 
