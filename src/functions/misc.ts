@@ -114,3 +114,19 @@ export function isoFormatTime(time: string, format: string): string {
     return timeAsDate.toISOString().slice(11, -1)
 }
 
+/**
+ * Take the first n elements from an iterator.
+ *
+ * @param iterable
+ * @param n
+ */
+export function* take<T>(iterable: IterableIterator<T>, n: number): IterableIterator<T> {
+    let i = 0
+    for (let value of iterable) {
+        i++
+        if (i > n) {
+            break
+        }
+        yield value
+    }
+}

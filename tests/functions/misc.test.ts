@@ -1,6 +1,6 @@
 import {isEqual, parseISO} from "date-fns"
 
-import {DateInfinity, RegularSchedule, ScheduleFromIntervals} from "schedule-fns"
+import {DateInfinity, RegularSchedule, ScheduleFromIntervals, take} from "schedule-fns"
 import {
     catchInfiniteDate,
     catchInfiniteInterval,
@@ -81,3 +81,40 @@ test('isoFormatTime', () => {
     expect(isoFormatTime("08:00", "HH:mm")).toStrictEqual("08:00:00.000")
     expect(isoFormatTime("1:35 PM", "h:m a")).toStrictEqual("13:35:00.000")
 })
+
+test('take', () => {
+    let generator = function* () {
+        yield 1
+        yield 2
+        yield 3
+        yield 4
+        yield 5
+    }
+    let result = [...take(generator(), 3)]
+    expect(result).toStrictEqual([1, 2, 3])
+})
+
+test('take 0', () => {
+    let generator = function* () {
+        yield 1
+        yield 2
+        yield 3
+        yield 4
+        yield 5
+    }
+    let result = [...take(generator(), 0)]
+    expect(result).toStrictEqual([])
+})
+
+test('take -5', () => {
+    let generator = function* () {
+        yield 1
+        yield 2
+        yield 3
+        yield 4
+        yield 5
+    }
+    let result = [...take(generator(), -5)]
+    expect(result).toStrictEqual([])
+})
+

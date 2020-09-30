@@ -1,2 +1,2 @@
 export {addDuration} from "./durations"
-export {isWithinSchedule} from "./misc"
+export {take, isWithinSchedule} from "./misc"
