@@ -1,3 +1,13 @@
+let intl: typeof globalThis.Intl
+if (!global.Intl) {
+    intl = require('intl')
+    require('intl/locale-data/jsonp/en.js')
+    global.Intl = intl
+} {
+    intl = global.Intl
+}
+export const Intl = intl
+
 /**
  * A time interval
  *

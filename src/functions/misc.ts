@@ -1,6 +1,6 @@
 import {isWithinInterval, parse, parseISO} from "date-fns"
-
 import {DateInfinity, direction, Interval, Schedule} from "../index"
+import {Intl} from "../index"
 
 /**
  * Determines if an array is empty.

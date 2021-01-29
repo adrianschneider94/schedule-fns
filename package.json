@@ -22,6 +22,7 @@
     "build": "tsc",
     "prepare": "npm run build",
     "prepublishOnly": "npm run test",
+    "browserify": "npm run build && browserify --standalone scheduleFns ./lib/src/index.js > ./lib/schedule-fns.min.js",
     "test": "jest",
     "generateReadme": "node generateReadme.js && git add README.md"
   },
@@ -31,8 +32,12 @@
     "date-holidays": "^1.6.2"
   },
   "devDependencies": {
+    "@types/intl": "^1.2.0",
     "@types/jest": "^26.0.14",
+    "browserify": "^17.0.0",
+    "intl": "^1.2.5",
     "jest": "^26.4.2",
+    "patch-package": "^6.2.2",
     "pre-commit": "^1.2.2",
     "ts-jest": "^26.4.0",
     "tsconfig-paths": "^3.9.0",
