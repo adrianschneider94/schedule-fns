@@ -5,7 +5,6 @@ import {
     catchInfiniteDate,
     catchInfiniteInterval,
     directionToInt,
-    getUserTimeZone,
     isEmpty,
     isoFormatTime,
     isWithinSchedule,
@@ -76,10 +75,6 @@ test('directionToInt', () => {
 
 test('stripTime', () => {
     expect(isEqual(stripTime(parseISO("2020-10-01T18:23Z")), parseISO("2020-10-01T00:00Z"))).toStrictEqual(true)
-})
-
-test('getUserTimeZone', () => {
-    expect(getUserTimeZone().length).toBeGreaterThan(0)
 })
 
 test('isoFormatTime', () => {
