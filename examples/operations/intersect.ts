@@ -1,7 +1,7 @@
 import {DailySchedule, intersectSchedules, Mondays, take} from "schedule-fns"
 import {parseISO} from "date-fns"
 
-let mondayEvenings = intersectSchedules(DailySchedule("20:00", "00:00", {timeZone: "Etc/UTC"}), Mondays("Etc/UTC"))
+let mondayEvenings = intersectSchedules(DailySchedule("20:00", "00:00"), Mondays())
 
 let startDate = parseISO("2020-09-02")
 for (let interval of take(mondayEvenings(startDate), 3)) {

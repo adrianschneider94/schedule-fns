@@ -9,6 +9,6 @@ let startDate = parseISO("2020-09-02")
 for (let interval of take(onlyOneWorkerAvailable(startDate), 3)) {
     console.log(interval)
 }
-// { start: 2020-09-02T06:00:00.000Z, end: 2020-09-02T07:00:00.000Z }
-// { start: 2020-09-02T15:00:00.000Z, end: 2020-09-02T16:00:00.000Z }
-// { start: 2020-09-03T06:00:00.000Z, end: 2020-09-03T07:00:00.000Z }
+// { start: 2020-09-02T08:00:00.000Z, end: 2020-09-02T09:00:00.000Z }
+// { start: 2020-09-02T17:00:00.000Z, end: 2020-09-02T18:00:00.000Z }
+// { start: 2020-09-03T08:00:00.000Z, end: 2020-09-03T09:00:00.000Z }

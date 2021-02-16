@@ -1,7 +1,7 @@
 import {DailySchedule, invertSchedule, take} from "schedule-fns"
 import {parseISO} from "date-fns"
 
-let workHours = DailySchedule("08:00", "17:00", {timeZone: "Etc/UTC"})
+let workHours = DailySchedule("08:00", "17:00")
 let offHours = invertSchedule(workHours)
 
 

@@ -2,7 +2,7 @@ import {parseISO} from "date-fns"
 
 import {Mondays, shiftSchedule, take} from "schedule-fns"
 
-let mondayNoonToTuesdayNoon = shiftSchedule(Mondays("Etc/UTC"), {hours: 12})
+let mondayNoonToTuesdayNoon = shiftSchedule(Mondays(), {hours: 12})
 
 let startDate = parseISO("2020-09-02")
 for (let interval of take(mondayNoonToTuesdayNoon(startDate), 3)) {
