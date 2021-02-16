@@ -1,23 +1,19 @@
-import {setISODay} from "date-fns"
-import {zonedTimeToUtc} from "date-fns-tz"
+import {setISODay, startOfDay} from "date-fns"
 
 import {invertSchedule, joinSchedules, RegularSchedule, Schedule} from "../index"
-import {getUserTimeZone, stripTime} from "../functions/misc"
 
 /**
- * Returns a schedule that occurs on a weekday specified by an integer in a given timezone.
+ * Returns a schedule that occurs on a weekday specified by an integer.
  *
  * @param day The day as number (Monday = 1, Sunday = 7)
- * @param timeZone
  * @constructor
  * @internal
  * @category Schedules
  */
-export function OnSpecificWeekday(day: number, timeZone: string = getUserTimeZone()): Schedule {
+export function OnSpecificWeekday(day: number): Schedule {
     return function (startDate, direction) {
-        let startDateWithoutTimeISO = stripTime(startDate)
-        let weekday = setISODay(startDateWithoutTimeISO, day)
-        let startDayMoment = zonedTimeToUtc(weekday.toISOString().slice(0, -1), timeZone)
+        let weekday = setISODay(startDate, day)
+        let startDayMoment = startOfDay(weekday)
         let schedule = RegularSchedule(startDayMoment, {days: 1}, {weeks: 1})
         return schedule(startDate, direction)
     }
@@ -26,97 +22,88 @@ export function OnSpecificWeekday(day: number, timeZone: string = getUserTimeZon
 /**
  * Every monday.
  *
- * @param timeZone
  * @constructor
  * @category Weekday Schedules
  */
-export function Mondays(timeZone: string = getUserTimeZone()): Schedule {
-    return OnSpecificWeekday(1, timeZone)
+export function Mondays(): Schedule {
+    return OnSpecificWeekday(1)
 }
 
 /**
  * Every tuesday.
  *
- * @param timeZone
  * @constructor
  * @category Weekday Schedules
  */
-export function Tuesdays(timeZone: string = getUserTimeZone()): Schedule {
-    return OnSpecificWeekday(2, timeZone)
+export function Tuesdays(): Schedule {
+    return OnSpecificWeekday(2)
 }
 
 /**
  * Every wednesday.
  *
- * @param timeZone
  * @constructor
  * @category Weekday Schedules
  */
-export function Wednesdays(timeZone: string = getUserTimeZone()): Schedule {
-    return OnSpecificWeekday(3, timeZone)
+export function Wednesdays(): Schedule {
+    return OnSpecificWeekday(3)
 }
 
 /**
  * Every thursday.
  *
- * @param timeZone
  * @constructor
  * @category Weekday Schedules
  */
-export function Thursdays(timeZone: string = getUserTimeZone()): Schedule {
-    return OnSpecificWeekday(4, timeZone)
+export function Thursdays(): Schedule {
+    return OnSpecificWeekday(4)
 }
 
 /**
  * Every friday.
  *
- * @param timeZone
  * @constructor
  * @category Weekday Schedules
  */
-export function Fridays(timeZone: string = getUserTimeZone()): Schedule {
-    return OnSpecificWeekday(5, timeZone)
+export function Fridays(): Schedule {
+    return OnSpecificWeekday(5)
 }
 
 /**
  * Every saturday.
  *
- * @param timeZone
  * @constructor
  * @category Weekday Schedules
  */
-export function Saturdays(timeZone: string = getUserTimeZone()): Schedule {
-    return OnSpecificWeekday(6, timeZone)
+export function Saturdays(): Schedule {
+    return OnSpecificWeekday(6)
 }
 
 /**
  * Every sunday.
  *
- * @param timeZone
  * @constructor
  * @category Weekday Schedules
  */
-export function Sundays(timeZone: string = getUserTimeZone()): Schedule {
-    return OnSpecificWeekday(7, timeZone)
+export function Sundays(): Schedule {
+    return OnSpecificWeekday(7)
 }
 
 /**
  * On the weekend (Saturday and Sundays).
- * @param timeZone
  * @constructor
  * @category Weekday Schedules
  */
-export function Weekends(timeZone: string = getUserTimeZone()): Schedule {
-    return joinSchedules(Saturdays(timeZone), Sundays(timeZone))
+export function Weekends(): Schedule {
+    return joinSchedules(Saturdays(), Sundays())
 }
 
 /**
  * On a working day (Mo-Fr).
  *
- * @param timeZone
  * @constructor
  * @category Weekday Schedules
  */
-export function WorkingDays(timeZone: string = getUserTimeZone()): Schedule {
-    return invertSchedule(Weekends(timeZone))
+export function WorkingDays(): Schedule {
+    return invertSchedule(Weekends())
 }

@@ -15,7 +15,7 @@ function getFirstInterval(intervals: Array<Interval>) {
 }
 
 /**
- * Getz the interval that ends last of a given set of intervals.
+ * Gets the interval that ends last of a given set of intervals.
  *
  * @param intervals
  * @internal

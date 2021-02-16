@@ -96,15 +96,6 @@ export function stripTime(date: Date | number) {
 }
 
 /**
- * Get the system timezone.
- *
- * @category Helper functions
- */
-export function getUserTimeZone(): string {
-    return Intl.DateTimeFormat().resolvedOptions().timeZone
-}
-
-/**
  * Takes a time string and a format string and returns an string with the time portion of the ISO format.
  *
  * @param time

@@ -1,8 +1,6 @@
-import {add, isWithinInterval, parse} from "date-fns"
-import {format, zonedTimeToUtc} from "date-fns-tz"
-
+import {addDays, isWithinInterval, parse, startOfDay} from "date-fns"
 import {Interval, Schedule} from "../index"
-import {directionToInt, getUserTimeZone, isoFormatTime} from "../functions/misc"
+import {directionToInt, isoFormatTime} from "../functions/misc"
 
 /**
  * Creates a daily schedule.
@@ -12,15 +10,13 @@ import {directionToInt, getUserTimeZone, isoFormatTime} from "../functions/misc"
  * @param startTime The start time in the format specified by timeFormat.
  * @param endTime The start time in the format specified by timeFormat.
  * @param Options
- * @param Options.timeZone The time zone as an IANA code (e.g. Etc/UTC).
  * @param Options.timeFormat The time format according to the (https://date-fns.org/docs/parse)[parse specification of date-fns].
  * @constructor
  * @category Schedules
  */
-export function DailySchedule(startTime: string, endTime: string, {timeZone, timeFormat}: { timeZone?: string, timeFormat?: string } = {}): Schedule {
+export function DailySchedule(startTime: string, endTime: string, {timeFormat}: {timeFormat?: string} = {}): Schedule {
     // Apply default value
     let timeFormatParsed = timeFormat || "HH:mm"
-    let timeZoneParsed = timeZone || getUserTimeZone()
 
     // Bring times into ISO format HH:mm:ss.SSS
     startTime = isoFormatTime(startTime, timeFormatParsed)
@@ -29,32 +25,22 @@ export function DailySchedule(startTime: string, endTime: string, {timeZone, tim
     return function* (startDate, direction = 1) {
         let directionInt = directionToInt(direction)
 
+        let day = startOfDay(startDate)
+        let dayBefore = addDays(day, -1)
+        let overMidnight: boolean = parse(startTime, "HH:mm:ss.SSS", day) > parse(endTime, "HH:mm:ss.SSS", day)
+
+        let firstInterval: Interval = {
+            start: overMidnight ? parse(startTime, "HH:mm:ss.SSS", dayBefore) : parse(startTime, "HH:mm:ss.SSS", day),
+            end: parse(endTime, "HH:mm:ss.SSS", day)
+        }
+
         let i = 0
         while (true) {
-            let day = format(add(startDate, {days: i}), "yyyy-MM-dd", {timeZone})
-            let dayBefore = format(add(startDate, {days: i - 1}), "yyyy-MM-dd", {timeZone})
-            let overMidnight: boolean = parse(startTime, "HH:mm:ss.SSS", new Date(0)) > parse(endTime, "HH:mm:ss.SSS", new Date(0))
-
+            let interval = {
+                start: addDays(firstInterval.start, i),
+                end: addDays(firstInterval.end, i)
+            }
             i += directionInt
-
-            let intervalString: { start: string, end: string }
-
-            if (!overMidnight) {
-                intervalString = {
-                    start: day + "T" + startTime,
-                    end: day + "T" + endTime,
-                }
-            } else {
-                intervalString = {
-                    start: dayBefore + "T" + startTime,
-                    end: day + "T" + endTime,
-                }
-            }
-
-            let interval: Interval = {
-                start: zonedTimeToUtc(intervalString.start, timeZoneParsed),
-                end: zonedTimeToUtc(intervalString.end, timeZoneParsed)
-            }
 
             if ((directionInt === 1 && startDate > interval.end) || (directionInt === -1 && startDate < interval.start)) {
                 continue
