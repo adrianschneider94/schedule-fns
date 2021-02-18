@@ -1,37 +1,29 @@
-let intl: typeof globalThis.Intl
-if (!global.Intl) {
-    intl = require('intl')
-    require('intl/locale-data/jsonp/en.js')
-    global.Intl = intl
-} {
-    intl = global.Intl
-}
-export const Intl = intl
+import {DateTime as LuxonDateTime, Duration as LuxonDuration, Interval as LuxonInterval} from "luxon"
+
+/**
+ * A moment in time
+ *
+ * @category Definitions
+ */
+export type DateTime = LuxonDateTime
+export const DateTime = LuxonDateTime
+
 
 /**
  * A time interval
  *
  * @category Definitions
  */
-export type Interval = {
-    start: Date | number
-    end: Date | number
-}
+export type Interval = LuxonInterval
+export const Interval = LuxonInterval
 
 /**
  * A duration.
  *
  * @category Definitions
  */
-export type Duration = {
-    years?: number
-    months?: number
-    weeks?: number
-    days?: number
-    hours?: number
-    minutes?: number
-    seconds?: number
-}
+export type Duration = LuxonDuration
+export const Duration = LuxonDuration
 
 /**
  * The maximal number of recursions before an error is thrown.
@@ -45,7 +37,8 @@ export const MAX_RECURSIONS = 1000
  *
  * @internal
  */
-export const DateInfinity = 8640000000000000
+export const DateInfinity = LuxonDateTime.fromMillis(8640000000000000)
+export const NegDateInfinity = LuxonDateTime.fromMillis(-8640000000000000)
 
 /**
  * The direction in time. "forward" or 1 means into the future, "backward" or -1 into the past-
@@ -65,7 +58,7 @@ export type direction = "forward" | "backward" | 1 | -1
  *
  * @category Definitions
  */
-export type Schedule = (startDate: Date | number, direction?: direction) => IterableIterator<Interval>
+export type Schedule = (startDate: DateTime, direction?: direction) => IterableIterator<Interval>
 
 export * from "./schedules"
 export * from "./operations"

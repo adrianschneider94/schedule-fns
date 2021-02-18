@@ -1,6 +1,6 @@
-import {setISODay, startOfDay} from "date-fns"
-
 import {invertSchedule, joinSchedules, RegularSchedule, Schedule} from "../index"
+import {setISODay, startOfDay} from "schedule-fns/functions/misc"
+import {durationFromDurationObject} from "schedule-fns/functions/durations"
 
 /**
  * Returns a schedule that occurs on a weekday specified by an integer.
@@ -10,11 +10,11 @@ import {invertSchedule, joinSchedules, RegularSchedule, Schedule} from "../index
  * @internal
  * @category Schedules
  */
-export function OnSpecificWeekday(day: number): Schedule {
+export function OnSpecificWeekday(day: 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7): Schedule {
     return function (startDate, direction) {
         let weekday = setISODay(startDate, day)
         let startDayMoment = startOfDay(weekday)
-        let schedule = RegularSchedule(startDayMoment, {days: 1}, {weeks: 1})
+        let schedule = RegularSchedule(startDayMoment, durationFromDurationObject({days: 1}), durationFromDurationObject({weeks: 1}))
         return schedule(startDate, direction)
     }
 }

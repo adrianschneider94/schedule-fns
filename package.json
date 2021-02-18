@@ -27,8 +27,9 @@
     "generateReadme": "node generateReadme.js && git add README.md"
   },
   "dependencies": {
-    "date-fns": "^2.16.1",
-    "date-holidays": "^1.6.2"
+    "@types/luxon": "^1.26.0",
+    "date-holidays": "^1.6.2",
+    "luxon": "^1.26.0"
   },
   "devDependencies": {
     "@types/jest": "^26.0.14",

@@ -1,7 +1,5 @@
-import {compareAsc, compareDesc, isEqual} from "date-fns"
-
-import {Interval, MAX_RECURSIONS, Schedule} from "../index"
-import {directionToInt, isEmpty} from "../functions/misc"
+import {DateInfinity, Interval, MAX_RECURSIONS, NegDateInfinity, Schedule} from "../index"
+import {directionToInt, isEmpty, isEqual} from "../functions/misc"
 import {areIntervalsConnected, joinIntervals} from "../functions/intervals"
 
 /**
@@ -11,7 +9,7 @@ import {areIntervalsConnected, joinIntervals} from "../functions/intervals"
  * @internal
  */
 function getFirstInterval(intervals: Array<Interval>) {
-    return [...intervals].filter(x => x !== undefined).sort((a, b) => compareAsc(a.start, b.start))[0]
+    return [...intervals].filter(x => x !== undefined).sort((a, b) => a.start > b.start ? 1 : -1)[0]
 }
 
 /**
@@ -21,7 +19,7 @@ function getFirstInterval(intervals: Array<Interval>) {
  * @internal
  */
 function getLastInterval(intervals: Array<Interval>) {
-    return [...intervals].filter(x => x !== undefined).sort((a, b) => compareDesc(a.end, b.end))[0]
+    return [...intervals].filter(x => x !== undefined).sort((a, b) => a.end > b.end ? 1 : -1)[0]
 }
 
 /**
@@ -61,7 +59,7 @@ export function joinSchedules(...schedules: Array<Schedule>): Schedule {
             if (!updated) {
                 yield currentInterval
                 recursions = 0
-                if (currentEntries.every(x => x.done) || (directionInt === 1 && isEqual(currentInterval.end, Infinity)) || (directionInt === -1 && isEqual(currentInterval.start, -Infinity))) {
+                if (currentEntries.every(x => x.done) || (directionInt === 1 && isEqual(currentInterval.end, DateInfinity)) || (directionInt === -1 && isEqual(currentInterval.start, NegDateInfinity))) {
                     return
                 }
                 if (directionInt === 1) {

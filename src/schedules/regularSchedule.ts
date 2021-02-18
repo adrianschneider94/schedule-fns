@@ -1,8 +1,12 @@
-import {add, differenceInMilliseconds, isWithinInterval} from "date-fns"
-
-import {Duration, Schedule} from "../index"
+import {DateTime, Duration, Schedule} from "../index"
 import {addDurations, durationToMilliseconds, multiplyDuration} from "../functions/durations"
-import {directionToInt} from "../functions/misc"
+import {
+    addDuration,
+    createInterval,
+    differenceInMilliseconds,
+    directionToInt,
+    isWithinInterval
+} from "../functions/misc"
 
 /**
  * Constructs a regularly occurring schedule.
@@ -17,7 +21,7 @@ import {directionToInt} from "../functions/misc"
  * @constructor
  * @category Schedules
  */
-export function RegularSchedule(oneStartMoment: Date | number, duration: Duration, period: Duration): Schedule {
+export function RegularSchedule(oneStartMoment: DateTime, duration: Duration, period: Duration): Schedule {
     return function* (startDate, direction = "forward") {
         let directionInt = directionToInt(direction)
         let numberOfPeriods: number = 0
@@ -25,32 +29,26 @@ export function RegularSchedule(oneStartMoment: Date | number, duration: Duratio
         if (oneStartMoment <= startDate) {
             numberOfPeriods = Math.floor(differenceInMilliseconds(startDate, oneStartMoment) / durationToMilliseconds(period))
 
-            if (directionInt === 1 && add(oneStartMoment, addDurations(multiplyDuration(period, numberOfPeriods), duration)) <= startDate) {
+            if (directionInt === 1 && addDuration(oneStartMoment, addDurations(multiplyDuration(period, numberOfPeriods), duration)) <= startDate) {
                 numberOfPeriods += 1
             }
         }
 
-        let firstIntervalStartsAt = add(oneStartMoment, multiplyDuration(period, numberOfPeriods))
+        let firstIntervalStartsAt = addDuration(oneStartMoment, multiplyDuration(period, numberOfPeriods))
 
         let i = 0
         while (true) {
-            let start = add(firstIntervalStartsAt, multiplyDuration(period, i))
+            let start = addDuration(firstIntervalStartsAt, multiplyDuration(period, i))
 
-            let interval = {
-                start: start,
-                end: add(start, duration)
-            }
+            let interval = createInterval(
+                start,
+                addDuration(start, duration)
+            )
 
             if (directionInt === 1 && isWithinInterval(startDate, interval)) {
-                yield {
-                    start: startDate,
-                    end: interval.end
-                }
+                yield createInterval(startDate, interval.end)
             } else if (directionInt === -1 && isWithinInterval(startDate, interval)) {
-                yield {
-                    start: interval.start,
-                    end: startDate
-                }
+                yield createInterval(interval.start, startDate)
             } else {
                 yield interval
             }

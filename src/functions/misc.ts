@@ -1,6 +1,4 @@
-import {isWithinInterval, parse, parseISO} from "date-fns"
-import {DateInfinity, direction, Interval, Schedule} from "../index"
-import {Intl} from "../index"
+import {DateTime, direction, Duration, Interval, Schedule} from "../index"
 
 /**
  * Determines if an array is empty.
@@ -14,53 +12,21 @@ export function isEmpty<T>(array: Array<T>) {
 }
 
 /**
- * Transforms Infinity into the maximal number, a date can have in javascript (DateInfinity)
- *
- * @param date
- * @internal
- * @category Miscellaneous
- */
-export function catchInfiniteDate(date: Date | number): Date | number {
-    if (date === Infinity) {
-        return new Date(DateInfinity)
-    } else if (date === -Infinity) {
-        return new Date(-DateInfinity)
-    } else {
-        return date
-    }
-}
-
-/**
- * Transforms Infinity into DateInfinity for intervals.
- *
- * @param interval
- * @internal
- * @category Miscellaneous
- */
-export function catchInfiniteInterval(interval: Interval): Interval {
-    return {
-        start: catchInfiniteDate(interval.start),
-        end: catchInfiniteDate(interval.end)
-    }
-}
-
-
-/**
  * Determines if a given date is within a schedule.
  *
  * @param date
  * @param schedule
  * @category Helper functions
  */
-export function isWithinSchedule(date: Date | number, schedule: Schedule) {
+export function isWithinSchedule(date: DateTime, schedule: Schedule) {
     let generator = schedule(date)
-    let interval = generator.next()?.value
+    let interval = generator.next()?.value as Interval | undefined
 
     if (interval === undefined) {
         return false
     }
 
-    return isWithinInterval(date, interval)
+    return interval.contains(date)
 }
 
 /**
@@ -84,31 +50,6 @@ export function directionToInt(direction: direction): 1 | -1 {
     }
 }
 
-/**
- * Remove the time portion of a date.
- *
- * @param date
- * @category Miscellaneous
- * @internal
- */
-export function stripTime(date: Date | number) {
-    return parseISO((new Date(date)).toISOString().slice(0, 11) + "00:00:00Z")
-}
-
-/**
- * Takes a time string and a format string and returns an string with the time portion of the ISO format.
- *
- * @param time
- * @param format
- * @internal
- */
-export function isoFormatTime(time: string, format: string): string {
-    if (format.indexOf('x') !== -1 || format.indexOf('X') !== -1) {
-        throw Error("Can only parse time without timezone information.")
-    }
-    let timeAsDate = parse(time + "Z", format + "X", new Date(0))
-    return timeAsDate.toISOString().slice(11, -1)
-}
 
 /**
  * Take the first n elements from an iterator.
@@ -125,4 +66,62 @@ export function* take<T>(iterable: IterableIterator<T>, n: number): IterableIter
         }
         yield value
     }
+}
+
+export function createInterval(start: DateTime, end: DateTime) {
+    return Interval.fromDateTimes(start, end)
+}
+
+export function isEqual(left: DateTime, right: DateTime) {
+    return left.equals(right)
+}
+
+export function compareAsc(left: DateTime, right: DateTime) {
+    return left > right ? 1 : -1
+}
+
+export function compareDesc(left: DateTime, right: DateTime) {
+    return left < right ? 1 : -1
+}
+
+export function addDuration(date: DateTime, duration: Duration) {
+    return date.plus(duration)
+}
+
+export function startOfDay(date: DateTime) {
+    return date.startOf('day')
+}
+
+export function addDays(date: DateTime, amount: number) {
+    return date.plus({days: amount})
+}
+
+export function parseTimeAtGivenDay(timeString: string, day: DateTime) {
+    let parsedTime = DateTime.fromISO(timeString)
+    return day.set({
+        hour: parsedTime.hour,
+        minute: parsedTime.minute,
+        second: parsedTime.second,
+        millisecond: parsedTime.millisecond
+    })
+}
+
+export function isWithinInterval(date: DateTime, interval: Interval) {
+    return interval.contains(date)
+}
+
+export function parseJsDateTime(date: Date | number): DateTime {
+    return DateTime.fromJSDate(new Date(date))
+}
+
+export function getYear(date: DateTime) {
+    return date.year
+}
+
+export function differenceInMilliseconds(left: DateTime, right: DateTime) {
+    return left.toMillis() - right.toMillis()
+}
+
+export function setISODay(date: DateTime, day: 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7) {
+    return date.set({weekday: day})
 }
