@@ -1,7 +1,5 @@
-import {compareAsc, compareDesc, isEqual} from "date-fns"
-
 import {MAX_RECURSIONS, Schedule} from "../index"
-import {directionToInt, isEmpty} from "../functions/misc"
+import {compareAsc, compareDesc, directionToInt, isEmpty, isEqual} from "../functions/misc"
 import {intersectIntervals} from "../functions/intervals"
 
 /**

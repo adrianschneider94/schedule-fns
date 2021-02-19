@@ -1,108 +1,162 @@
 import {RegularSchedule, ScheduleFromIntervals} from "schedule-fns"
 import {intersectSchedules} from "schedule-fns/operations"
-import {areIntervalsEqual} from "schedule-fns/functions/intervals"
+import {intervalFromIntervalObject} from "schedule-fns/functions/intervals"
+import {dateTimeFromDateOrNumber} from "schedule-fns/functions/misc"
+import {durationFromDurationObject} from "schedule-fns/functions/durations"
 
 test('Intersect no schedules', () => {
+    let startDate = 0
     let intersectedSchedule = intersectSchedules()
-    let generator = intersectedSchedule(0)
+    let generator = intersectedSchedule(dateTimeFromDateOrNumber(startDate))
     expect(generator.next()).toStrictEqual({value: undefined, done: true})
 })
 
 test('Intersect single schedule', () => {
-    let schedule = ScheduleFromIntervals({start: 0, end: 1}, {start: 2, end: 3})
+    let i1 = {start: 0, end: 1}
+    let i2 = {start: 2, end: 3}
+
+    let startDate = 0
+
+    let e1 = {start: 0, end: 1}
+    let e2 = {start: 2, end: 3}
+
+    let schedule = ScheduleFromIntervals(intervalFromIntervalObject(i1), intervalFromIntervalObject(i2))
     let intersectedSchedule = intersectSchedules(schedule)
-    let generator = intersectedSchedule(0)
+    let generator = intersectedSchedule(dateTimeFromDateOrNumber(startDate))
 
     let value = generator.next()
     expect(value.done).toBe(false)
-    expect(areIntervalsEqual(value.value, {start: 0, end: 1})).toBe(true)
+    expect(value.value).toBeSameIntervalAs(intervalFromIntervalObject(e1))
 
     value = generator.next()
     expect(value.done).toBe(false)
-    expect(areIntervalsEqual(value.value, {start: 2, end: 3})).toBe(true)
+    expect(value.value).toBeSameIntervalAs(intervalFromIntervalObject(e2))
 
     expect(generator.next()).toStrictEqual({value: undefined, done: true})
 })
 
 test('Intersect two simple schedules', () => {
-    let schedule1 = ScheduleFromIntervals({start: 0, end: 2})
-    let schedule2 = ScheduleFromIntervals({start: 1, end: 3})
+    let i1 = {start: 0, end: 2}
+    let i2 = {start: 1, end: 3}
+
+    let startDate = 0
+    let e1 = {start: 1, end: 2}
+
+    let schedule1 = ScheduleFromIntervals(intervalFromIntervalObject(i1))
+    let schedule2 = ScheduleFromIntervals(intervalFromIntervalObject(i2))
     let intersectedSchedule = intersectSchedules(schedule1, schedule2)
 
-    let generator = intersectedSchedule(0)
+    let generator = intersectedSchedule(dateTimeFromDateOrNumber(startDate))
 
     let value = generator.next()
     expect(value.done).toBe(false)
-    expect(areIntervalsEqual(value.value, {start: 1, end: 2})).toBe(true)
+    expect(value.value).toBeSameIntervalAs(intervalFromIntervalObject(e1))
 
     expect(generator.next()).toStrictEqual({value: undefined, done: true})
 })
 
 test('Intersect two simple schedules, reverse direction', () => {
-    let schedule1 = ScheduleFromIntervals({start: 0, end: 2})
-    let schedule2 = ScheduleFromIntervals({start: 1, end: 3})
+    let i1 = {start: 0, end: 2}
+    let i2 = {start: 1, end: 3}
+
+    let startDate = 4
+
+    let e1 = {start: 1, end: 2}
+
+    let schedule1 = ScheduleFromIntervals(intervalFromIntervalObject(i1))
+    let schedule2 = ScheduleFromIntervals(intervalFromIntervalObject(i2))
     let intersectedSchedule = intersectSchedules(schedule1, schedule2)
 
-    let generator = intersectedSchedule(4, "backward")
+    let generator = intersectedSchedule(dateTimeFromDateOrNumber(startDate), "backward")
 
     let value = generator.next()
     expect(value.done).toBe(false)
-    expect(areIntervalsEqual(value.value, {start: 1, end: 2})).toBe(true)
+    expect(value.value).toBeSameIntervalAs(intervalFromIntervalObject(e1))
 
     expect(generator.next()).toStrictEqual({value: undefined, done: true})
 })
 
 test('Intersect two schedules', () => {
-    let schedule1 = ScheduleFromIntervals({start: 0, end: 10})
-    let schedule2 = ScheduleFromIntervals({start: 1, end: 2}, {start: 3, end: 4})
+    let i1 = {start: 0, end: 10}
+    let i2_1 = {start: 1, end: 2}
+    let i2_2 = {start: 3, end: 4}
+    let startDate = 0
+    let e1 = {start: 1, end: 2}
+    let e2 = {start: 3, end: 4}
+
+    let schedule1 = ScheduleFromIntervals(intervalFromIntervalObject(i1))
+    let schedule2 = ScheduleFromIntervals(intervalFromIntervalObject(i2_1), intervalFromIntervalObject(i2_2))
     let intersectedSchedule = intersectSchedules(schedule1, schedule2)
 
-    let generator = intersectedSchedule(0)
+    let generator = intersectedSchedule(dateTimeFromDateOrNumber(startDate))
 
     let value = generator.next()
     expect(value.done).toBe(false)
-    expect(areIntervalsEqual(value.value, {start: 1, end: 2})).toBe(true)
+    expect(value.value).toBeSameIntervalAs(intervalFromIntervalObject(e1))
 
     value = generator.next()
     expect(value.done).toBe(false)
-    expect(areIntervalsEqual(value.value, {start: 3, end: 4})).toBe(true)
+    expect(value.value).toBeSameIntervalAs(intervalFromIntervalObject(e2))
 
     expect(generator.next()).toStrictEqual({value: undefined, done: true})
 })
 
 test('Intersect two schedules, reverse direction', () => {
-    let schedule1 = ScheduleFromIntervals({start: -5, end: -2}, {start: 0, end: 10})
-    let schedule2 = ScheduleFromIntervals({start: 1, end: 2}, {start: 3, end: 4}, {start: 12, end: 13})
+    let i1_1 = {start: -5, end: -2}
+    let i1_2 = {start: 0, end: 10}
+
+    let i2_1 = {start: 1, end: 2}
+    let i2_2 = {start: 3, end: 4}
+    let i2_3 = {start: 12, end: 13}
+
+    let startDate = 12.5
+
+    let e1 = {start: 3, end: 4}
+    let e2 = {start: 1, end: 2}
+
+    let schedule1 = ScheduleFromIntervals(intervalFromIntervalObject(i1_1), intervalFromIntervalObject(i1_2))
+    let schedule2 = ScheduleFromIntervals(intervalFromIntervalObject(i2_1), intervalFromIntervalObject(i2_2), intervalFromIntervalObject(i2_3))
     let intersectedSchedule = intersectSchedules(schedule1, schedule2)
 
-    let generator = intersectedSchedule(12.5, "backward")
+    let generator = intersectedSchedule(dateTimeFromDateOrNumber(startDate), "backward")
 
     let value = generator.next()
     expect(value.done).toBe(false)
-    expect(areIntervalsEqual(value.value, {start: 3, end: 4})).toBe(true)
+    expect(value.value).toBeSameIntervalAs(intervalFromIntervalObject(e1))
 
     value = generator.next()
     expect(value.done).toBe(false)
-    expect(areIntervalsEqual(value.value, {start: 1, end: 2})).toBe(true)
+    expect(value.value).toBeSameIntervalAs(intervalFromIntervalObject(e2))
 
     expect(generator.next()).toStrictEqual({value: undefined, done: true})
 })
 
 test('Intersect two disjoint schedules', () => {
-    let schedule1 = ScheduleFromIntervals({start: 0, end: 1})
-    let schedule2 = ScheduleFromIntervals({start: 2, end: 3}, {start: 4, end: 5})
+    let i1_1 = {start: 0, end: 1}
+    let i2_1 = {start: 2, end: 3}
+    let i2_2 = {start: 4, end: 5}
+    let startDate = 0
+
+    let schedule1 = ScheduleFromIntervals(intervalFromIntervalObject(i1_1))
+    let schedule2 = ScheduleFromIntervals(intervalFromIntervalObject(i2_1), intervalFromIntervalObject(i2_2))
     let intersectedSchedule = intersectSchedules(schedule1, schedule2)
 
-    let generator = intersectedSchedule(0)
+    let generator = intersectedSchedule(dateTimeFromDateOrNumber(startDate))
 
     expect(generator.next()).toStrictEqual({value: undefined, done: true})
 })
 
 test('Intersect schedules: Reach maximal number of recursions', () => {
-    let schedule1 = RegularSchedule(0, {seconds: 0.5}, {seconds: 2})
-    let schedule2 = RegularSchedule(1000, {seconds: 0.5}, {seconds: 2})
+    let startMoment1 = 0
+    let startMoment2 = 1000
+    let duration = {seconds: 0.5}
+    let period = {seconds: 2}
+    let startDate = 0
+
+    let schedule1 = RegularSchedule(dateTimeFromDateOrNumber(startMoment1), durationFromDurationObject(duration), durationFromDurationObject(period))
+    let schedule2 = RegularSchedule(dateTimeFromDateOrNumber(startMoment2), durationFromDurationObject(duration), durationFromDurationObject(period))
     let intersectedSchedule = intersectSchedules(schedule1, schedule2)
-    let generator = intersectedSchedule(0)
+    let generator = intersectedSchedule(dateTimeFromDateOrNumber(startDate))
 
     expect(() => generator.next()).toThrowError()
 })

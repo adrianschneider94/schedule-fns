@@ -1,12 +1,11 @@
-import {Holidays, take} from "schedule-fns"
-import {parseISO} from "date-fns"
+import {Holidays, parseISO, take} from "schedule-fns"
 
 let publicHolidaysInBavaria = Holidays("DE", "BY", {types: ["public"]})
 
 let startDate = parseISO("2020-09-01T00:00Z")
 for (let interval of take(publicHolidaysInBavaria(startDate), 3)) {
-    console.log(interval)
+    console.log(interval.toISO())
 }
-// { start: 2020-10-02T22:00:00.000Z, end: 2020-10-03T22:00:00.000Z }
-// { start: 2020-10-31T23:00:00.000Z, end: 2020-11-01T23:00:00.000Z }
-// { start: 2020-12-24T23:00:00.000Z, end: 2020-12-26T23:00:00.000Z }
+// 2020-10-03T00:00:00.000+02:00/2020-10-04T00:00:00.000+02:00
+// 2020-11-01T00:00:00.000+01:00/2020-11-02T00:00:00.000+01:00
+// 2020-12-25T00:00:00.000+01:00/2020-12-27T00:00:00.000+01:00

@@ -1,8 +1,5 @@
-import {isEqual} from "date-fns"
-
-
-import {DateInfinity, Schedule} from "../index"
-import {directionToInt} from "../functions/misc"
+import {InfintyDateTime, NegInfinityDateTime, Schedule} from "../index"
+import {createInterval, directionToInt, isEqual} from "../functions/misc"
 
 /**
  * Inverts a schedule
@@ -18,28 +15,28 @@ export function invertSchedule(schedule: Schedule): Schedule {
         let last = generator.next().value
 
         if (last === undefined && directionInt === 1) {
-            yield {start: startDate, end: DateInfinity}
+            yield createInterval(startDate, InfintyDateTime)
         } else if (last === undefined && directionInt === -1) {
-            yield {start: -DateInfinity, end: startDate}
+            yield createInterval(NegInfinityDateTime, startDate)
         } else if (directionInt === 1 && !isEqual(startDate, last.start)) {
-            yield {start: startDate, end: last.start}
+            yield createInterval(startDate, last.start)
         } else if (directionInt === -1 && !isEqual(startDate, last.end)) {
-            yield {start: last.end, end: startDate}
+            yield createInterval(last.end, startDate)
         }
 
         for (const interval of generator) {
             if (directionInt === 1) {
-                yield {start: last.end, end: interval.start}
+                yield createInterval(last.end, interval.start)
             } else {
-                yield {start: interval.end, end: last.start}
+                yield createInterval(interval.end, last.start)
             }
             last = interval
         }
 
-        if (directionInt === 1 && last && !isEqual(last.end, DateInfinity)) {
-            yield {start: last.end, end: DateInfinity}
-        } else if (directionInt === -1 && last && !isEqual(last.end, -DateInfinity)) {
-            yield {start: -DateInfinity, end: last.start}
+        if (directionInt === 1 && last && !isEqual(last.end, InfintyDateTime)) {
+            yield createInterval(last.end, InfintyDateTime)
+        } else if (directionInt === -1 && last && !isEqual(last.end, NegInfinityDateTime)) {
+            yield createInterval(NegInfinityDateTime, last.start)
         }
     }
 }

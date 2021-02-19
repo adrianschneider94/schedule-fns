@@ -1,8 +1,12 @@
-import {add, isWithinInterval, parse} from "date-fns"
-import {format, zonedTimeToUtc} from "date-fns-tz"
-
-import {Interval, Schedule} from "../index"
-import {directionToInt, getUserTimeZone, isoFormatTime} from "../functions/misc"
+import {Schedule} from "../index"
+import {
+    addDays,
+    createInterval,
+    directionToInt,
+    isWithinInterval,
+    parseTimeAtGivenDay,
+    startOfDay
+} from "../functions/misc"
 
 /**
  * Creates a daily schedule.
@@ -11,50 +15,29 @@ import {directionToInt, getUserTimeZone, isoFormatTime} from "../functions/misc"
  *
  * @param startTime The start time in the format specified by timeFormat.
  * @param endTime The start time in the format specified by timeFormat.
- * @param Options
- * @param Options.timeZone The time zone as an IANA code (e.g. Etc/UTC).
- * @param Options.timeFormat The time format according to the (https://date-fns.org/docs/parse)[parse specification of date-fns].
  * @constructor
  * @category Schedules
  */
-export function DailySchedule(startTime: string, endTime: string, {timeZone, timeFormat}: { timeZone?: string, timeFormat?: string } = {}): Schedule {
-    // Apply default value
-    let timeFormatParsed = timeFormat || "HH:mm"
-    let timeZoneParsed = timeZone || getUserTimeZone()
-
-    // Bring times into ISO format HH:mm:ss.SSS
-    startTime = isoFormatTime(startTime, timeFormatParsed)
-    endTime = isoFormatTime(endTime, timeFormatParsed)
-
+export function DailySchedule(startTime: string, endTime: string): Schedule {
     return function* (startDate, direction = 1) {
         let directionInt = directionToInt(direction)
 
+        let day = startOfDay(startDate)
+        let dayBefore = addDays(day, -1)
+        let overMidnight: boolean = parseTimeAtGivenDay(startTime, day) > parseTimeAtGivenDay(endTime, day)
+
+        let firstInterval = createInterval(
+            overMidnight ? parseTimeAtGivenDay(startTime, dayBefore) : parseTimeAtGivenDay(startTime, day),
+            parseTimeAtGivenDay(endTime, day)
+        )
+
         let i = 0
         while (true) {
-            let day = format(add(startDate, {days: i}), "yyyy-MM-dd", {timeZone})
-            let dayBefore = format(add(startDate, {days: i - 1}), "yyyy-MM-dd", {timeZone})
-            let overMidnight: boolean = parse(startTime, "HH:mm:ss.SSS", new Date(0)) > parse(endTime, "HH:mm:ss.SSS", new Date(0))
-
+            let interval = createInterval(
+                addDays(firstInterval.start, i),
+                addDays(firstInterval.end, i)
+            )
             i += directionInt
-
-            let intervalString: { start: string, end: string }
-
-            if (!overMidnight) {
-                intervalString = {
-                    start: day + "T" + startTime,
-                    end: day + "T" + endTime,
-                }
-            } else {
-                intervalString = {
-                    start: dayBefore + "T" + startTime,
-                    end: day + "T" + endTime,
-                }
-            }
-
-            let interval: Interval = {
-                start: zonedTimeToUtc(intervalString.start, timeZoneParsed),
-                end: zonedTimeToUtc(intervalString.end, timeZoneParsed)
-            }
 
             if ((directionInt === 1 && startDate > interval.end) || (directionInt === -1 && startDate < interval.start)) {
                 continue
@@ -62,20 +45,19 @@ export function DailySchedule(startTime: string, endTime: string, {timeZone, tim
 
             if (isWithinInterval(startDate, interval)) {
                 if (directionInt === 1) {
-                    yield {
-                        start: startDate,
-                        end: interval.end
-                    }
+                    yield createInterval(
+                        startDate,
+                        interval.end
+                    )
                 } else {
-                    yield {
-                        start: interval.start,
-                        end: startDate
-                    }
+                    yield createInterval(
+                        interval.start,
+                        startDate
+                    )
                 }
             } else {
                 yield interval
             }
-
         }
     }
 }

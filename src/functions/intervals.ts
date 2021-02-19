@@ -1,7 +1,25 @@
-import {compareAsc, compareDesc, isEqual} from "date-fns"
+import {DateTime, Interval} from "../index"
+import {dateTimeFromDateOrNumber, isEmpty, parseISO} from "./misc"
 
-import {Interval} from "../index"
-import {catchInfiniteInterval, isEmpty} from "./misc"
+export type IntervalObject = {
+    start: Date | number | DateTime
+    end: Date | number | DateTime
+}
+
+export type IntervalAsISOStrings = {
+    start: string
+    end: string
+}
+
+export function intervalFromIntervalObject(intervalObject: IntervalObject) {
+    let startDateTime = intervalObject.start instanceof DateTime ? intervalObject.start : dateTimeFromDateOrNumber(intervalObject.start)
+    let endDateTime = intervalObject.end instanceof DateTime ? intervalObject.end : dateTimeFromDateOrNumber(intervalObject.end)
+    return Interval.fromDateTimes(startDateTime, endDateTime)
+}
+
+export function intervalFromISOStrings(interval: IntervalAsISOStrings) {
+    return Interval.fromDateTimes(parseISO(interval.start), parseISO(interval.end))
+}
 
 /**
  * Determines if the given intervals are intersecting.
@@ -16,7 +34,7 @@ export function areIntervalsIntersecting(...intervals: Array<Interval>): boolean
     if (isEmpty(intervals) || intervals.length === 1) {
         return true
     }
-    return intervals.every(left => intervals.every(right => left.start <= right.end))
+    return intervals.every(left => intervals.every(right => left.intersection(right) !== null))
 }
 
 /**
@@ -30,8 +48,7 @@ export function areIntervalsConnected(...intervals: Array<Interval>): boolean {
     if (isEmpty(intervals)) {
         return true
     }
-    intervals = intervals.map(catchInfiniteInterval)
-    return intervals.every((leftInterval, i) => intervals.some((rightInterval, j) => (compareAsc(leftInterval.start, rightInterval.end) <= 0) && (i !== j)))
+    return intervals.every((left, i) => intervals.some((right, j) => (left.intersection(right) !== null) && (i !== j)))
 }
 
 /**
@@ -45,8 +62,7 @@ export function areIntervalsEqual(...intervals: Array<Interval>): boolean {
     if (isEmpty(intervals)) {
         return true
     }
-    intervals = intervals.map(catchInfiniteInterval)
-    return intervals.every(interval => isEqual(interval.start, intervals[0].start)) && intervals.every(interval => isEqual(interval.end, intervals[0].end))
+    return intervals.every(interval => (interval.equals(intervals[0])))
 }
 
 /**
@@ -62,14 +78,10 @@ export function joinIntervals(...intervals: Array<Interval>): Interval {
     if (isEmpty(intervals)) {
         throw Error("Need to provide at least one interval to join.")
     }
-    intervals = intervals.map(catchInfiniteInterval)
     if (!areIntervalsConnected(...intervals)) {
         throw Error("Can't join intervals as they are disjoint!")
     }
-    return {
-        start: [...intervals].sort((a, b) => compareAsc(a.start, b.start))[0].start,
-        end: [...intervals].sort((a, b) => compareDesc(a.end, b.end))[0].end
-    }
+    return intervals.reduce((aggregate, current) => aggregate.union(current))
 }
 
 /**
@@ -83,7 +95,6 @@ export function mergeIntervals(...intervals: Array<Interval>): Array<Interval> {
     if (isEmpty(intervals)) {
         return []
     }
-    intervals = intervals.map(catchInfiniteInterval)
 
     function reducer(aggregate: Array<Interval>, currentValue: Interval): Array<Interval> {
         let lastInterval = aggregate.slice(-1)[0]
@@ -94,7 +105,7 @@ export function mergeIntervals(...intervals: Array<Interval>): Array<Interval> {
         }
     }
 
-    let sortedIntervals = [...intervals].sort((a, b) => compareAsc(a.start, b.start))
+    let sortedIntervals = [...intervals].sort((a, b) => a.start > b.start ? 1 : -1)
     return sortedIntervals.slice(1).reduce(reducer, [sortedIntervals[0]])
 }
 
@@ -109,18 +120,10 @@ export function intersectIntervals(...intervals: Array<Interval>): Interval {
     if (isEmpty(intervals)) {
         throw Error("Please provide at least one interval!")
     }
-    if (!areIntervalsIntersecting(...intervals)) {
+    let result = intervals.reduce<Interval | null>((aggregate, current) => aggregate === null ? null : aggregate.intersection(current), intervals[0])
+    if (!result || result.isEmpty()) {
         throw Error("Can't intersect the given intervals!")
-    }
-    let start = [...intervals].sort((a, b) => compareDesc(a.start, b.start))[0].start
-    let end = [...intervals].sort((a, b) => compareAsc(a.end, b.end))[0].end
-
-    if (isEqual(start, end)) {
-        throw Error("Result is not a valid interval as it is just a point in time.")
-    }
-
-    return {
-        start,
-        end
+    } else {
+        return result
     }
 }

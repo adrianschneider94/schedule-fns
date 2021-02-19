@@ -1,23 +1,38 @@
 import {ScheduleFromIntervals, shiftSchedule} from "schedule-fns"
-import {areIntervalsEqual} from "schedule-fns/functions/intervals"
+import {intervalFromIntervalObject} from "schedule-fns/functions/intervals"
+import {durationFromDurationObject} from "schedule-fns/functions/durations"
+import {dateTimeFromDateOrNumber} from "schedule-fns/functions/misc"
 
 test('Shift schedule', () => {
-    let schedule = ScheduleFromIntervals({start: 0, end: 10000}, {start: 20000, end: 30000})
-    let shifted = shiftSchedule(schedule, {seconds: 1})
+    let i1 = {start: 0, end: 10000}
+    let i2 = {start: 20000, end: 30000}
+    let d = {seconds: 1}
+    let startDate = 5000
+    let e1 = {start: 5000, end: 11000}
+    let e2 = {start: 21000, end: 31000}
 
-    let generator = shifted(5000)
+    let schedule = ScheduleFromIntervals(intervalFromIntervalObject(i1), intervalFromIntervalObject(i2))
+    let shifted = shiftSchedule(schedule, durationFromDurationObject(d))
+
+    let generator = shifted(dateTimeFromDateOrNumber(startDate))
     let entry = generator.next()
-    expect(areIntervalsEqual(entry.value, {start: 5000, end: 11000})).toStrictEqual(true)
+    expect(entry.value).toBeSameIntervalAs(intervalFromIntervalObject(e1))
 
     entry = generator.next()
-    expect(areIntervalsEqual(entry.value, {start: 21000, end: 31000})).toStrictEqual(true)
+    expect(entry.value).toBeSameIntervalAs(intervalFromIntervalObject(e2))
 })
 
 test('Shift schedule backward', () => {
-    let schedule = ScheduleFromIntervals({start: 0, end: 10000}, {start: 20000, end: 30000})
-    let shifted = shiftSchedule(schedule, {seconds: 1})
+    let i1 = {start: 0, end: 10000}
+    let i2 = {start: 20000, end: 30000}
+    let d = {seconds: 1}
+    let startDate = 5000
+    let e1 = {start: 1000, end: 5000}
 
-    let generator = shifted(5000, "backward")
+    let schedule = ScheduleFromIntervals(intervalFromIntervalObject(i1), intervalFromIntervalObject(i2))
+    let shifted = shiftSchedule(schedule, durationFromDurationObject(d))
+
+    let generator = shifted(dateTimeFromDateOrNumber(startDate), "backward")
     let entry = generator.next()
-    expect(areIntervalsEqual(entry.value, {start: 1000, end: 5000})).toStrictEqual(true)
+    expect(entry.value).toBeSameIntervalAs(intervalFromIntervalObject(e1))
 })

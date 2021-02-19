@@ -1,7 +1,6 @@
 # schedule-fns
 
 This package provides functions to work with schedules (work hours, opening hours etc.).
-Its implementation and style are based on [date-fns](https://github.com/date-fns/date-fns).
 
 ## Contents
 * [Installation](#installation)
@@ -125,33 +124,3 @@ type Schedule = (startDate: Date | number, direction?: direction) => IterableIte
 ```
 
 It is a generator that receives a date and a direction (defaults to "forward") and yields intervals.
-
-So the simplest formal schedule would be
-
-```typescript
-// #include<examples/implementation/simplestSchedule.ts> 
-```
-
-However, it is not a valid schedule, as there are further specifications that define a schedule.<br/> 
-If the direction is ``"forward"`` or ``1``:
-  * ``interval[i].start > interval[i-1].end``
-  * ``interval[i].start >= startDate``
-  
-If the direction is ``backward`` or ``-1``:
-  * ``interval[i].end < interval[i-1].start``
-  * ``interval[i].end <= startDate``
-  
-So to make our schedule valid, we have to handle the edge cases.
-
-```typescript
-// #include<examples/implementation/simpleSchedule.ts> 
-```
-
-But most of the time, we would just use a predefined schedule to achieve what 
-we want:
-
-```typescript
-let mySchedule = ScheduleFromIntervals({start: 0, end: 1})
-```
-
-which already handles all the edge cases.

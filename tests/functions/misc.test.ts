@@ -1,16 +1,7 @@
-import {isEqual, parseISO} from "date-fns"
-
-import {DateInfinity, RegularSchedule, ScheduleFromIntervals, take} from "schedule-fns"
-import {
-    catchInfiniteDate,
-    catchInfiniteInterval,
-    directionToInt,
-    getUserTimeZone,
-    isEmpty,
-    isoFormatTime,
-    isWithinSchedule,
-    stripTime
-} from "schedule-fns/functions/misc"
+import {RegularSchedule, ScheduleFromIntervals, take} from "schedule-fns"
+import {dateTimeFromDateOrNumber, directionToInt, isEmpty, isWithinSchedule,} from "schedule-fns/functions/misc"
+import {intervalFromIntervalObject} from "schedule-fns/functions/intervals"
+import {durationFromDurationObject} from "schedule-fns/functions/durations"
 
 test('Empty array', () => {
     expect(isEmpty([])).toStrictEqual(true)
@@ -20,49 +11,47 @@ test('Not empty array', () => {
     expect(isEmpty([1])).toStrictEqual(false)
 })
 
-test('Positive infinite date', () => {
-    expect(isEqual(catchInfiniteDate(Infinity), DateInfinity)).toStrictEqual(true)
-})
-
-test('Negative infinite date', () => {
-    expect(isEqual(catchInfiniteDate(-Infinity), -DateInfinity)).toStrictEqual(true)
-})
-
-test('Finite date', () => {
-    expect(38914).toBe(38914)
-})
-
-test('Catch Infinite interval', () => {
-    let dirtyInterval = {start: -Infinity, end: Infinity}
-    let cleanInterval = catchInfiniteInterval(dirtyInterval)
-    expect(isEqual(cleanInterval.start, -DateInfinity)).toStrictEqual(true)
-    expect(isEqual(cleanInterval.end, DateInfinity)).toStrictEqual(true)
-})
 
 test('isWithinSchedule 1', () => {
-    let schedule = ScheduleFromIntervals({start: 0, end: 10}, {start: 30, end: 40}, {start: 60, end: 70})
+    let i1 = {start: 0, end: 10}
+    let i2 = {start: 30, end: 40}
+    let i3 = {start: 60, end: 70}
     let date = new Date(50)
-    expect(isWithinSchedule(date, schedule)).toBeFalsy()
+
+    let schedule = ScheduleFromIntervals(intervalFromIntervalObject(i1), intervalFromIntervalObject(i2), intervalFromIntervalObject(i3))
+    expect(isWithinSchedule(dateTimeFromDateOrNumber(date), schedule)).toBe(false)
 })
 
 
 test('isWithinSchedule 2', () => {
-    let schedule = ScheduleFromIntervals({start: 0, end: 10}, {start: 30, end: 40}, {start: 60, end: 70})
+    let i1 = {start: 0, end: 10}
+    let i2 = {start: 30, end: 40}
+    let i3 = {start: 60, end: 70}
     let date = new Date(65)
-    expect(isWithinSchedule(date, schedule)).toBeTruthy()
+
+    let schedule = ScheduleFromIntervals(intervalFromIntervalObject(i1), intervalFromIntervalObject(i2), intervalFromIntervalObject(i3))
+    expect(isWithinSchedule(dateTimeFromDateOrNumber(date), schedule)).toBe(true)
 })
 
 
 test('isWithinSchedule 3', () => {
-    let schedule = RegularSchedule(new Date(0), {seconds: 1}, {seconds: 2})
-    let date = new Date(121500)
-    expect(isWithinSchedule(date, schedule)).toBeFalsy()
+    let startDate = 0
+    let duration = {seconds: 1}
+    let period = {seconds: 2}
+    let date = 121500
+
+    let schedule = RegularSchedule(dateTimeFromDateOrNumber(startDate), durationFromDurationObject(duration), durationFromDurationObject(period))
+    expect(isWithinSchedule(dateTimeFromDateOrNumber(date), schedule)).toBe(false)
 })
 
 test('isWithinSchedule 4', () => {
-    let schedule = ScheduleFromIntervals({start: 0, end: 10}, {start: 30, end: 40}, {start: 60, end: 70})
-    let date = new Date(80)
-    expect(isWithinSchedule(date, schedule)).toBeFalsy()
+    let i1 = {start: 0, end: 10}
+    let i2 = {start: 30, end: 40}
+    let i3 = {start: 60, end: 70}
+    let date = 80
+
+    let schedule = ScheduleFromIntervals(intervalFromIntervalObject(i1), intervalFromIntervalObject(i2), intervalFromIntervalObject(i3))
+    expect(isWithinSchedule(dateTimeFromDateOrNumber(date), schedule)).toBe(false)
 })
 
 test('directionToInt', () => {
@@ -74,18 +63,6 @@ test('directionToInt', () => {
     expect(() => directionToInt("Test")).toThrowError()
 })
 
-test('stripTime', () => {
-    expect(isEqual(stripTime(parseISO("2020-10-01T18:23Z")), parseISO("2020-10-01T00:00Z"))).toStrictEqual(true)
-})
-
-test('getUserTimeZone', () => {
-    expect(getUserTimeZone().length).toBeGreaterThan(0)
-})
-
-test('isoFormatTime', () => {
-    expect(isoFormatTime("08:00", "HH:mm")).toStrictEqual("08:00:00.000")
-    expect(isoFormatTime("1:35 PM", "h:m a")).toStrictEqual("13:35:00.000")
-})
 
 test('take', () => {
     let generator = function* () {

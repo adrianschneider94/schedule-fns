@@ -1,8 +1,6 @@
-import {isWithinInterval} from "date-fns"
-
 import {Interval, Schedule} from "../index"
 import {mergeIntervals} from "../functions/intervals"
-import {directionToInt} from "../functions/misc"
+import {createInterval, directionToInt, isWithinInterval} from "../functions/misc"
 
 /**
  * Returns a schedule from the given intervals.
@@ -23,9 +21,9 @@ export function ScheduleFromIntervals(...intervals: Array<Interval>): Schedule {
 
         for (const interval of intervals) {
             if (directionInt === 1 && isWithinInterval(startDate, interval)) {
-                yield {start: startDate, end: interval.end}
+                yield createInterval(startDate, interval.end)
             } else if (directionInt === -1 && isWithinInterval(startDate, interval)) {
-                yield {start: interval.start, end: startDate}
+                yield createInterval(interval.start, startDate)
             } else {
                 yield interval
             }

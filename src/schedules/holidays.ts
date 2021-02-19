@@ -1,8 +1,7 @@
-import {getYear} from "date-fns"
 import DateHolidays, {Country, Options} from "date-holidays"
 
 import {Schedule, ScheduleFromIntervals} from "../index"
-import {directionToInt} from "../functions/misc"
+import {createInterval, directionToInt, getYear, parseJsDateTime} from "../functions/misc"
 
 export function Holidays(country?: Country | string, opts?: Options): Schedule
 export function Holidays(country?: string, state?: string, opts?: Options): Schedule
@@ -27,10 +26,10 @@ export function Holidays(...args: any): Schedule {
 
         let year = getYear(startDate)
         while (true) {
-            let innerSchedule = ScheduleFromIntervals(...holidays.getHolidays(year).map(holiday => ({
-                start: holiday.start,
-                end: holiday.end
-            })))
+            let innerSchedule = ScheduleFromIntervals(...holidays.getHolidays(year).map(holiday => (createInterval(
+                parseJsDateTime(holiday.start),
+                parseJsDateTime(holiday.end)
+            ))))
             for (let interval of innerSchedule(startDate, direction)) {
                 yield interval
             }

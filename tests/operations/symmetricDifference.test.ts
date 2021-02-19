@@ -1,20 +1,27 @@
 import {ScheduleFromIntervals, symmetricDifferenceOfSchedules} from "schedule-fns"
-import {areIntervalsEqual} from "schedule-fns/functions/intervals"
+import {intervalFromIntervalObject} from "schedule-fns/functions/intervals"
+import {dateTimeFromDateOrNumber} from "schedule-fns/functions/misc"
 
 test('Symmetric difference of schedules', () => {
-    let schedule1 = ScheduleFromIntervals({start: 0, end: 2})
-    let schedule2 = ScheduleFromIntervals({start: 1, end: 3})
+    let i1 = {start: 0, end: 2}
+    let i2 = {start: 1, end: 3}
+    let startDate = 0
+    let e1 = {start: 0, end: 1}
+    let e2 = {start: 2, end: 3}
+
+    let schedule1 = ScheduleFromIntervals(intervalFromIntervalObject(i1))
+    let schedule2 = ScheduleFromIntervals(intervalFromIntervalObject(i2))
     let schedule = symmetricDifferenceOfSchedules(schedule1, schedule2)
 
-    let generator = schedule(0)
+    let generator = schedule(dateTimeFromDateOrNumber(startDate))
 
     let value = generator.next()
     expect(value.done).toBe(false)
-    expect(areIntervalsEqual(value.value, {start: 0, end: 1})).toBe(true)
+    expect(value.value).toBeSameIntervalAs(intervalFromIntervalObject(e1))
 
     value = generator.next()
     expect(value.done).toBe(false)
-    expect(areIntervalsEqual(value.value, {start: 2, end: 3})).toBe(true)
+    expect(value.value).toBeSameIntervalAs(intervalFromIntervalObject(e2))
 
     expect(generator.next()).toStrictEqual({value: undefined, done: true})
 })
