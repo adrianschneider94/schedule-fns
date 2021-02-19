@@ -1,7 +1,6 @@
-import {parseISO} from "date-fns"
-
 import {
     Fridays,
+    Interval,
     Mondays,
     Saturdays,
     Schedule,
@@ -13,25 +12,30 @@ import {
     WorkingDays
 } from "schedule-fns"
 import {OnSpecificWeekday} from "schedule-fns/schedules/weekdays"
-import {areIntervalsEqual} from "schedule-fns/functions/intervals"
+import {intervalFromIntervalObject} from "schedule-fns/functions/intervals"
+import {parseISO} from "schedule-fns/functions/misc"
 
 test('SpecificDay', () => {
     let schedule = OnSpecificWeekday(1)
     let generator = schedule(parseISO("2020-09-23"))
 
-    let entry = generator.next()
-    expect(entry.done).toBeFalsy()
-    expect(areIntervalsEqual(entry.value, {
+    let e1 = {
         start: parseISO("2020-09-27T22:00Z"),
         end: parseISO("2020-09-28T22:00Z")
-    })).toStrictEqual(true)
+    }
 
-    entry = generator.next()
-    expect(entry.done).toBeFalsy()
-    expect(areIntervalsEqual(entry.value, {
+    let e2 = {
         start: parseISO("2020-10-04T22:00Z"),
         end: parseISO("2020-10-05T22:00Z")
-    })).toStrictEqual(true)
+    }
+
+    let value = generator.next()
+    expect(value.done).toBe(false)
+    expect(value.value).toBeSameIntervalAs(intervalFromIntervalObject(e1))
+
+    value = generator.next()
+    expect(value.done).toBe(false)
+    expect(value.value).toBeSameIntervalAs(intervalFromIntervalObject(e2))
 })
 
 test('Weekdays', () => {
@@ -40,73 +44,97 @@ test('Weekdays', () => {
     let startDate = parseISO("2020-09-28T00:00Z")
 
     schedule = Mondays()
-    nextInterval = schedule(startDate).next().value
-    expect(areIntervalsEqual(nextInterval, {
+
+    let e1 = {
         start: parseISO("2020-09-28T00:00Z"),
         end: parseISO("2020-09-28T22:00Z")
-    })).toStrictEqual(true)
+    }
+
+    nextInterval = schedule(startDate).next().value
+    expect(nextInterval).toBeSameIntervalAs(intervalFromIntervalObject(e1))
 
     schedule = Tuesdays()
-    nextInterval = schedule(startDate).next().value
-    expect(areIntervalsEqual(nextInterval, {
+
+    let e2 = {
         start: parseISO("2020-09-28T22:00Z"),
         end: parseISO("2020-09-29T22:00Z")
-    })).toStrictEqual(true)
+    }
+
+    nextInterval = schedule(startDate).next().value
+    expect(nextInterval).toBeSameIntervalAs(intervalFromIntervalObject(e2))
 
     schedule = Wednesdays()
-    nextInterval = schedule(startDate).next().value
-    expect(areIntervalsEqual(nextInterval, {
+    let e3 = {
         start: parseISO("2020-09-29T22:00Z"),
         end: parseISO("2020-09-30T22:00Z")
-    })).toStrictEqual(true)
+    }
+
+    nextInterval = schedule(startDate).next().value
+    expect(nextInterval).toBeSameIntervalAs(intervalFromIntervalObject(e3))
 
     schedule = Thursdays()
-    nextInterval = schedule(startDate).next().value
-    expect(areIntervalsEqual(nextInterval, {
+
+    let e4 = {
         start: parseISO("2020-09-30T22:00Z"),
         end: parseISO("2020-10-01T22:00Z")
-    })).toStrictEqual(true)
+    }
+
+    nextInterval = schedule(startDate).next().value
+    expect(nextInterval).toBeSameIntervalAs(intervalFromIntervalObject(e4))
 
     schedule = Fridays()
-    nextInterval = schedule(startDate).next().value
-    expect(areIntervalsEqual(nextInterval, {
+
+    let e5 = {
         start: parseISO("2020-10-01T22:00Z"),
         end: parseISO("2020-10-02T22:00Z")
-    })).toStrictEqual(true)
+    }
+
+    nextInterval = schedule(startDate).next().value
+    expect(nextInterval).toBeSameIntervalAs(intervalFromIntervalObject(e5))
 
     schedule = Saturdays()
-    nextInterval = schedule(startDate).next().value
-    expect(areIntervalsEqual(nextInterval, {
+
+    let e6 = {
         start: parseISO("2020-10-02T22:00Z"),
         end: parseISO("2020-10-03T22:00Z")
-    })).toStrictEqual(true)
+    }
+
+    nextInterval = schedule(startDate).next().value
+    expect(nextInterval).toBeSameIntervalAs(intervalFromIntervalObject(e6))
+
 
     schedule = Sundays()
-    nextInterval = schedule(startDate).next().value
-    expect(areIntervalsEqual(nextInterval, {
+
+    let e7 = {
         start: parseISO("2020-10-03T22:00Z"),
         end: parseISO("2020-10-04T22:00Z")
-    })).toStrictEqual(true)
+    }
+    nextInterval = schedule(startDate).next().value
+    expect(nextInterval).toBeSameIntervalAs(intervalFromIntervalObject(e7))
+
 })
 
 test('Weekends', () => {
     let schedule = Weekends()
     let startDate = parseISO("2020-09-28T00:00Z")
 
-    let nextInterval = schedule(startDate).next().value
-    expect(areIntervalsEqual(nextInterval, {
+    let e1 = {
         start: parseISO("2020-10-02T22:00Z"),
         end: parseISO("2020-10-04T22:00Z")
-    })).toStrictEqual(true)
+    }
+    let nextInterval = schedule(startDate).next().value
+    expect(nextInterval).toBeSameIntervalAs(intervalFromIntervalObject(e1))
 })
 
 test('WorkingDays', () => {
     let schedule = WorkingDays()
     let startDate = parseISO("2020-09-28T00:00Z")
 
-    let nextInterval = schedule(startDate).next().value
-    expect(areIntervalsEqual(nextInterval, {
+    let e1 = {
         start: parseISO("2020-09-28T00:00Z"),
         end: parseISO("2020-10-02T22:00Z")
-    })).toStrictEqual(true)
+    }
+
+    let nextInterval = schedule(startDate).next().value
+    expect(nextInterval).toBeSameIntervalAs(intervalFromIntervalObject(e1))
 })

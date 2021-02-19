@@ -1,4 +1,4 @@
-import {DateInfinity, NegDateInfinity, Schedule} from "../index"
+import {InfintyDateTime, NegInfinityDateTime, Schedule} from "../index"
 import {createInterval, directionToInt, isEqual} from "../functions/misc"
 
 /**
@@ -15,9 +15,9 @@ export function invertSchedule(schedule: Schedule): Schedule {
         let last = generator.next().value
 
         if (last === undefined && directionInt === 1) {
-            yield createInterval(startDate, DateInfinity)
+            yield createInterval(startDate, InfintyDateTime)
         } else if (last === undefined && directionInt === -1) {
-            yield createInterval(NegDateInfinity, startDate)
+            yield createInterval(NegInfinityDateTime, startDate)
         } else if (directionInt === 1 && !isEqual(startDate, last.start)) {
             yield createInterval(startDate, last.start)
         } else if (directionInt === -1 && !isEqual(startDate, last.end)) {
@@ -33,10 +33,10 @@ export function invertSchedule(schedule: Schedule): Schedule {
             last = interval
         }
 
-        if (directionInt === 1 && last && !isEqual(last.end, DateInfinity)) {
-            yield createInterval(last.end, DateInfinity)
-        } else if (directionInt === -1 && last && !isEqual(last.end, NegDateInfinity)) {
-            yield createInterval(NegDateInfinity, last.start)
+        if (directionInt === 1 && last && !isEqual(last.end, InfintyDateTime)) {
+            yield createInterval(last.end, InfintyDateTime)
+        } else if (directionInt === -1 && last && !isEqual(last.end, NegInfinityDateTime)) {
+            yield createInterval(NegInfinityDateTime, last.start)
         }
     }
 }

@@ -1,65 +1,101 @@
 import {RegularSchedule} from "schedule-fns"
-import {areIntervalsEqual} from "schedule-fns/functions/intervals"
+import {intervalFromIntervalObject} from "schedule-fns/functions/intervals"
+import {dateTimeFromDateOrNumber} from "schedule-fns/functions/misc"
+import {durationFromDurationObject} from "schedule-fns/functions/durations"
 
 test('RegularSchedule', () => {
-    let schedule = RegularSchedule(0, {seconds: 1}, {seconds: 2})
-    let generator = schedule(0)
+    let sD = 0
+    let d = {seconds: 1}
+    let p = {seconds: 2}
+
+    let startDate = 0
+    let schedule = RegularSchedule(dateTimeFromDateOrNumber(sD), durationFromDurationObject(d), durationFromDurationObject(p))
+    let generator = schedule(dateTimeFromDateOrNumber(startDate))
+
+    let e1 = {start: 0, end: 1000}
+    let e2 = {start: 2000, end: 3000}
+    let e3 = {start: 4000, end: 5000}
 
     let value = generator.next()
-    expect(value.done).toBeFalsy()
-    expect(areIntervalsEqual(value.value, {start: 0, end: 1000})).toBeTruthy()
+    expect(value.done).toBe(false)
+    expect(value.value).toBeSameIntervalAs(intervalFromIntervalObject(e1))
 
     value = generator.next()
-    expect(value.done).toBeFalsy()
-    expect(areIntervalsEqual(value.value, {start: 2000, end: 3000})).toBeTruthy()
+    expect(value.done).toBe(false)
+    expect(value.value).toBeSameIntervalAs(intervalFromIntervalObject(e2))
 
     value = generator.next()
-    expect(value.done).toBeFalsy()
-    expect(areIntervalsEqual(value.value, {start: 4000, end: 5000})).toBeTruthy()
+    expect(value.done).toBe(false)
+    expect(value.value).toBeSameIntervalAs(intervalFromIntervalObject(e3))
 })
 
 test('RegularSchedule with offset start 1', () => {
-    let schedule = RegularSchedule(0, {seconds: 1}, {seconds: 2})
-    let generator = schedule(5500)
+    let sD = 0
+    let d = {seconds: 1}
+    let p = {seconds: 2}
+    let startDate = 5500
+
+    let schedule = RegularSchedule(dateTimeFromDateOrNumber(sD), durationFromDurationObject(d), durationFromDurationObject(p))
+    let generator = schedule(dateTimeFromDateOrNumber(startDate))
+
+    let e1 = {start: 6000, end: 7000}
+    let e2 = {start: 8000, end: 9000}
+
 
     let value = generator.next()
-    expect(value.done).toBeFalsy()
-    expect(areIntervalsEqual(value.value, {start: 6000, end: 7000})).toBeTruthy()
+    expect(value.done).toBe(false)
+    expect(value.value).toBeSameIntervalAs(intervalFromIntervalObject(e1))
 
     value = generator.next()
-    expect(value.done).toBeFalsy()
-    expect(areIntervalsEqual(value.value, {start: 8000, end: 9000})).toBeTruthy()
+    expect(value.done).toBe(false)
+    expect(value.value).toBeSameIntervalAs(intervalFromIntervalObject(e2))
 })
 
 test('RegularSchedule with offset start 2', () => {
-    let schedule = RegularSchedule(0, {seconds: 1}, {seconds: 2})
-    let generator = schedule(500)
+    let sD = 0
+    let d = {seconds: 1}
+    let p = {seconds: 2}
+    let startDate = 500
+
+    let schedule = RegularSchedule(dateTimeFromDateOrNumber(sD), durationFromDurationObject(d), durationFromDurationObject(p))
+    let generator = schedule(dateTimeFromDateOrNumber(startDate))
+
+    let e1 = {start: 500, end: 1000}
+    let e2 = {start: 2000, end: 3000}
 
     let value = generator.next()
-    expect(value.done).toBeFalsy()
-    expect(areIntervalsEqual(value.value, {start: 500, end: 1000})).toBeTruthy()
+    expect(value.done).toBe(false)
+    expect(value.value).toBeSameIntervalAs(intervalFromIntervalObject(e1))
 
     value = generator.next()
-    expect(value.done).toBeFalsy()
-    expect(areIntervalsEqual(value.value, {start: 2000, end: 3000})).toBeTruthy()
+    expect(value.done).toBe(false)
+    expect(value.value).toBeSameIntervalAs(intervalFromIntervalObject(e2))
 })
 
 
 test('RegularSchedule backward', () => {
-    let schedule = RegularSchedule(0, {seconds: 1}, {seconds: 2})
-    let generator = schedule(2500, "backward")
+    let sD = 0
+    let d = {seconds: 1}
+    let p = {seconds: 2}
+    let schedule = RegularSchedule(dateTimeFromDateOrNumber(sD), durationFromDurationObject(d), durationFromDurationObject(p))
+    let startDate = 2500
+    let generator = schedule(dateTimeFromDateOrNumber(startDate), "backward")
+
+    let e1 = {start: 2000, end: 2500}
+    let e2 = {start: 0, end: 1000}
+    let e3 = {start: -2000, end: -1000}
 
     let value = generator.next()
-    expect(value.done).toBeFalsy()
-    expect(areIntervalsEqual(value.value, {start: 2000, end: 2500})).toBeTruthy()
+    expect(value.done).toBe(false)
+    expect(value.value).toBeSameIntervalAs(intervalFromIntervalObject(e1))
 
     value = generator.next()
-    expect(value.done).toBeFalsy()
-    expect(areIntervalsEqual(value.value, {start: 0, end: 1000})).toBeTruthy()
+    expect(value.done).toBe(false)
+    expect(value.value).toBeSameIntervalAs(intervalFromIntervalObject(e2))
 
     value = generator.next()
-    expect(value.done).toBeFalsy()
-    expect(areIntervalsEqual(value.value, {start: -2000, end: -1000})).toBeTruthy()
+    expect(value.done).toBe(false)
+    expect(value.value).toBeSameIntervalAs(intervalFromIntervalObject(e3))
 
 })
 

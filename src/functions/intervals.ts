@@ -1,5 +1,25 @@
-import {Interval} from "../index"
-import {createInterval, isEmpty} from "./misc"
+import {DateTime, Interval} from "../index"
+import {dateTimeFromDateOrNumber, isEmpty, parseISO} from "./misc"
+
+export type IntervalObject = {
+    start: Date | number | DateTime
+    end: Date | number | DateTime
+}
+
+export type IntervalAsISOStrings = {
+    start: string
+    end: string
+}
+
+export function intervalFromIntervalObject(intervalObject: IntervalObject) {
+    let startDateTime = intervalObject.start instanceof DateTime ? intervalObject.start : dateTimeFromDateOrNumber(intervalObject.start)
+    let endDateTime = intervalObject.end instanceof DateTime ? intervalObject.end : dateTimeFromDateOrNumber(intervalObject.end)
+    return Interval.fromDateTimes(startDateTime, endDateTime)
+}
+
+export function intervalFromISOStrings(interval: IntervalAsISOStrings) {
+    return Interval.fromDateTimes(parseISO(interval.start), parseISO(interval.end))
+}
 
 /**
  * Determines if the given intervals are intersecting.
@@ -100,16 +120,10 @@ export function intersectIntervals(...intervals: Array<Interval>): Interval {
     if (isEmpty(intervals)) {
         throw Error("Please provide at least one interval!")
     }
-    if (!areIntervalsIntersecting(...intervals)) {
+    let result = intervals.reduce<Interval | null>((aggregate, current) => aggregate === null ? null : aggregate.intersection(current), intervals[0])
+    if (!result) {
         throw Error("Can't intersect the given intervals!")
+    } else {
+        return result
     }
-    let sortedIntervals = [...intervals].sort((a, b) => a.start > b.start ? 1 : -1)
-    let start = sortedIntervals[0].start
-    let end = sortedIntervals.slice(-1)[0].end
-
-    if (start.equals(end)) {
-        throw Error("Result is not a valid interval as it is just a point in time.")
-    }
-
-    return createInterval(start, end)
 }

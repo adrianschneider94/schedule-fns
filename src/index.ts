@@ -37,8 +37,11 @@ export const MAX_RECURSIONS = 1000
  *
  * @internal
  */
-export const DateInfinity = LuxonDateTime.fromMillis(8640000000000000)
-export const NegDateInfinity = LuxonDateTime.fromMillis(-8640000000000000)
+export const DateInfinity = 253402300799999
+export const NegDateInfinity = -253402300799999
+
+export const InfintyDateTime = LuxonDateTime.fromMillis(DateInfinity)
+export const NegInfinityDateTime = LuxonDateTime.fromMillis(NegDateInfinity)
 
 /**
  * The direction in time. "forward" or 1 means into the future, "backward" or -1 into the past-

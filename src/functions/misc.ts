@@ -1,4 +1,14 @@
-import {DateTime, direction, Duration, Interval, Schedule} from "../index"
+import {
+    DateInfinity,
+    DateTime,
+    direction,
+    Duration,
+    InfintyDateTime,
+    Interval,
+    NegDateInfinity,
+    NegInfinityDateTime,
+    Schedule
+} from "../index"
 
 /**
  * Determines if an array is empty.
@@ -124,4 +134,18 @@ export function differenceInMilliseconds(left: DateTime, right: DateTime) {
 
 export function setISODay(date: DateTime, day: 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7) {
     return date.set({weekday: day})
+}
+
+export function dateTimeFromDateOrNumber(date: Date | number) {
+    if (date.valueOf() === DateInfinity || date.valueOf() === Infinity) {
+        return InfintyDateTime
+    } else if (date.valueOf() === NegDateInfinity || date.valueOf() === -Infinity) {
+        return NegInfinityDateTime
+    } else {
+        return DateTime.fromJSDate(new Date(date))
+    }
+}
+
+export function parseISO(date: string): DateTime {
+    return DateTime.fromISO(date)
 }

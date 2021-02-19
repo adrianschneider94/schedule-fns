@@ -82,7 +82,7 @@ export function addDurationWithinSchedule(date: DateTime, duration: Duration, sc
             throw Error("Duration does not fit into the given schedule!")
         } else {
             let next = block.value.start.plus({milliseconds: millisecondsLeft})
-            if (block.value.contains(next)) {
+            if (block.value.contains(next) || block.value.end.equals(next)) {
                 return next
             } else {
                 millisecondsLeft -= block.value.length('milliseconds')

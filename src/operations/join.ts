@@ -1,4 +1,4 @@
-import {DateInfinity, Interval, MAX_RECURSIONS, NegDateInfinity, Schedule} from "../index"
+import {InfintyDateTime, Interval, MAX_RECURSIONS, NegInfinityDateTime, Schedule} from "../index"
 import {directionToInt, isEmpty, isEqual} from "../functions/misc"
 import {areIntervalsConnected, joinIntervals} from "../functions/intervals"
 
@@ -19,7 +19,7 @@ function getFirstInterval(intervals: Array<Interval>) {
  * @internal
  */
 function getLastInterval(intervals: Array<Interval>) {
-    return [...intervals].filter(x => x !== undefined).sort((a, b) => a.end > b.end ? 1 : -1)[0]
+    return [...intervals].filter(x => x !== undefined).sort((a, b) => a.end < b.end ? 1 : -1)[0]
 }
 
 /**
@@ -59,7 +59,7 @@ export function joinSchedules(...schedules: Array<Schedule>): Schedule {
             if (!updated) {
                 yield currentInterval
                 recursions = 0
-                if (currentEntries.every(x => x.done) || (directionInt === 1 && isEqual(currentInterval.end, DateInfinity)) || (directionInt === -1 && isEqual(currentInterval.start, NegDateInfinity))) {
+                if (currentEntries.every(x => x.done) || (directionInt === 1 && isEqual(currentInterval.end, InfintyDateTime)) || (directionInt === -1 && isEqual(currentInterval.start, NegInfinityDateTime))) {
                     return
                 }
                 if (directionInt === 1) {
