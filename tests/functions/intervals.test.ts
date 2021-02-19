@@ -169,8 +169,7 @@ test('intersectIntervals: Intersect two intervals', () => {
 test('intersectIntervals: Intersect two tangent intervals', () => {
     let i1 = {start: 0, end: 2}
     let i2 = {start: 2, end: 4}
-    let e = {start: 2, end: 2}
-    expect(intersectIntervals(intervalFromIntervalObject(i1), intervalFromIntervalObject(i2))).toBeSameIntervalAs(intervalFromIntervalObject(e))
+    expect(() => intersectIntervals(intervalFromIntervalObject(i1), intervalFromIntervalObject(i2))).toThrow()
 })
 
 test('intersectIntervals: Intersecting disjoint intervals throws error', () => {

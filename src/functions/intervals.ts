@@ -121,7 +121,7 @@ export function intersectIntervals(...intervals: Array<Interval>): Interval {
         throw Error("Please provide at least one interval!")
     }
     let result = intervals.reduce<Interval | null>((aggregate, current) => aggregate === null ? null : aggregate.intersection(current), intervals[0])
-    if (!result) {
+    if (!result || result.isEmpty()) {
         throw Error("Can't intersect the given intervals!")
     } else {
         return result

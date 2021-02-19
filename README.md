@@ -54,72 +54,74 @@ let schedule = subtractSchedules(workHours, joinSchedules(weekends, breaks, holi
 #### Daily Schedule
 
 ```typescript
-import {DailySchedule, take} from "schedule-fns"
-import {parseISO} from "date-fns"
+import {DailySchedule, parseISO, take} from "schedule-fns"
 
 let startDate = parseISO("2020-09-01T00:00Z")
 
 let workHours = DailySchedule("08:00", "17:00")
 for (let interval of take(workHours(startDate), 3)) {
-    console.log(interval)
+    console.log(interval.toISO())
 }
-// { start: 2020-09-01T08:00:00.000Z, end: 2020-09-01T17:00:00.000Z }
-// { start: 2020-09-02T08:00:00.000Z, end: 2020-09-02T17:00:00.000Z }
-// { start: 2020-09-03T08:00:00.000Z, end: 2020-09-03T17:00:00.000Z }
+// 2020-09-01T08:00:00.000+02:00/2020-09-01T17:00:00.000+02:00
+// 2020-09-02T08:00:00.000+02:00/2020-09-02T17:00:00.000+02:00
+// 2020-09-03T08:00:00.000+02:00/2020-09-03T17:00:00.000+02:00
 ```
 
 #### Regular Schedule
 ```typescript
-import {parseISO} from "date-fns"
-import {RegularSchedule, take} from "schedule-fns"
+import {durationFromDurationObject, parseISO, RegularSchedule, take} from "schedule-fns"
 
-let newYear = parseISO("2020-01-01T00:00:00.000+0200")
-let everySixWeeksForOneDay = RegularSchedule(newYear, {days: 1}, {weeks: 6})
+let newYear = parseISO("2020-01-01T00:00:00.000+0100")
+let everySixWeeksForOneDay = RegularSchedule(newYear, durationFromDurationObject({days: 1}), durationFromDurationObject({weeks: 6}))
 
 let startDate = parseISO("2020-09-01T00:00Z")
 for (let interval of take(everySixWeeksForOneDay(startDate), 3)) {
-    console.log(interval)
+    console.log(interval.toISO())
 }
-// { start: 2020-09-08T21:00:00.000Z, end: 2020-09-09T21:00:00.000Z }
-// { start: 2020-10-20T21:00:00.000Z, end: 2020-10-21T21:00:00.000Z }
-// { start: 2020-12-01T22:00:00.000Z, end: 2020-12-02T22:00:00.000Z } 
+// 2020-09-09T00:00:00.000+02:00/2020-09-10T00:00:00.000+02:00
+// 2020-10-21T00:00:00.000+02:00/2020-10-22T00:00:00.000+02:00
+// 2020-12-02T00:00:00.000+01:00/2020-12-03T00:00:00.000+01:00 
 ```
 
 #### Schedule from Intervals
 
 ```typescript
-import {Interval, parseISO} from "date-fns"
-import {ScheduleFromIntervals, take} from "schedule-fns"
+import {Interval, intervalFromISOStrings, parseISO, ScheduleFromIntervals, take} from "schedule-fns"
 
 
 let intervals: Array<Interval> = [
-    {start: parseISO("2020-08-22T00:00:00.000+0200"), end: parseISO("2020-08-31T00:00:00.000+0200")},
-    {start: parseISO("2020-12-24T14:00:00.000+0200"), end: parseISO("2021-01-08T00:00:00.000+0200")}
+    intervalFromISOStrings({
+        start: "2020-08-22T00:00:00.000+0200",
+        end: "2020-08-31T00:00:00.000+0200"
+    }),
+    intervalFromISOStrings({
+        start: "2020-12-24T14:00:00.000+0100",
+        end: "2021-01-08T00:00:00.000+0100"
+    })
 ]
 let myHolidays = ScheduleFromIntervals(...intervals)
 
 let startDate = parseISO("2020-01-01T00:00Z")
 for (let interval of take(myHolidays(startDate), 3)) {
-    console.log(interval)
+    console.log(interval.toISO())
 }
-// { start: 2020-08-21T22:00:00.000Z, end: 2020-08-30T22:00:00.000Z }
-// { start: 2020-12-24T12:00:00.000Z, end: 2021-01-07T22:00:00.000Z } 
+// 2020-08-22T00:00:00.000+02:00/2020-08-31T00:00:00.000+02:00
+// 2020-12-24T14:00:00.000+01:00/2021-01-08T00:00:00.000+01:00 
 ```
 
 #### Holidays
 ```typescript
-import {Holidays, take} from "schedule-fns"
-import {parseISO} from "date-fns"
+import {Holidays, parseISO, take} from "schedule-fns"
 
 let publicHolidaysInBavaria = Holidays("DE", "BY", {types: ["public"]})
 
 let startDate = parseISO("2020-09-01T00:00Z")
 for (let interval of take(publicHolidaysInBavaria(startDate), 3)) {
-    console.log(interval)
+    console.log(interval.toISO())
 }
-// { start: 2020-10-02T22:00:00.000Z, end: 2020-10-03T22:00:00.000Z }
-// { start: 2020-10-31T23:00:00.000Z, end: 2020-11-01T23:00:00.000Z }
-// { start: 2020-12-24T23:00:00.000Z, end: 2020-12-26T23:00:00.000Z } 
+// 2020-10-03T00:00:00.000+02:00/2020-10-04T00:00:00.000+02:00
+// 2020-11-01T00:00:00.000+01:00/2020-11-02T00:00:00.000+01:00
+// 2020-12-25T00:00:00.000+01:00/2020-12-27T00:00:00.000+01:00 
 ```
 
 The holiday calender is created by the excellent [date-holidays](https://github.com/commenthol/date-holidays) package.
@@ -127,56 +129,52 @@ The signature of `Holidays` matches the signature of date-holidays `init` method
 
 #### Weekdays
 ```typescript
-import {Mondays, take, Thursdays, Weekends, WorkingDays} from "schedule-fns"
-import {parseISO} from "date-fns"
+import {Mondays, parseISO, take, Weekends, WorkingDays} from "schedule-fns"
 
 let startDate = parseISO("2020-09-01T00:00Z")
 
 let mondays = Mondays()
 for (let interval of take(mondays(startDate), 3)) {
-    console.log(interval)
+    console.log(interval.toISO())
 }
-// { start: 2020-09-07T00:00:00.000Z, end: 2020-09-08T00:00:00.000Z }
-// { start: 2020-09-14T00:00:00.000Z, end: 2020-09-15T00:00:00.000Z }
-// { start: 2020-09-21T00:00:00.000Z, end: 2020-09-22T00:00:00.000Z }
+// 2020-09-07T00:00:00.000+02:00/2020-09-08T00:00:00.000+02:00
+// 2020-09-14T00:00:00.000+02:00/2020-09-15T00:00:00.000+02:00
+// 2020-09-21T00:00:00.000+02:00/2020-09-22T00:00:00.000+02:00
 
 let weekends = Weekends()
 for (let interval of take(weekends(startDate), 3)) {
-    console.log(interval)
+    console.log(interval.toISO())
 }
-// { start: 2020-09-05T00:00:00.000Z, end: 2020-09-07T00:00:00.000Z }
-// { start: 2020-09-12T00:00:00.000Z, end: 2020-09-14T00:00:00.000Z }
-// { start: 2020-09-19T00:00:00.000Z, end: 2020-09-21T00:00:00.000Z }
+// 2020-09-05T00:00:00.000+02:00/2020-09-07T00:00:00.000+02:00
+// 2020-09-12T00:00:00.000+02:00/2020-09-14T00:00:00.000+02:00
+// 2020-09-19T00:00:00.000+02:00/2020-09-21T00:00:00.000+02:00
 
 let workingDays = WorkingDays()
 for (let interval of take(workingDays(startDate), 3)) {
-    console.log(interval)
+    console.log(interval.toISO())
 }
-// { start: 2020-09-01T00:00:00.000Z, end: 2020-09-05T00:00:00.000Z }
-// { start: 2020-09-07T00:00:00.000Z, end: 2020-09-12T00:00:00.000Z }
-// { start: 2020-09-14T00:00:00.000Z, end: 2020-09-19T00:00:00.000Z } 
+// 2020-09-01T02:00:00.000+02:00/2020-09-05T00:00:00.000+02:00
+// 2020-09-07T00:00:00.000+02:00/2020-09-12T00:00:00.000+02:00
+// 2020-09-14T00:00:00.000+02:00/2020-09-19T00:00:00.000+02:00 
 ```
 
 #### Simple Schedules
 ```typescript
-import {parseISO} from "date-fns"
-
-import {From, Until} from "schedule-fns"
+import {From, parseISO, Until} from "schedule-fns"
 
 let from = From(parseISO("2020-09-01T00:00Z"))
-console.log(from(parseISO("2020-08-01T00:00Z")).next().value)
-// { start: 2020-09-01T00:00:00.000Z, end: +275760-09-13T00:00:00.000Z }
+console.log(from(parseISO("2020-08-01T00:00Z")).next().value.toISO())
+// 2020-09-01T02:00:00.000+02:00/+10000-01-01T00:59:59.999+01:00
 
 let until = Until(parseISO("2020-09-01T00:00Z"))
-console.log(until(parseISO("2020-08-01T00:00Z")).next().value)
-// { start: 2020-08-01T00:00:00.000Z, end: 2020-09-01T00:00:00.000Z } 
+console.log(until(parseISO("2020-08-01T00:00Z")).next().value.toISO())
+// 2020-08-01T02:00:00.000+02:00/2020-09-01T02:00:00.000+02:00 
 ```
 
 ### Operations
 #### Invert
 ```typescript
-import {DailySchedule, invertSchedule, take} from "schedule-fns"
-import {parseISO} from "date-fns"
+import {DailySchedule, invertSchedule, parseISO, take} from "schedule-fns"
 
 let workHours = DailySchedule("08:00", "17:00")
 let offHours = invertSchedule(workHours)
@@ -184,49 +182,46 @@ let offHours = invertSchedule(workHours)
 
 let startDate = parseISO("2020-09-01T10:00:00Z")
 for (let interval of take(offHours(startDate), 3)) {
-    console.log(interval)
+    console.log(interval.toISO())
 }
-// { start: 2020-09-01T17:00:00.000Z, end: 2020-09-02T08:00:00.000Z }
-// { start: 2020-09-02T17:00:00.000Z, end: 2020-09-03T08:00:00.000Z }
-// { start: 2020-09-03T17:00:00.000Z, end: 2020-09-04T08:00:00.000Z } 
+// 2020-09-01T17:00:00.000+02:00/2020-09-02T08:00:00.000+02:00
+// 2020-09-02T17:00:00.000+02:00/2020-09-03T08:00:00.000+02:00
+// 2020-09-03T17:00:00.000+02:00/2020-09-04T08:00:00.000+02:00 
 ```
 #### Join
 ```typescript
-import {joinSchedules, take, Thursdays, Weekends} from "schedule-fns"
-import {parseISO} from "date-fns"
+import {joinSchedules, parseISO, take, Thursdays, Weekends} from "schedule-fns"
 
 let weekendOrThursday = joinSchedules(Weekends(), Thursdays())
 
 let startDate = parseISO("2020-09-01T10:00:00Z")
 for (let interval of take(weekendOrThursday(startDate), 3)) {
-    console.log(interval)
+    console.log(interval.toISO())
 }
 
-// { start: 2020-09-03T00:00:00.000Z, end: 2020-09-04T00:00:00.000Z }
-// { start: 2020-09-05T00:00:00.000Z, end: 2020-09-07T00:00:00.000Z }
-// { start: 2020-09-10T00:00:00.000Z, end: 2020-09-11T00:00:00.000Z } 
+// 2020-09-03T00:00:00.000+02:00/2020-09-04T00:00:00.000+02:00
+// 2020-09-05T00:00:00.000+02:00/2020-09-07T00:00:00.000+02:00
+// 2020-09-10T00:00:00.000+02:00/2020-09-11T00:00:00.000+02:00 
 ```
 
 #### Intersect
 ```typescript
-import {DailySchedule, intersectSchedules, Mondays, take} from "schedule-fns"
-import {parseISO} from "date-fns"
+import {DailySchedule, intersectSchedules, Mondays, parseISO, take} from "schedule-fns"
 
 let mondayEvenings = intersectSchedules(DailySchedule("20:00", "00:00"), Mondays())
 
 let startDate = parseISO("2020-09-02")
 for (let interval of take(mondayEvenings(startDate), 3)) {
-    console.log(interval)
+    console.log(interval.toISO())
 }
-// { start: 2020-09-07T20:00:00.000Z, end: 2020-09-08T00:00:00.000Z }
-// { start: 2020-09-14T20:00:00.000Z, end: 2020-09-15T00:00:00.000Z }
-// { start: 2020-09-21T20:00:00.000Z, end: 2020-09-22T00:00:00.000Z } 
+// 2020-09-07T20:00:00.000+02:00/2020-09-08T00:00:00.000+02:00
+// 2020-09-14T20:00:00.000+02:00/2020-09-15T00:00:00.000+02:00
+// 2020-09-21T20:00:00.000+02:00/2020-09-22T00:00:00.000+02:00 
 ```
 
 #### Subtract
 ```typescript
-import {DailySchedule, subtractSchedules, take} from "schedule-fns"
-import {parseISO} from "date-fns"
+import {DailySchedule, parseISO, subtractSchedules, take} from "schedule-fns"
 
 let workHours = DailySchedule("08:00", "17:00")
 let breaks = DailySchedule("12:30", "13:30")
@@ -234,17 +229,16 @@ let workTime = subtractSchedules(workHours, breaks)
 
 let startDate = parseISO("2020-09-02")
 for (let interval of take(workTime(startDate), 3)) {
-    console.log(interval)
+    console.log(interval.toISO())
 }
-// { start: 2020-09-02T08:00:00.000Z, end: 2020-09-02T12:30:00.000Z }
-// { start: 2020-09-02T13:30:00.000Z, end: 2020-09-02T17:00:00.000Z }
-// { start: 2020-09-03T08:00:00.000Z, end: 2020-09-03T12:30:00.000Z } 
+// 2020-09-02T08:00:00.000+02:00/2020-09-02T12:30:00.000+02:00
+// 2020-09-02T13:30:00.000+02:00/2020-09-02T17:00:00.000+02:00
+// 2020-09-03T08:00:00.000+02:00/2020-09-03T12:30:00.000+02:00 
 ```
 
 #### Symmetric Difference
 ```typescript
-import {DailySchedule, symmetricDifferenceOfSchedules, take} from "schedule-fns"
-import {parseISO} from "date-fns"
+import {DailySchedule, parseISO, symmetricDifferenceOfSchedules, take} from "schedule-fns"
 
 let hoursWorker1 = DailySchedule("08:00", "17:00")
 let hoursWorker2 = DailySchedule("09:00", "18:00")
@@ -252,46 +246,42 @@ let onlyOneWorkerAvailable = symmetricDifferenceOfSchedules(hoursWorker1, hoursW
 
 let startDate = parseISO("2020-09-02")
 for (let interval of take(onlyOneWorkerAvailable(startDate), 3)) {
-    console.log(interval)
+    console.log(interval.toISO())
 }
-// { start: 2020-09-02T08:00:00.000Z, end: 2020-09-02T09:00:00.000Z }
-// { start: 2020-09-02T17:00:00.000Z, end: 2020-09-02T18:00:00.000Z }
-// { start: 2020-09-03T08:00:00.000Z, end: 2020-09-03T09:00:00.000Z } 
+// 2020-09-02T08:00:00.000+02:00/2020-09-02T09:00:00.000+02:00
+// 2020-09-02T17:00:00.000+02:00/2020-09-02T18:00:00.000+02:00
+// 2020-09-03T08:00:00.000+02:00/2020-09-03T09:00:00.000+02:00 
 ```
 
 #### Shift
 ```typescript
-import {parseISO} from "date-fns"
+import {durationFromDurationObject, Mondays, parseISO, shiftSchedule, take} from "schedule-fns"
 
-import {Mondays, shiftSchedule, take} from "schedule-fns"
-
-let mondayNoonToTuesdayNoon = shiftSchedule(Mondays(), {hours: 12})
+let mondayNoonToTuesdayNoon = shiftSchedule(Mondays(), durationFromDurationObject({hours: 12}))
 
 let startDate = parseISO("2020-09-02")
 for (let interval of take(mondayNoonToTuesdayNoon(startDate), 3)) {
-    console.log(interval)
+    console.log(interval.toISO())
 }
-// { start: 2020-09-07T12:00:00.000Z, end: 2020-09-08T12:00:00.000Z }
-// { start: 2020-09-14T12:00:00.000Z, end: 2020-09-15T12:00:00.000Z }
-// { start: 2020-09-21T12:00:00.000Z, end: 2020-09-22T12:00:00.000Z } 
+// 2020-09-07T12:00:00.000+02:00/2020-09-08T12:00:00.000+02:00
+// 2020-09-14T12:00:00.000+02:00/2020-09-15T12:00:00.000+02:00
+// 2020-09-21T12:00:00.000+02:00/2020-09-22T12:00:00.000+02:00 
 ```
 
 ### Miscellaneous
 #### Add Duration
 ```typescript
-import {addDuration, DailySchedule} from "schedule-fns"
-import {parseISO} from "date-fns"
+import {addDurationWithinSchedule, DailySchedule, durationFromDurationObject, parseISO} from "schedule-fns"
 
 let schedule = DailySchedule("08:00", "17:00")
-let projectEnd = addDuration(parseISO("2020-09-01T10:00:00Z"), {hours: 13}, schedule)
+let projectEnd = addDurationWithinSchedule(parseISO("2020-09-01T10:00:00Z"), durationFromDurationObject({hours: 13}), schedule)
 
-console.log(projectEnd)
-// 2020-09-02T14:00:00.000Z 
+console.log(projectEnd.toISO())
+// 2020-09-02T16:00:00.000+02:00 
 ```
 #### isWithinSchedule
 ```typescript
-import {parseISO} from "date-fns"
-import {DailySchedule, isWithinSchedule} from "schedule-fns"
+import {DailySchedule, isWithinSchedule, parseISO} from "schedule-fns"
 
 let schedule = DailySchedule("08:00", "17:00")
 console.log(isWithinSchedule(parseISO("2020-01-08T11:00:00.000+0100"), schedule)) // true
@@ -308,52 +298,3 @@ type Schedule = (startDate: Date | number, direction?: direction) => IterableIte
 ```
 
 It is a generator that receives a date and a direction (defaults to "forward") and yields intervals.
-
-So the simplest formal schedule would be
-
-```typescript
-import {Schedule} from "schedule-fns"
-
-let mySchedule: Schedule = function* (startDate, direction = "forward") {
-    yield {start: 0, end: 1}
-} 
-```
-
-However, it is not a valid schedule, as there are further specifications that define a schedule.<br/> 
-If the direction is ``"forward"`` or ``1``:
-  * ``interval[i].start > interval[i-1].end``
-  * ``interval[i].start >= startDate``
-  
-If the direction is ``backward`` or ``-1``:
-  * ``interval[i].end < interval[i-1].start``
-  * ``interval[i].end <= startDate``
-  
-So to make our schedule valid, we have to handle the edge cases.
-
-```typescript
-import {Schedule} from "schedule-fns"
-
-let mySchedule: Schedule = function* (startDate, direction = "forward") {
-    if (0 < startDate && startDate < 1 && (direction === "forward" || direction === 1)){
-        yield {start: startDate, end: 1}
-    } else if (0 < startDate && startDate < 1 && (direction === "backward" || direction === -1)) {
-        yield {start: 0, end: startDate}
-    } else if (
-        (startDate >= 1 && (direction === "forward" || direction === 1)) ||
-        (startDate <= 1 && (direction === "backward" || direction === -1))
-    ) {
-        return
-    } else {
-        yield {start: 0, end: 1}
-    }
-} 
-```
-
-But most of the time, we would just use a predefined schedule to achieve what 
-we want:
-
-```typescript
-let mySchedule = ScheduleFromIntervals({start: 0, end: 1})
-```
-
-which already handles all the edge cases.
