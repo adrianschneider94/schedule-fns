@@ -1,6 +1,7 @@
 import {DateTime, Duration, Interval} from "schedule-fns"
+import {Settings} from "luxon"
+import {isEqual} from "schedule-fns/functions/dateLibrary"
 import CustomMatcherResult = jest.CustomMatcherResult
-import {Settings} from 'luxon'
 
 Settings.defaultZoneName = "Europe/Berlin"
 
@@ -17,14 +18,14 @@ declare global {
 expect.extend({
     toBeSameDateTimeAs: function toBeSameDateTimeAs(actual: DateTime, expected: DateTime): CustomMatcherResult {
         return {
-            message: () => `Should be equal. Actual: ${actual.toISO()}, expected: ${expected.toISO()}` ,
+            message: () => `Should be equal. Actual: ${actual.toISO()}, expected: ${expected.toISO()}`,
             pass: actual.equals(expected)
         }
     },
     toBeSameIntervalAs: function (actual: Interval, expected: Interval): CustomMatcherResult {
         return {
             message: () => `Should be equal. Actual: ${actual.toISO()}, expected: ${expected.toISO()}`,
-            pass: actual.equals(expected)
+            pass: isEqual(actual.start, expected.start) && isEqual(actual.end, expected.end)
         }
     },
     toBeSameDurationAs: (actual: Duration, expected: Duration) => {

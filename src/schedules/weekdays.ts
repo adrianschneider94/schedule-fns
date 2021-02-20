@@ -2,18 +2,25 @@ import {durationFromDurationObject, invertSchedule, joinSchedules, RegularSchedu
 import {setISODay} from "../functions/misc"
 import {startOfDay} from "../functions/dateLibrary"
 
+export type WeekDayOptions = {
+    timeZone?: string
+}
+
 /**
  * Returns a schedule that occurs on a weekday specified by an integer.
  *
  * @param day The day as number (Monday = 1, Sunday = 7)
+ * @param options
  * @constructor
  * @internal
  * @category Schedules
  */
-export function OnSpecificWeekday(day: 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7): Schedule {
+export function OnSpecificWeekday(day: 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7, options?: WeekDayOptions): Schedule {
+    let timeZone = options?.timeZone
+
     return function (startDate, direction) {
         let weekday = setISODay(startDate, day)
-        let startDayMoment = startOfDay(weekday)
+        let startDayMoment = startOfDay(weekday, timeZone)
         let schedule = RegularSchedule(startDayMoment, durationFromDurationObject({days: 1}), durationFromDurationObject({weeks: 1}))
         return schedule(startDate, direction)
     }
@@ -25,8 +32,8 @@ export function OnSpecificWeekday(day: 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7): Schedule 
  * @constructor
  * @category Weekday Schedules
  */
-export function Mondays(): Schedule {
-    return OnSpecificWeekday(1)
+export function Mondays(options?: WeekDayOptions): Schedule {
+    return OnSpecificWeekday(1, options)
 }
 
 /**
@@ -35,8 +42,8 @@ export function Mondays(): Schedule {
  * @constructor
  * @category Weekday Schedules
  */
-export function Tuesdays(): Schedule {
-    return OnSpecificWeekday(2)
+export function Tuesdays(options?: WeekDayOptions): Schedule {
+    return OnSpecificWeekday(2, options)
 }
 
 /**
@@ -45,8 +52,8 @@ export function Tuesdays(): Schedule {
  * @constructor
  * @category Weekday Schedules
  */
-export function Wednesdays(): Schedule {
-    return OnSpecificWeekday(3)
+export function Wednesdays(options?: WeekDayOptions): Schedule {
+    return OnSpecificWeekday(3, options)
 }
 
 /**
@@ -55,8 +62,8 @@ export function Wednesdays(): Schedule {
  * @constructor
  * @category Weekday Schedules
  */
-export function Thursdays(): Schedule {
-    return OnSpecificWeekday(4)
+export function Thursdays(options?: WeekDayOptions): Schedule {
+    return OnSpecificWeekday(4, options)
 }
 
 /**
@@ -65,8 +72,8 @@ export function Thursdays(): Schedule {
  * @constructor
  * @category Weekday Schedules
  */
-export function Fridays(): Schedule {
-    return OnSpecificWeekday(5)
+export function Fridays(options?: WeekDayOptions): Schedule {
+    return OnSpecificWeekday(5, options)
 }
 
 /**
@@ -75,8 +82,8 @@ export function Fridays(): Schedule {
  * @constructor
  * @category Weekday Schedules
  */
-export function Saturdays(): Schedule {
-    return OnSpecificWeekday(6)
+export function Saturdays(options?: WeekDayOptions): Schedule {
+    return OnSpecificWeekday(6, options)
 }
 
 /**
@@ -85,8 +92,8 @@ export function Saturdays(): Schedule {
  * @constructor
  * @category Weekday Schedules
  */
-export function Sundays(): Schedule {
-    return OnSpecificWeekday(7)
+export function Sundays(options?: WeekDayOptions): Schedule {
+    return OnSpecificWeekday(7, options)
 }
 
 /**
@@ -94,8 +101,8 @@ export function Sundays(): Schedule {
  * @constructor
  * @category Weekday Schedules
  */
-export function Weekends(): Schedule {
-    return joinSchedules(Saturdays(), Sundays())
+export function Weekends(options?: WeekDayOptions): Schedule {
+    return joinSchedules(Saturdays(options), Sundays(options))
 }
 
 /**
@@ -104,6 +111,6 @@ export function Weekends(): Schedule {
  * @constructor
  * @category Weekday Schedules
  */
-export function WorkingDays(): Schedule {
-    return invertSchedule(Weekends())
+export function WorkingDays(options?: WeekDayOptions): Schedule {
+    return invertSchedule(Weekends(options))
 }

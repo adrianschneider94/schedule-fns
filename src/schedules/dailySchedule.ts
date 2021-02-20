@@ -1,6 +1,6 @@
 import {Schedule} from "../index"
-import {directionToInt, isWithinInterval, parseTimeAtGivenDay} from "../functions/misc"
-import {addDays, createInterval, isAfter, isBefore, startOfDay} from "../functions/dateLibrary"
+import {directionToInt, isWithinInterval} from "../functions/misc"
+import {addDays, createInterval, isAfter, isBefore, parseTimeAtGivenDay, startOfDay} from "../functions/dateLibrary"
 
 /**
  * Creates a daily schedule.
@@ -9,20 +9,23 @@ import {addDays, createInterval, isAfter, isBefore, startOfDay} from "../functio
  *
  * @param startTime The start time in the format specified by timeFormat.
  * @param endTime The start time in the format specified by timeFormat.
+ * @param options
  * @constructor
  * @category Schedules
  */
-export function DailySchedule(startTime: string, endTime: string): Schedule {
+export function DailySchedule(startTime: string, endTime: string, options?: { timeZone?: string }): Schedule {
+    let timeZone = options?.timeZone
+
     return function* (startDate, direction = 1) {
         let directionInt = directionToInt(direction)
 
-        let day = startOfDay(startDate)
+        let day = startOfDay(startDate, timeZone)
         let dayBefore = addDays(day, -1)
-        let overMidnight: boolean = parseTimeAtGivenDay(startTime, day) > parseTimeAtGivenDay(endTime, day)
+        let overMidnight: boolean = parseTimeAtGivenDay(startTime, day, timeZone) > parseTimeAtGivenDay(endTime, day, timeZone)
 
         let firstInterval = createInterval(
-            overMidnight ? parseTimeAtGivenDay(startTime, dayBefore) : parseTimeAtGivenDay(startTime, day),
-            parseTimeAtGivenDay(endTime, day)
+            overMidnight ? parseTimeAtGivenDay(startTime, dayBefore, timeZone) : parseTimeAtGivenDay(startTime, day, timeZone),
+            parseTimeAtGivenDay(endTime, day, timeZone)
         )
 
         let i = 0

@@ -56,7 +56,7 @@ export function durationSum(left: Duration, right: Duration): Duration {
 }
 
 export function isEqual(left: DateTime, right: DateTime): boolean {
-    return left.equals(right)
+    return left.toMillis() === right.toMillis()
 }
 
 export function compareAsc(left: DateTime, right: DateTime): number {
@@ -120,7 +120,10 @@ export function addDuration(date: DateTime, duration: Duration): DateTime {
     return date.plus(duration)
 }
 
-export function startOfDay(date: DateTime): DateTime {
+export function startOfDay(date: DateTime, timeZone?: string): DateTime {
+    if (timeZone) {
+        date = date.setZone(timeZone)
+    }
     return date.startOf("day")
 }
 
@@ -146,4 +149,17 @@ export function isEqualOrAfter(left: DateTime, right: DateTime): boolean {
 
 export function isIntervalEmpty(interval: Interval): boolean {
     return interval.isEmpty()
+}
+
+export function parseTimeAtGivenDay(timeString: string, day: DateTime, timeZone?: string) {
+    let parsedTime = DateTime.fromISO(timeString)
+    if (timeZone) {
+        day = day.setZone(timeZone)
+    }
+    return day.set({
+        hour: parsedTime.hour,
+        minute: parsedTime.minute,
+        second: parsedTime.second,
+        millisecond: parsedTime.millisecond
+    })
 }

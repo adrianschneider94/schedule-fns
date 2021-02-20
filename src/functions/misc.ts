@@ -69,16 +69,6 @@ export function* take<T>(iterable: IterableIterator<T>, n: number): IterableIter
     }
 }
 
-export function parseTimeAtGivenDay(timeString: string, day: DateTime) {
-    let parsedTime = DateTime.fromISO(timeString)
-    return day.set({
-        hour: parsedTime.hour,
-        minute: parsedTime.minute,
-        second: parsedTime.second,
-        millisecond: parsedTime.millisecond
-    })
-}
-
 export function isWithinInterval(date: DateTime, interval: Interval) {
     return interval.contains(date)
 }

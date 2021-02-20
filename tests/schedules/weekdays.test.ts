@@ -1,6 +1,7 @@
 import {
     Fridays,
-    Interval, intervalFromIntervalObject,
+    Interval,
+    intervalFromIntervalObject,
     Mondays,
     Saturdays,
     Schedule,
@@ -14,7 +15,7 @@ import {
 import {OnSpecificWeekday} from "schedule-fns/schedules/weekdays"
 import {parseISO} from "schedule-fns/functions/misc"
 
-test('SpecificDay', () => {
+test("SpecificDay", () => {
     let schedule = OnSpecificWeekday(1)
     let generator = schedule(parseISO("2020-09-23"))
 
@@ -37,7 +38,30 @@ test('SpecificDay', () => {
     expect(value.value).toBeSameIntervalAs(intervalFromIntervalObject(e2))
 })
 
-test('Weekdays', () => {
+test("Specific Day in Tokyo", () => {
+    let schedule = OnSpecificWeekday(1, {timeZone: "Asia/Tokyo"})
+    let generator = schedule(parseISO("2020-01-01T00:00+09:00"))
+
+    let e1 = {
+        start: parseISO("2020-01-07T00:00+09:00"),
+        end: parseISO("2020-01-08T00:00+09:00")
+    }
+
+    let e2 = {
+        start: parseISO("2020-01-14T00:00+09:00"),
+        end: parseISO("2020-01-15T00:00+09:00")
+    }
+
+    let value = generator.next()
+    expect(value.done).toBe(false)
+    expect(value.value).toBeSameIntervalAs(intervalFromIntervalObject(e1))
+
+    value = generator.next()
+    expect(value.done).toBe(false)
+    expect(value.value).toBeSameIntervalAs(intervalFromIntervalObject(e2))
+})
+
+test("Weekdays", () => {
     let schedule: Schedule
     let nextInterval: Interval
     let startDate = parseISO("2020-09-28T00:00Z")
@@ -113,7 +137,7 @@ test('Weekdays', () => {
 
 })
 
-test('Weekends', () => {
+test("Weekends", () => {
     let schedule = Weekends()
     let startDate = parseISO("2020-09-28T00:00Z")
 
@@ -125,7 +149,7 @@ test('Weekends', () => {
     expect(nextInterval).toBeSameIntervalAs(intervalFromIntervalObject(e1))
 })
 
-test('WorkingDays', () => {
+test("WorkingDays", () => {
     let schedule = WorkingDays()
     let startDate = parseISO("2020-09-28T00:00Z")
 
