@@ -1,6 +1,6 @@
 import {
     Fridays,
-    Interval,
+    Interval, intervalFromIntervalObject,
     Mondays,
     Saturdays,
     Schedule,
@@ -12,7 +12,6 @@ import {
     WorkingDays
 } from "schedule-fns"
 import {OnSpecificWeekday} from "schedule-fns/schedules/weekdays"
-import {intervalFromIntervalObject} from "schedule-fns/functions/intervals"
 import {parseISO} from "schedule-fns/functions/misc"
 
 test('SpecificDay', () => {

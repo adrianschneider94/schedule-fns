@@ -1,5 +1,7 @@
-export {
-    addDurationWithinSchedule, durationToMilliseconds, multiplyDuration, addDurations, durationFromDurationObject
-} from "./durations"
-export {intervalFromISOStrings, intervalFromIntervalObject} from "./intervals"
+export {addDurationWithinSchedule, addDurations} from "./durations"
 export {take, isWithinSchedule, parseISO} from "./misc"
+export {durationFromDurationObject} from "schedule-fns/functions/dateLibrary"
+export {durationToMilliseconds} from "schedule-fns/functions/dateLibrary"
+export {multiplyDuration} from "schedule-fns/functions/dateLibrary"
+export {intervalFromIntervalObject} from "schedule-fns/functions/dateLibrary"
+export {intervalFromISOStrings} from "schedule-fns/functions/dateLibrary"

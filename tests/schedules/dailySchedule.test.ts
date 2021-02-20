@@ -1,5 +1,4 @@
-import {DailySchedule} from "schedule-fns"
-import {intervalFromISOStrings} from "schedule-fns/functions/intervals"
+import {DailySchedule, intervalFromISOStrings} from "schedule-fns"
 import {parseISO} from "schedule-fns/functions/misc"
 
 test('Daily schedule', () => {

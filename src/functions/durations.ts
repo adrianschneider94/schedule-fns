@@ -1,54 +1,24 @@
-import {DateTime, Duration, Interval, MAX_RECURSIONS, Schedule} from "../index"
-import {DurationOptions} from "luxon"
+import {DateTime, Duration, durationFromDurationObject, Interval, MAX_RECURSIONS, Schedule} from "../index"
+import {
+    addDuration,
+    durationSum,
+    durationToMilliseconds,
+    intervalContains,
+    intervalToMilliseconds,
+    isEqual
+} from "schedule-fns/functions/dateLibrary"
 
 
 export type DurationObject = {
     years?: number,
+    quarters?: number,
     months?: number,
     weeks?: number,
     days?: number,
     hours?: number,
     minutes?: number,
     seconds?: number
-}
-
-export function durationFromDurationObject(duration: DurationObject): Duration {
-    return Duration.fromObject(duration)
-}
-
-/**
- * Converts a duration into milliseconds.
- *
- * @param duration The duration to convert
- *
- * @internal
- */
-export function durationToMilliseconds(duration: Duration): number {
-    return duration.toMillis()
-}
-
-/**
- * Multiplies a duration with a factor.
- *
- * @param duration
- * @param factor
- *
- * @internal
- */
-export function multiplyDuration(duration: Duration, factor: number): Duration {
-    return Duration.fromObject({
-        years: duration.years ? duration.years * factor : 0,
-        quarters: duration.quarters ? duration.quarters * factor : 0,
-        months: duration.months ? duration.months * factor : 0,
-        weeks: duration.weeks ? duration.weeks * factor : 0,
-        days: duration.days ? duration.days * factor : 0,
-        hours: duration.hours ? duration.hours * factor : 0,
-        minutes: duration.minutes ? duration.minutes * factor : 0,
-        seconds: duration.seconds ? duration.seconds * factor : 0,
-        milliseconds: duration.milliseconds ? duration.milliseconds * factor : 0,
-        locale: duration.locale,
-        numberingSystem: duration.numberingSystem as DurationOptions['numberingSystem']
-    })
+    milliseconds?: number
 }
 
 /**
@@ -59,7 +29,7 @@ export function multiplyDuration(duration: Duration, factor: number): Duration {
  * @internal
  */
 export function addDurations(...durations: Array<Duration>) {
-    return durations.reduce((aggregate, current) => aggregate.plus(current))
+    return durations.reduce((aggregate, current) => durationSum(aggregate, current))
 }
 
 /**
@@ -81,11 +51,11 @@ export function addDurationWithinSchedule(date: DateTime, duration: Duration, sc
         if (block.value === undefined) {
             throw Error("Duration does not fit into the given schedule!")
         } else {
-            let next = block.value.start.plus({milliseconds: millisecondsLeft})
-            if (block.value.contains(next) || block.value.end.equals(next)) {
+            let next = addDuration(block.value.start, durationFromDurationObject({milliseconds: millisecondsLeft}))
+            if (intervalContains(block.value, next) || isEqual(block.value.end, next)) {
                 return next
             } else {
-                millisecondsLeft -= block.value.length('milliseconds')
+                millisecondsLeft -= intervalToMilliseconds(block.value)
             }
         }
     }

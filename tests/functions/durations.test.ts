@@ -1,15 +1,15 @@
-import {RegularSchedule, ScheduleFromIntervals} from "schedule-fns"
 import {
-    addDurations,
-    addDurationWithinSchedule,
     durationFromDurationObject,
     durationToMilliseconds,
-    multiplyDuration
-} from "schedule-fns/functions/durations"
-import {intervalFromIntervalObject} from "schedule-fns/functions/intervals"
-import {dateTimeFromDateOrNumber} from "schedule-fns/functions/misc"
+    intervalFromIntervalObject,
+    multiplyDuration,
+    RegularSchedule,
+    ScheduleFromIntervals
+} from "schedule-fns"
+import {addDurations, addDurationWithinSchedule} from "schedule-fns/functions/durations"
+import {dateTimeFromDateOrNumber} from "schedule-fns/functions/dateLibrary"
 
-test('durationToMilliseconds: 5 hours, 6 minutes, 7 seconds', () => {
+test("durationToMilliseconds: 5 hours, 6 minutes, 7 seconds", () => {
     let input = {
         hours: 5,
         minutes: 6,
@@ -18,7 +18,7 @@ test('durationToMilliseconds: 5 hours, 6 minutes, 7 seconds', () => {
     expect(durationToMilliseconds(durationFromDurationObject(input))).toStrictEqual(18367000)
 })
 
-test('multiplyDuration', () => {
+test("multiplyDuration", () => {
     let input = {
         years: 1,
         months: 2,
@@ -41,7 +41,7 @@ test('multiplyDuration', () => {
     expect(multiplyDuration(durationFromDurationObject(input), factor)).toBeSameDurationAs(durationFromDurationObject(expected))
 })
 
-test('addDurations', () => {
+test("addDurations", () => {
     let duration1 = {years: 1, months: 2, weeks: 3, days: 4, hours: 5, minutes: 6, seconds: 7}
     let duration2 = {years: 8, months: 7, weeks: 6, days: 5, hours: 4, minutes: 3, seconds: 2}
     let duration3 = {years: 1, months: 1, weeks: 1, days: 1, hours: 1, minutes: 1, seconds: 1}
@@ -49,7 +49,7 @@ test('addDurations', () => {
     expect(addDurations(durationFromDurationObject(duration1), durationFromDurationObject(duration2), durationFromDurationObject(duration3))).toBeSameDurationAs(durationFromDurationObject(expected))
 })
 
-test('addDuration 1', () => {
+test("addDuration 1", () => {
     let interval1 = {start: 0, end: 10}
     let interval2 = {start: 20, end: 30}
     let schedule = ScheduleFromIntervals(intervalFromIntervalObject(interval1), intervalFromIntervalObject(interval2))
@@ -61,7 +61,7 @@ test('addDuration 1', () => {
     expect(result).toBeSameDateTimeAs(dateTimeFromDateOrNumber(expected))
 })
 
-test('addDuration 2', () => {
+test("addDuration 2", () => {
     let interval1 = {start: 5, end: 10}
     let interval2 = {start: 20, end: 30}
     let schedule = ScheduleFromIntervals(intervalFromIntervalObject(interval1), intervalFromIntervalObject(interval2))
@@ -73,7 +73,7 @@ test('addDuration 2', () => {
     expect(result).toBeSameDateTimeAs(dateTimeFromDateOrNumber(expected))
 })
 
-test('addDuration 3', () => {
+test("addDuration 3", () => {
     let interval1 = {start: 5, end: 10}
     let interval2 = {start: 20, end: 30}
     let schedule = ScheduleFromIntervals(intervalFromIntervalObject(interval1), intervalFromIntervalObject(interval2))
@@ -83,7 +83,7 @@ test('addDuration 3', () => {
     expect(() => addDurationWithinSchedule(dateTimeFromDateOrNumber(startDate), durationFromDurationObject(duration), schedule)).toThrowError()
 })
 
-test('addDuration 4', () => {
+test("addDuration 4", () => {
     let startDate = new Date()
     let duration_ = {seconds: 1}
     let period = {seconds: 2}

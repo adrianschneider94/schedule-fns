@@ -1,6 +1,5 @@
-import {Duration, Schedule} from "../index"
-import {multiplyDuration} from "../functions/durations"
-import {addDuration, createInterval} from "../functions/misc"
+import {Duration, multiplyDuration, Schedule} from "../index"
+import {addDuration, createInterval} from "../functions/dateLibrary"
 
 /**
  * Shifts a schedule by a duration.

@@ -1,7 +1,5 @@
-import {RegularSchedule} from "schedule-fns"
-import {intervalFromIntervalObject} from "schedule-fns/functions/intervals"
-import {dateTimeFromDateOrNumber} from "schedule-fns/functions/misc"
-import {durationFromDurationObject} from "schedule-fns/functions/durations"
+import {durationFromDurationObject, intervalFromIntervalObject, RegularSchedule} from "schedule-fns"
+import {dateTimeFromDateOrNumber} from "schedule-fns/functions/dateLibrary"
 
 test('RegularSchedule', () => {
     let sD = 0

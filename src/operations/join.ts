@@ -1,6 +1,7 @@
 import {InfintyDateTime, Interval, MAX_RECURSIONS, NegInfinityDateTime, Schedule} from "../index"
-import {directionToInt, isEmpty, isEqual} from "../functions/misc"
+import {directionToInt, isArrayEmpty} from "../functions/misc"
 import {areIntervalsConnected, joinIntervals} from "../functions/intervals"
+import {compareAsc, compareDesc, isEqual} from "../functions/dateLibrary"
 
 /**
  * Get the interval that starts first of a given set of intervals.
@@ -9,7 +10,7 @@ import {areIntervalsConnected, joinIntervals} from "../functions/intervals"
  * @internal
  */
 function getFirstInterval(intervals: Array<Interval>) {
-    return [...intervals].filter(x => x !== undefined).sort((a, b) => a.start > b.start ? 1 : -1)[0]
+    return [...intervals].filter(x => x !== undefined).sort((a, b) => compareAsc(a.start, b.start))[0]
 }
 
 /**
@@ -19,7 +20,7 @@ function getFirstInterval(intervals: Array<Interval>) {
  * @internal
  */
 function getLastInterval(intervals: Array<Interval>) {
-    return [...intervals].filter(x => x !== undefined).sort((a, b) => a.end < b.end ? 1 : -1)[0]
+    return [...intervals].filter(x => x !== undefined).sort((a, b) => compareDesc(a.end, b.end))[0]
 }
 
 /**
@@ -30,7 +31,7 @@ function getLastInterval(intervals: Array<Interval>) {
  */
 export function joinSchedules(...schedules: Array<Schedule>): Schedule {
     return function* (startDate, direction = "forward") {
-        if (isEmpty(schedules)) {
+        if (isArrayEmpty(schedules)) {
             return
         }
 

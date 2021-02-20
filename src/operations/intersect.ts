@@ -1,6 +1,7 @@
 import {MAX_RECURSIONS, Schedule} from "../index"
-import {compareAsc, compareDesc, directionToInt, isEmpty, isEqual} from "../functions/misc"
+import {directionToInt, isArrayEmpty} from "../functions/misc"
 import {intersectIntervals} from "../functions/intervals"
+import {compareAsc, compareDesc, isEqual, isEqualOrAfter, isEqualOrBefore} from "../functions/dateLibrary"
 
 /**
  * Intersects schedules.
@@ -10,7 +11,7 @@ import {intersectIntervals} from "../functions/intervals"
  */
 export function intersectSchedules(...schedules: Array<Schedule>): Schedule {
     return function* (startDate, direction = "forward") {
-        if (isEmpty(schedules)) {
+        if (isArrayEmpty(schedules)) {
             return
         }
 
@@ -28,7 +29,7 @@ export function intersectSchedules(...schedules: Array<Schedule>): Schedule {
                 yield intersection
                 recursions = 0
                 currentEntries = currentEntries.map((entry, i) => {
-                    if ((directionInt === 1 && entry.value.end <= intersection.end) || (directionInt === -1 && entry.value.start >= intersection.start)) {
+                    if ((directionInt === 1 && isEqualOrBefore(entry.value.end, intersection.end)) || (directionInt === -1 && isEqualOrAfter(entry.value.start, intersection.start))) {
                         return generators[i].next()
                     } else {
                         return entry

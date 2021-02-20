@@ -1,14 +1,5 @@
-import {
-    DateInfinity,
-    DateTime,
-    direction,
-    Duration,
-    InfintyDateTime,
-    Interval,
-    NegDateInfinity,
-    NegInfinityDateTime,
-    Schedule
-} from "../index"
+import {DateTime, direction, Interval, Schedule} from "../index"
+import {intervalContains} from "./dateLibrary"
 
 /**
  * Determines if an array is empty.
@@ -17,7 +8,7 @@ import {
  * @internal
  * @category Miscellaneous
  */
-export function isEmpty<T>(array: Array<T>) {
+export function isArrayEmpty<T>(array: Array<T>) {
     return array.length === 0
 }
 
@@ -36,7 +27,7 @@ export function isWithinSchedule(date: DateTime, schedule: Schedule) {
         return false
     }
 
-    return interval.contains(date)
+    return intervalContains(interval, date)
 }
 
 /**
@@ -78,34 +69,6 @@ export function* take<T>(iterable: IterableIterator<T>, n: number): IterableIter
     }
 }
 
-export function createInterval(start: DateTime, end: DateTime) {
-    return Interval.fromDateTimes(start, end)
-}
-
-export function isEqual(left: DateTime, right: DateTime) {
-    return left.equals(right)
-}
-
-export function compareAsc(left: DateTime, right: DateTime) {
-    return left > right ? 1 : -1
-}
-
-export function compareDesc(left: DateTime, right: DateTime) {
-    return left < right ? 1 : -1
-}
-
-export function addDuration(date: DateTime, duration: Duration) {
-    return date.plus(duration)
-}
-
-export function startOfDay(date: DateTime) {
-    return date.startOf('day')
-}
-
-export function addDays(date: DateTime, amount: number) {
-    return date.plus({days: amount})
-}
-
 export function parseTimeAtGivenDay(timeString: string, day: DateTime) {
     let parsedTime = DateTime.fromISO(timeString)
     return day.set({
@@ -134,16 +97,6 @@ export function differenceInMilliseconds(left: DateTime, right: DateTime) {
 
 export function setISODay(date: DateTime, day: 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7) {
     return date.set({weekday: day})
-}
-
-export function dateTimeFromDateOrNumber(date: Date | number) {
-    if (date.valueOf() === DateInfinity || date.valueOf() === Infinity) {
-        return InfintyDateTime
-    } else if (date.valueOf() === NegDateInfinity || date.valueOf() === -Infinity) {
-        return NegInfinityDateTime
-    } else {
-        return DateTime.fromJSDate(new Date(date))
-    }
 }
 
 export function parseISO(date: string): DateTime {

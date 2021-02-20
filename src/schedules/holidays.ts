@@ -1,7 +1,8 @@
 import DateHolidays, {Country, Options} from "date-holidays"
 
 import {Schedule, ScheduleFromIntervals} from "../index"
-import {createInterval, directionToInt, getYear, parseJsDateTime} from "../functions/misc"
+import {directionToInt, getYear, parseJsDateTime} from "../functions/misc"
+import {createInterval} from "../functions/dateLibrary"
 
 export function Holidays(country?: Country | string, opts?: Options): Schedule
 export function Holidays(country?: string, state?: string, opts?: Options): Schedule

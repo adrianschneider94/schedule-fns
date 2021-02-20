@@ -1,5 +1,6 @@
 import {InfintyDateTime, NegInfinityDateTime, Schedule} from "../index"
-import {createInterval, directionToInt, isEqual} from "../functions/misc"
+import {directionToInt} from "../functions/misc"
+import {createInterval, isEqual} from "../functions/dateLibrary"
 
 /**
  * Inverts a schedule

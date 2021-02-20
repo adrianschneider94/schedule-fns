@@ -1,12 +1,6 @@
 import {Schedule} from "../index"
-import {
-    addDays,
-    createInterval,
-    directionToInt,
-    isWithinInterval,
-    parseTimeAtGivenDay,
-    startOfDay
-} from "../functions/misc"
+import {directionToInt, isWithinInterval, parseTimeAtGivenDay} from "../functions/misc"
+import {addDays, createInterval, isAfter, isBefore, startOfDay} from "../functions/dateLibrary"
 
 /**
  * Creates a daily schedule.
@@ -39,7 +33,7 @@ export function DailySchedule(startTime: string, endTime: string): Schedule {
             )
             i += directionInt
 
-            if ((directionInt === 1 && startDate > interval.end) || (directionInt === -1 && startDate < interval.start)) {
+            if ((directionInt === 1 && isAfter(startDate, interval.end)) || (directionInt === -1 && isBefore(startDate, interval.start))) {
                 continue
             }
 

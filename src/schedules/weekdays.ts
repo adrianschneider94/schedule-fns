@@ -1,6 +1,6 @@
-import {invertSchedule, joinSchedules, RegularSchedule, Schedule} from "../index"
-import {setISODay, startOfDay} from "schedule-fns/functions/misc"
-import {durationFromDurationObject} from "schedule-fns/functions/durations"
+import {durationFromDurationObject, invertSchedule, joinSchedules, RegularSchedule, Schedule} from "../index"
+import {setISODay} from "../functions/misc"
+import {startOfDay} from "../functions/dateLibrary"
 
 /**
  * Returns a schedule that occurs on a weekday specified by an integer.

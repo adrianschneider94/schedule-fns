@@ -1,7 +1,10 @@
-import {ScheduleFromIntervals, shiftSchedule} from "schedule-fns"
-import {intervalFromIntervalObject} from "schedule-fns/functions/intervals"
-import {durationFromDurationObject} from "schedule-fns/functions/durations"
-import {dateTimeFromDateOrNumber} from "schedule-fns/functions/misc"
+import {
+    durationFromDurationObject,
+    intervalFromIntervalObject,
+    ScheduleFromIntervals,
+    shiftSchedule
+} from "schedule-fns"
+import {dateTimeFromDateOrNumber} from "schedule-fns/functions/dateLibrary"
 
 test('Shift schedule', () => {
     let i1 = {start: 0, end: 10000}

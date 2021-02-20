@@ -1,6 +1,5 @@
-import {invertSchedule, ScheduleFromIntervals} from "schedule-fns"
-import {intervalFromIntervalObject} from "schedule-fns/functions/intervals"
-import {dateTimeFromDateOrNumber} from "schedule-fns/functions/misc"
+import {intervalFromIntervalObject, invertSchedule, ScheduleFromIntervals} from "schedule-fns"
+import {dateTimeFromDateOrNumber} from "schedule-fns/functions/dateLibrary"
 
 test('Invert simple schedule', () => {
     let i1 = {start: 0, end: 10}

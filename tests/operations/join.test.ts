@@ -1,7 +1,11 @@
-import {joinSchedules, RegularSchedule, ScheduleFromIntervals} from "schedule-fns"
-import {intervalFromIntervalObject} from "schedule-fns/functions/intervals"
-import {dateTimeFromDateOrNumber} from "schedule-fns/functions/misc"
-import {durationFromDurationObject} from "schedule-fns/functions/durations"
+import {
+    durationFromDurationObject,
+    intervalFromIntervalObject,
+    joinSchedules,
+    RegularSchedule,
+    ScheduleFromIntervals
+} from "schedule-fns"
+import {dateTimeFromDateOrNumber} from "schedule-fns/functions/dateLibrary"
 
 test('Join single schedule', () => {
     let i1 = {start: 0, end: 1}

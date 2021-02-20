@@ -6,10 +6,10 @@ import {joinSchedules} from "./join"
  *
  * Corresponds to the logical XOR operation.
  *
- * @param scheduleLeft
- * @param scheduleRight
+ * @param left
+ * @param right
  * @category Operations
  */
-export function symmetricDifferenceOfSchedules(scheduleLeft: Schedule, scheduleRight: Schedule) {
-    return subtractSchedules(joinSchedules(scheduleLeft, scheduleRight), intersectSchedules(scheduleLeft, scheduleRight))
+export function symmetricDifferenceOfSchedules(left: Schedule, right: Schedule) {
+    return subtractSchedules(joinSchedules(left, right), intersectSchedules(left, right))
 }

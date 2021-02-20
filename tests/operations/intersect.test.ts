@@ -1,8 +1,11 @@
-import {RegularSchedule, ScheduleFromIntervals} from "schedule-fns"
+import {
+    durationFromDurationObject,
+    intervalFromIntervalObject,
+    RegularSchedule,
+    ScheduleFromIntervals
+} from "schedule-fns"
 import {intersectSchedules} from "schedule-fns/operations"
-import {intervalFromIntervalObject} from "schedule-fns/functions/intervals"
-import {dateTimeFromDateOrNumber} from "schedule-fns/functions/misc"
-import {durationFromDurationObject} from "schedule-fns/functions/durations"
+import {dateTimeFromDateOrNumber} from "schedule-fns/functions/dateLibrary"
 
 test('Intersect no schedules', () => {
     let startDate = 0

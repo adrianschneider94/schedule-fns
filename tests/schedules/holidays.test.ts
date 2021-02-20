@@ -1,5 +1,4 @@
-import {Holidays} from "schedule-fns"
-import {intervalFromISOStrings} from "schedule-fns/functions/intervals"
+import {Holidays, intervalFromISOStrings} from "schedule-fns"
 import {parseISO} from "schedule-fns/functions/misc"
 
 test('Holidays in Bavaria', () => {

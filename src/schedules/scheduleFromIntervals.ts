@@ -1,6 +1,7 @@
 import {Interval, Schedule} from "../index"
 import {mergeIntervals} from "../functions/intervals"
-import {createInterval, directionToInt, isWithinInterval} from "../functions/misc"
+import {directionToInt, isWithinInterval} from "../functions/misc"
+import {createInterval, isEqualOrAfter, isEqualOrBefore} from "../functions/dateLibrary"
 
 /**
  * Returns a schedule from the given intervals.
@@ -14,9 +15,9 @@ export function ScheduleFromIntervals(...intervals: Array<Interval>): Schedule {
         let directionInt = directionToInt(direction)
 
         if (directionInt === 1) {
-            intervals = mergeIntervals(...intervals).filter(interval => interval.end >= startDate)
+            intervals = mergeIntervals(...intervals).filter(interval => isEqualOrAfter(interval.end, startDate))
         } else {
-            intervals = mergeIntervals(...intervals).filter(interval => interval.start <= startDate).reverse()
+            intervals = mergeIntervals(...intervals).filter(interval => isEqualOrBefore(interval.start, startDate)).reverse()
         }
 
         for (const interval of intervals) {

@@ -1,5 +1,4 @@
-import {From, Until} from "schedule-fns"
-import {intervalFromIntervalObject} from "schedule-fns/functions/intervals"
+import {From, intervalFromIntervalObject, Until} from "schedule-fns"
 import {parseISO} from "schedule-fns/functions/misc"
 
 test('From', () => {

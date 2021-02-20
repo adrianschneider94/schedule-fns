@@ -1,18 +1,23 @@
-import {RegularSchedule, ScheduleFromIntervals, take} from "schedule-fns"
-import {dateTimeFromDateOrNumber, directionToInt, isEmpty, isWithinSchedule,} from "schedule-fns/functions/misc"
-import {intervalFromIntervalObject} from "schedule-fns/functions/intervals"
-import {durationFromDurationObject} from "schedule-fns/functions/durations"
+import {
+    durationFromDurationObject,
+    intervalFromIntervalObject,
+    RegularSchedule,
+    ScheduleFromIntervals,
+    take
+} from "schedule-fns"
+import {directionToInt, isArrayEmpty, isWithinSchedule} from "schedule-fns/functions/misc"
+import {dateTimeFromDateOrNumber} from "schedule-fns/functions/dateLibrary"
 
-test('Empty array', () => {
-    expect(isEmpty([])).toStrictEqual(true)
+test("Empty array", () => {
+    expect(isArrayEmpty([])).toStrictEqual(true)
 })
 
-test('Not empty array', () => {
-    expect(isEmpty([1])).toStrictEqual(false)
+test("Not empty array", () => {
+    expect(isArrayEmpty([1])).toStrictEqual(false)
 })
 
 
-test('isWithinSchedule 1', () => {
+test("isWithinSchedule 1", () => {
     let i1 = {start: 0, end: 10}
     let i2 = {start: 30, end: 40}
     let i3 = {start: 60, end: 70}
@@ -23,7 +28,7 @@ test('isWithinSchedule 1', () => {
 })
 
 
-test('isWithinSchedule 2', () => {
+test("isWithinSchedule 2", () => {
     let i1 = {start: 0, end: 10}
     let i2 = {start: 30, end: 40}
     let i3 = {start: 60, end: 70}
@@ -34,7 +39,7 @@ test('isWithinSchedule 2', () => {
 })
 
 
-test('isWithinSchedule 3', () => {
+test("isWithinSchedule 3", () => {
     let startDate = 0
     let duration = {seconds: 1}
     let period = {seconds: 2}
@@ -44,7 +49,7 @@ test('isWithinSchedule 3', () => {
     expect(isWithinSchedule(dateTimeFromDateOrNumber(date), schedule)).toBe(false)
 })
 
-test('isWithinSchedule 4', () => {
+test("isWithinSchedule 4", () => {
     let i1 = {start: 0, end: 10}
     let i2 = {start: 30, end: 40}
     let i3 = {start: 60, end: 70}
@@ -54,7 +59,7 @@ test('isWithinSchedule 4', () => {
     expect(isWithinSchedule(dateTimeFromDateOrNumber(date), schedule)).toBe(false)
 })
 
-test('directionToInt', () => {
+test("directionToInt", () => {
     expect(directionToInt("forward")).toStrictEqual(1)
     expect(directionToInt(1)).toStrictEqual(1)
     expect(directionToInt("backward")).toStrictEqual(-1)
@@ -64,7 +69,7 @@ test('directionToInt', () => {
 })
 
 
-test('take', () => {
+test("take", () => {
     let generator = function* () {
         yield 1
         yield 2
@@ -76,7 +81,7 @@ test('take', () => {
     expect(result).toStrictEqual([1, 2, 3])
 })
 
-test('take 0', () => {
+test("take 0", () => {
     let generator = function* () {
         yield 1
         yield 2
@@ -88,7 +93,7 @@ test('take 0', () => {
     expect(result).toStrictEqual([])
 })
 
-test('take -5', () => {
+test("take -5", () => {
     let generator = function* () {
         yield 1
         yield 2

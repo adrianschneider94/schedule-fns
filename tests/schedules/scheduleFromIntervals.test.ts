@@ -1,6 +1,5 @@
-import {ScheduleFromIntervals} from "schedule-fns"
-import {intervalFromIntervalObject} from "schedule-fns/functions/intervals"
-import {dateTimeFromDateOrNumber} from "schedule-fns/functions/misc"
+import {intervalFromIntervalObject, ScheduleFromIntervals} from "schedule-fns"
+import {dateTimeFromDateOrNumber} from "schedule-fns/functions/dateLibrary"
 
 test('Basic schedule from intervals', () => {
     let startDate = 0

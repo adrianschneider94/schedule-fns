@@ -1,5 +1,5 @@
-import {InfintyDateTime, DateTime, NegInfinityDateTime, Schedule, ScheduleFromIntervals} from "../index"
-import {createInterval} from "schedule-fns/functions/misc"
+import {DateTime, InfintyDateTime, NegInfinityDateTime, Schedule, ScheduleFromIntervals} from "../index"
+import {createInterval} from "../functions/dateLibrary"
 
 export function From(startDate: DateTime): Schedule {
     return ScheduleFromIntervals(createInterval(startDate, InfintyDateTime))

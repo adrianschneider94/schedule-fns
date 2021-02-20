@@ -1,12 +1,7 @@
-import {DateTime, Duration, Schedule} from "../index"
-import {addDurations, durationToMilliseconds, multiplyDuration} from "../functions/durations"
-import {
-    addDuration,
-    createInterval,
-    differenceInMilliseconds,
-    directionToInt,
-    isWithinInterval
-} from "../functions/misc"
+import {DateTime, Duration, durationToMilliseconds, multiplyDuration, Schedule} from "../index"
+import {addDurations} from "../functions/durations"
+import {differenceInMilliseconds, directionToInt, isWithinInterval} from "../functions/misc"
+import {addDuration, createInterval, isBefore} from "../functions/dateLibrary"
 
 /**
  * Constructs a regularly occurring schedule.
@@ -29,7 +24,7 @@ export function RegularSchedule(oneStartMoment: DateTime, duration: Duration, pe
         if (oneStartMoment <= startDate) {
             numberOfPeriods = Math.floor(differenceInMilliseconds(startDate, oneStartMoment) / durationToMilliseconds(period))
 
-            if (directionInt === 1 && addDuration(oneStartMoment, addDurations(multiplyDuration(period, numberOfPeriods), duration)) <= startDate) {
+            if (directionInt === 1 && isBefore(addDuration(oneStartMoment, addDurations(multiplyDuration(period, numberOfPeriods), duration)), startDate, true)) {
                 numberOfPeriods += 1
             }
         }
