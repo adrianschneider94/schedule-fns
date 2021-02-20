@@ -1,7 +1,7 @@
-import {intervalFromIntervalObject, ScheduleFromIntervals} from "schedule-fns"
-import {dateTimeFromDateOrNumber} from "schedule-fns/functions/dateLibrary"
+import {intervalFromIntervalObject, ScheduleFromIntervals} from "schedule.js"
+import {dateTimeFromDateOrNumber} from "schedule.js/functions/dateLibrary"
 
-test('Basic schedule from intervals', () => {
+test("Basic schedule from intervals", () => {
     let startDate = 0
     let intervals = [
         intervalFromIntervalObject({start: 0, end: 10}),
@@ -25,14 +25,14 @@ test('Basic schedule from intervals', () => {
     expect(generator.next()).toStrictEqual({value: undefined, done: true})
 })
 
-test('Schedule from empty list of intervals', () => {
+test("Schedule from empty list of intervals", () => {
     let startDate = 0
     let schedule = ScheduleFromIntervals()
     let generator = schedule(dateTimeFromDateOrNumber(startDate))
     expect(generator.next()).toStrictEqual({value: undefined, done: true})
 })
 
-test('Schedule from intervals with startDate in interval', () => {
+test("Schedule from intervals with startDate in interval", () => {
     let startDate = 25
     let intervals = [
         intervalFromIntervalObject({start: 0, end: 10}),
@@ -51,7 +51,7 @@ test('Schedule from intervals with startDate in interval', () => {
     expect(generator.next()).toStrictEqual({value: undefined, done: true})
 })
 
-test('Schedule from intervals with startDate after all intervals', () => {
+test("Schedule from intervals with startDate after all intervals", () => {
     let startDate = 35
     let intervals = [
         intervalFromIntervalObject({start: 0, end: 10}),
@@ -64,7 +64,7 @@ test('Schedule from intervals with startDate after all intervals', () => {
     expect(generator.next()).toStrictEqual({value: undefined, done: true})
 })
 
-test('Basic schedule from intervals, reverse direction', () => {
+test("Basic schedule from intervals, reverse direction", () => {
     let startDate = 50
     let intervals = [
         intervalFromIntervalObject({start: 0, end: 10}),
@@ -88,7 +88,7 @@ test('Basic schedule from intervals, reverse direction', () => {
     expect(generator.next()).toStrictEqual({value: undefined, done: true})
 })
 
-test('Basic schedule from intervals, reverse direction, startDate in interval', () => {
+test("Basic schedule from intervals, reverse direction, startDate in interval", () => {
     let startDate = 25
     let intervals = [
         intervalFromIntervalObject({start: 0, end: 10}),

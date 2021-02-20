@@ -1,4 +1,4 @@
-import {durationFromDurationObject, Mondays, parseISO, shiftSchedule, take} from "schedule-fns"
+import {durationFromDurationObject, Mondays, parseISO, shiftSchedule, take} from "schedule.js"
 
 let mondayNoonToTuesdayNoon = shiftSchedule(Mondays(), durationFromDurationObject({hours: 12}))
 

@@ -1,7 +1,7 @@
-import {intervalFromIntervalObject, ScheduleFromIntervals, subtractSchedules} from "schedule-fns"
-import {dateTimeFromDateOrNumber} from "schedule-fns/functions/dateLibrary"
+import {intervalFromIntervalObject, ScheduleFromIntervals, subtractSchedules} from "schedule.js"
+import {dateTimeFromDateOrNumber} from "schedule.js/functions/dateLibrary"
 
-test('Subtract schedules', () => {
+test("Subtract schedules", () => {
     let i1 = {start: 0, end: 10}
     let i2_1 = {start: 2, end: 3}
     let i2_2 = {start: 4, end: 5}

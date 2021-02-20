@@ -1,7 +1,7 @@
-import {From, intervalFromIntervalObject, Until} from "schedule-fns"
-import {parseISO} from "schedule-fns/functions/misc"
+import {From, intervalFromIntervalObject, Until} from "schedule.js"
+import {parseISO} from "schedule.js/functions/misc"
 
-test('From', () => {
+test("From", () => {
     let startDate = parseISO("2020-09-01T13:00Z")
     let schedule = From(startDate)
 
@@ -16,7 +16,7 @@ test('From', () => {
     expect(generator.next().value).toBeSameIntervalAs(intervalFromIntervalObject(e2))
 })
 
-test('Until', () => {
+test("Until", () => {
     let endDate = parseISO("2020-09-01T14:00Z")
     let schedule = Until(endDate)
 

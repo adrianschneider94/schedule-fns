@@ -1,4 +1,4 @@
-import {DailySchedule, Holidays, joinSchedules, subtractSchedules, Weekends} from "schedule-fns"
+import {DailySchedule, Holidays, joinSchedules, subtractSchedules, Weekends} from "schedule.js"
 
 // Define the schedule: Mo-Fr, 08:00-17:00, break from 12:30 to 13:30
 // Our worker doesn't work on weekends and holidays.

@@ -1,4 +1,4 @@
-import {Holidays, parseISO, take} from "schedule-fns"
+import {Holidays, parseISO, take} from "schedule.js"
 
 let publicHolidaysInBavaria = Holidays("DE", "BY", {types: ["public"]})
 

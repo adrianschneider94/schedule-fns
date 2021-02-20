@@ -1,4 +1,4 @@
-import {Mondays, parseISO, take, Weekends, WorkingDays} from "schedule-fns"
+import {Mondays, parseISO, take, Weekends, WorkingDays} from "schedule.js"
 
 let startDate = parseISO("2020-09-01T00:00Z")
 

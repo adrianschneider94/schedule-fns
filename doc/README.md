@@ -1,4 +1,4 @@
-# schedule-fns
+# schedule.js
 
 This package provides functions to work with schedules (work hours, opening hours etc.).
 
@@ -10,7 +10,7 @@ This package provides functions to work with schedules (work hours, opening hour
 
 ## Installation
 
-    npm i schedule-fns
+    npm i schedule.js
     
 ## Example
 
@@ -117,7 +117,7 @@ The signature of `Holidays` matches the signature of date-holidays `init` method
 
 ## Implementation
 ### Definition of a schedule
-The basis of schedule-fns is the definition of a schedule:
+The basis of schedule.js is the definition of a schedule:
 
 ```typescript
 type Schedule = (startDate: Date | number, direction?: direction) => IterableIterator<Interval>

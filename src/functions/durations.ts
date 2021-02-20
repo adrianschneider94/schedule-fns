@@ -6,7 +6,7 @@ import {
     intervalContains,
     intervalToMilliseconds,
     isEqual
-} from "schedule-fns/functions/dateLibrary"
+} from "./dateLibrary"
 
 
 export type DurationObject = {

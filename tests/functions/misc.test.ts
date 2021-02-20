@@ -4,9 +4,9 @@ import {
     RegularSchedule,
     ScheduleFromIntervals,
     take
-} from "schedule-fns"
-import {directionToInt, isArrayEmpty, isWithinSchedule} from "schedule-fns/functions/misc"
-import {dateTimeFromDateOrNumber} from "schedule-fns/functions/dateLibrary"
+} from "schedule.js"
+import {directionToInt, isArrayEmpty, isWithinSchedule} from "schedule.js/functions/misc"
+import {dateTimeFromDateOrNumber} from "schedule.js/functions/dateLibrary"
 
 test("Empty array", () => {
     expect(isArrayEmpty([])).toStrictEqual(true)

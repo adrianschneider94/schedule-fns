@@ -4,10 +4,10 @@ import {
     joinSchedules,
     RegularSchedule,
     ScheduleFromIntervals
-} from "schedule-fns"
-import {dateTimeFromDateOrNumber} from "schedule-fns/functions/dateLibrary"
+} from "schedule.js"
+import {dateTimeFromDateOrNumber} from "schedule.js/functions/dateLibrary"
 
-test('Join single schedule', () => {
+test("Join single schedule", () => {
     let i1 = {start: 0, end: 1}
     let i2 = {start: 2, end: 3}
     let startDate = 0
@@ -30,7 +30,7 @@ test('Join single schedule', () => {
     expect(generator.next()).toStrictEqual({value: undefined, done: true})
 })
 
-test('Join two simple schedules', () => {
+test("Join two simple schedules", () => {
     let i1_1 = {start: 0, end: 10}
     let i1_2 = {start: 19, end: 30}
     let i2 = {start: 9, end: 20}
@@ -49,7 +49,7 @@ test('Join two simple schedules', () => {
     expect(generator.next()).toStrictEqual({value: undefined, done: true})
 })
 
-test('Join three simple schedules', () => {
+test("Join three simple schedules", () => {
     let i1_1 = {start: 0, end: 1}
     let i1_2 = {start: 3, end: 4}
     let i2_1 = {start: 1, end: 2}
@@ -77,7 +77,7 @@ test('Join three simple schedules', () => {
     expect(generator.next()).toStrictEqual({value: undefined, done: true})
 })
 
-test('Join three simple schedules, reverse order', () => {
+test("Join three simple schedules, reverse order", () => {
     let i1_1 = {start: 0, end: 1}
     let i1_2 = {start: 3, end: 4}
 
@@ -109,7 +109,7 @@ test('Join three simple schedules, reverse order', () => {
     expect(generator.next()).toStrictEqual({value: undefined, done: true})
 })
 
-test('Join two schedules (with infinity)', () => {
+test("Join two schedules (with infinity)", () => {
     let i1 = {start: 0, end: Infinity}
     let i2 = {start: 1, end: 2}
     let startDate = -10
@@ -127,7 +127,7 @@ test('Join two schedules (with infinity)', () => {
     expect(generator.next()).toStrictEqual({value: undefined, done: true})
 })
 
-test('Join two schedules (one long-running)', () => {
+test("Join two schedules (one long-running)", () => {
     let i1 = {start: 0, end: 1000}
     let i2_1 = {start: 1, end: 2}
     let i2_2 = {start: 3, end: 4}
@@ -153,7 +153,7 @@ test('Join two schedules (one long-running)', () => {
     expect(generator.next()).toStrictEqual({value: undefined, done: true})
 })
 
-test('Join no schedules', () => {
+test("Join no schedules", () => {
     let startDate = 0
 
     let joinedSchedule = joinSchedules()
@@ -161,7 +161,7 @@ test('Join no schedules', () => {
     expect(generator.next()).toStrictEqual({value: undefined, done: true})
 })
 
-test('Join schedules: Reach maximal number of recursions', () => {
+test("Join schedules: Reach maximal number of recursions", () => {
     let sd = 0
     let d = {seconds: 1}
     let p = {seconds: 2}

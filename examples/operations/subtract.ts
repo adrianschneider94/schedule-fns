@@ -1,4 +1,4 @@
-import {DailySchedule, parseISO, subtractSchedules, take} from "schedule-fns"
+import {DailySchedule, parseISO, subtractSchedules, take} from "schedule.js"
 
 let workHours = DailySchedule("08:00", "17:00")
 let breaks = DailySchedule("12:30", "13:30")

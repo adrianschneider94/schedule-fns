@@ -1,7 +1,7 @@
-import {intervalFromIntervalObject, ScheduleFromIntervals, symmetricDifferenceOfSchedules} from "schedule-fns"
-import {dateTimeFromDateOrNumber} from "schedule-fns/functions/dateLibrary"
+import {intervalFromIntervalObject, ScheduleFromIntervals, symmetricDifferenceOfSchedules} from "schedule.js"
+import {dateTimeFromDateOrNumber} from "schedule.js/functions/dateLibrary"
 
-test('Symmetric difference of schedules', () => {
+test("Symmetric difference of schedules", () => {
     let i1 = {start: 0, end: 2}
     let i2 = {start: 1, end: 3}
     let startDate = 0

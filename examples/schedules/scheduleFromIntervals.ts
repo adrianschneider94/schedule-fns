@@ -1,4 +1,4 @@
-import {Interval, intervalFromISOStrings, parseISO, ScheduleFromIntervals, take} from "schedule-fns"
+import {Interval, intervalFromISOStrings, parseISO, ScheduleFromIntervals, take} from "schedule.js"
 
 
 let intervals: Array<Interval> = [

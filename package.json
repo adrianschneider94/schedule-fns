@@ -1,6 +1,6 @@
 {
-  "name": "schedule-fns",
-  "version": "1.1.0",
+  "name": "schedule.js",
+  "version": "1.2.0",
   "keywords": [
     "schedules",
     "work shift",
@@ -11,18 +11,18 @@
   ],
   "author": "Adrian Schneider",
   "license": "MIT",
-  "description": "Schedule-fns provides a set of functions to work with schedules (e.g. work shifts).",
+  "description": "schedule.js provides a set of functions to work with schedules (e.g. work shifts).",
   "main": "lib/src/index.js",
   "types": "lib/src/index.d.ts",
   "repository": {
     "type": "git",
-    "url": "https://github.com/adrianschneider94/schedule-fns.git"
+    "url": "https://github.com/adrianschneider94/schedule.js.git"
   },
   "scripts": {
     "build": "tsc",
     "prepare": "npm run build",
     "prepublishOnly": "npm run test",
-    "browserify": "npm run build && browserify --standalone scheduleFns ./lib/src/index.js > ./lib/schedule-fns.min.js",
+    "browserify": "npm run build && browserify --standalone scheduleFns ./lib/src/index.js > ./lib/schedule.js.min.js",
     "test": "jest",
     "coverage": "jest --coverage",
     "generateReadme": "node generateReadme.js && git add README.md"

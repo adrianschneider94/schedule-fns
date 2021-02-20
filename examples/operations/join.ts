@@ -1,4 +1,4 @@
-import {joinSchedules, parseISO, take, Thursdays, Weekends} from "schedule-fns"
+import {joinSchedules, parseISO, take, Thursdays, Weekends} from "schedule.js"
 
 let weekendOrThursday = joinSchedules(Weekends(), Thursdays())
 

@@ -5,8 +5,8 @@ import {
     intersectIntervals,
     joinIntervals,
     mergeIntervals
-} from "schedule-fns/functions/intervals"
-import {intervalFromIntervalObject} from "schedule-fns"
+} from "schedule.js/functions/intervals"
+import {intervalFromIntervalObject} from "schedule.js"
 
 test("Two connected intervals", () => {
     let interval1 = {start: 0, end: 11}

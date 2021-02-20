@@ -1,4 +1,4 @@
-import {durationFromDurationObject, parseISO, RegularSchedule, take} from "schedule-fns"
+import {durationFromDurationObject, parseISO, RegularSchedule, take} from "schedule.js"
 
 let newYear = parseISO("2020-01-01T00:00:00.000+0100")
 let everySixWeeksForOneDay = RegularSchedule(newYear, durationFromDurationObject({days: 1}), durationFromDurationObject({weeks: 6}))

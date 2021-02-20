@@ -11,9 +11,9 @@ import {
     Wednesdays,
     Weekends,
     WorkingDays
-} from "schedule-fns"
-import {OnSpecificWeekday} from "schedule-fns/schedules/weekdays"
-import {parseISO} from "schedule-fns/functions/misc"
+} from "schedule.js"
+import {OnSpecificWeekday} from "schedule.js/schedules/weekdays"
+import {parseISO} from "schedule.js/functions/misc"
 
 test("SpecificDay", () => {
     let schedule = OnSpecificWeekday(1)

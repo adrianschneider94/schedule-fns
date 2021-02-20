@@ -5,9 +5,9 @@ import {
     multiplyDuration,
     RegularSchedule,
     ScheduleFromIntervals
-} from "schedule-fns"
-import {addDurations, addDurationWithinSchedule} from "schedule-fns/functions/durations"
-import {dateTimeFromDateOrNumber} from "schedule-fns/functions/dateLibrary"
+} from "schedule.js"
+import {addDurations, addDurationWithinSchedule} from "schedule.js/functions/durations"
+import {dateTimeFromDateOrNumber} from "schedule.js/functions/dateLibrary"
 
 test("durationToMilliseconds: 5 hours, 6 minutes, 7 seconds", () => {
     let input = {

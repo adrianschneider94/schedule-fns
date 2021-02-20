@@ -1,7 +1,7 @@
-import {intervalFromIntervalObject, invertSchedule, ScheduleFromIntervals} from "schedule-fns"
-import {dateTimeFromDateOrNumber} from "schedule-fns/functions/dateLibrary"
+import {intervalFromIntervalObject, invertSchedule, ScheduleFromIntervals} from "schedule.js"
+import {dateTimeFromDateOrNumber} from "schedule.js/functions/dateLibrary"
 
-test('Invert simple schedule', () => {
+test("Invert simple schedule", () => {
     let i1 = {start: 0, end: 10}
     let i2 = {start: 20, end: 30}
     let startDate = 0
@@ -24,7 +24,7 @@ test('Invert simple schedule', () => {
     expect(generator.next()).toStrictEqual({value: undefined, done: true})
 })
 
-test('Invert empty schedule', () => {
+test("Invert empty schedule", () => {
     let startDate = 0
     let e = {start: 0, end: Infinity}
 
@@ -101,7 +101,7 @@ test("Invert schedule, reverse order", () => {
     expect(generator.next()).toStrictEqual({value: undefined, done: true})
 })
 
-test('Invert empty schedule, reverse direction', () => {
+test("Invert empty schedule, reverse direction", () => {
     let startDate = 50
     let e1 = {start: -Infinity, end: 50}
 

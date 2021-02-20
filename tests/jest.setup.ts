@@ -1,6 +1,6 @@
-import {DateTime, Duration, Interval} from "schedule-fns"
+import {DateTime, Duration, Interval} from "schedule.js"
 import {Settings} from "luxon"
-import {isEqual} from "schedule-fns/functions/dateLibrary"
+import {isEqual} from "schedule.js/functions/dateLibrary"
 import CustomMatcherResult = jest.CustomMatcherResult
 
 Settings.defaultZoneName = "Europe/Berlin"

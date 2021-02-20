@@ -1,7 +1,7 @@
-import {Holidays, intervalFromISOStrings} from "schedule-fns"
-import {parseISO} from "schedule-fns/functions/misc"
+import {Holidays, intervalFromISOStrings} from "schedule.js"
+import {parseISO} from "schedule.js/functions/misc"
 
-test('Holidays in Bavaria', () => {
+test("Holidays in Bavaria", () => {
     let schedule = Holidays("DE", "BY", {types: ["public"]})
 
     let generator = schedule(parseISO("2019-12-26T05:00:00.000+0100"))
@@ -32,7 +32,7 @@ test('Holidays in Bavaria', () => {
     expect(value.value).toBeSameIntervalAs(intervalFromISOStrings(e3))
 })
 
-test('Holidays in Bavaria, backward', () => {
+test("Holidays in Bavaria, backward", () => {
     let schedule = Holidays("DE", "BY", {types: ["public"]})
 
     let generator = schedule(parseISO("2020-01-01T05:00:00.000+0100"), "backward")

@@ -1,4 +1,4 @@
-import {DailySchedule, intersectSchedules, Mondays, parseISO, take} from "schedule-fns"
+import {DailySchedule, intersectSchedules, Mondays, parseISO, take} from "schedule.js"
 
 let mondayEvenings = intersectSchedules(DailySchedule("20:00", "00:00"), Mondays())
 

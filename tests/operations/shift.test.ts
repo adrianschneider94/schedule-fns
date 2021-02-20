@@ -1,12 +1,7 @@
-import {
-    durationFromDurationObject,
-    intervalFromIntervalObject,
-    ScheduleFromIntervals,
-    shiftSchedule
-} from "schedule-fns"
-import {dateTimeFromDateOrNumber} from "schedule-fns/functions/dateLibrary"
+import {durationFromDurationObject, intervalFromIntervalObject, ScheduleFromIntervals, shiftSchedule} from "schedule.js"
+import {dateTimeFromDateOrNumber} from "schedule.js/functions/dateLibrary"
 
-test('Shift schedule', () => {
+test("Shift schedule", () => {
     let i1 = {start: 0, end: 10000}
     let i2 = {start: 20000, end: 30000}
     let d = {seconds: 1}
@@ -25,7 +20,7 @@ test('Shift schedule', () => {
     expect(entry.value).toBeSameIntervalAs(intervalFromIntervalObject(e2))
 })
 
-test('Shift schedule backward', () => {
+test("Shift schedule backward", () => {
     let i1 = {start: 0, end: 10000}
     let i2 = {start: 20000, end: 30000}
     let d = {seconds: 1}

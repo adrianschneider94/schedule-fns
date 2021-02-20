@@ -1,7 +1,7 @@
-import {durationFromDurationObject, intervalFromIntervalObject, RegularSchedule} from "schedule-fns"
-import {dateTimeFromDateOrNumber} from "schedule-fns/functions/dateLibrary"
+import {durationFromDurationObject, intervalFromIntervalObject, RegularSchedule} from "schedule.js"
+import {dateTimeFromDateOrNumber} from "schedule.js/functions/dateLibrary"
 
-test('RegularSchedule', () => {
+test("RegularSchedule", () => {
     let sD = 0
     let d = {seconds: 1}
     let p = {seconds: 2}
@@ -27,7 +27,7 @@ test('RegularSchedule', () => {
     expect(value.value).toBeSameIntervalAs(intervalFromIntervalObject(e3))
 })
 
-test('RegularSchedule with offset start 1', () => {
+test("RegularSchedule with offset start 1", () => {
     let sD = 0
     let d = {seconds: 1}
     let p = {seconds: 2}
@@ -49,7 +49,7 @@ test('RegularSchedule with offset start 1', () => {
     expect(value.value).toBeSameIntervalAs(intervalFromIntervalObject(e2))
 })
 
-test('RegularSchedule with offset start 2', () => {
+test("RegularSchedule with offset start 2", () => {
     let sD = 0
     let d = {seconds: 1}
     let p = {seconds: 2}
@@ -71,7 +71,7 @@ test('RegularSchedule with offset start 2', () => {
 })
 
 
-test('RegularSchedule backward', () => {
+test("RegularSchedule backward", () => {
     let sD = 0
     let d = {seconds: 1}
     let p = {seconds: 2}

@@ -1,4 +1,4 @@
-# schedule-fns
+# schedule.js
 
 This package provides functions to work with schedules (work hours, opening hours etc.).
 
@@ -10,12 +10,12 @@ This package provides functions to work with schedules (work hours, opening hour
 
 ## Installation
 
-    npm i schedule-fns
+    npm i schedule.js
     
 ## Example
 
 ```typescript
-import {DailySchedule, Holidays, joinSchedules, subtractSchedules, Weekends} from "schedule-fns"
+import {DailySchedule, Holidays, joinSchedules, subtractSchedules, Weekends} from "schedule.js"
 
 // Define the schedule: Mo-Fr, 08:00-17:00, break from 12:30 to 13:30
 // Our worker doesn't work on weekends and holidays.
@@ -53,7 +53,7 @@ let schedule = subtractSchedules(workHours, joinSchedules(weekends, breaks, holi
 #### Daily Schedule
 
 ```typescript
-import {DailySchedule, parseISO, take} from "schedule-fns"
+import {DailySchedule, parseISO, take} from "schedule.js"
 
 let startDate = parseISO("2020-09-01T00:00Z")
 
@@ -66,7 +66,7 @@ for (let interval of take(workHours(startDate), 3)) {
 // 2020-09-03T08:00:00.000+02:00/2020-09-03T17:00:00.000+02:00
 
 
-// Normally schedule-fns will take the local time zone. However you can specify
+// Normally schedule.js will take the local time zone. However you can specify
 // a custom IANA time zone.
 let workHoursInTokyo = DailySchedule("08:00", "21:00", {timeZone: "Asia/Tokyo"})
 for (let interval of take(workHoursInTokyo(startDate), 3)) {
@@ -79,7 +79,7 @@ for (let interval of take(workHoursInTokyo(startDate), 3)) {
 
 #### Regular Schedule
 ```typescript
-import {durationFromDurationObject, parseISO, RegularSchedule, take} from "schedule-fns"
+import {durationFromDurationObject, parseISO, RegularSchedule, take} from "schedule.js"
 
 let newYear = parseISO("2020-01-01T00:00:00.000+0100")
 let everySixWeeksForOneDay = RegularSchedule(newYear, durationFromDurationObject({days: 1}), durationFromDurationObject({weeks: 6}))
@@ -96,7 +96,7 @@ for (let interval of take(everySixWeeksForOneDay(startDate), 3)) {
 #### Schedule from Intervals
 
 ```typescript
-import {Interval, intervalFromISOStrings, parseISO, ScheduleFromIntervals, take} from "schedule-fns"
+import {Interval, intervalFromISOStrings, parseISO, ScheduleFromIntervals, take} from "schedule.js"
 
 
 let intervals: Array<Interval> = [
@@ -121,7 +121,7 @@ for (let interval of take(myHolidays(startDate), 3)) {
 
 #### Holidays
 ```typescript
-import {Holidays, parseISO, take} from "schedule-fns"
+import {Holidays, parseISO, take} from "schedule.js"
 
 let publicHolidaysInBavaria = Holidays("DE", "BY", {types: ["public"]})
 
@@ -139,7 +139,7 @@ The signature of `Holidays` matches the signature of date-holidays `init` method
 
 #### Weekdays
 ```typescript
-import {Mondays, parseISO, take, Weekends, WorkingDays} from "schedule-fns"
+import {Mondays, parseISO, take, Weekends, WorkingDays} from "schedule.js"
 
 let startDate = parseISO("2020-09-01T00:00Z")
 
@@ -178,7 +178,7 @@ for (let interval of take(workingDaysInTokyo(startDate), 3)) {
 
 #### Simple Schedules
 ```typescript
-import {From, parseISO, Until} from "schedule-fns"
+import {From, parseISO, Until} from "schedule.js"
 
 let from = From(parseISO("2020-09-01T00:00Z"))
 console.log(from(parseISO("2020-08-01T00:00Z")).next().value.toISO())
@@ -192,7 +192,7 @@ console.log(until(parseISO("2020-08-01T00:00Z")).next().value.toISO())
 ### Operations
 #### Invert
 ```typescript
-import {DailySchedule, invertSchedule, parseISO, take} from "schedule-fns"
+import {DailySchedule, invertSchedule, parseISO, take} from "schedule.js"
 
 let workHours = DailySchedule("08:00", "17:00")
 let offHours = invertSchedule(workHours)
@@ -208,7 +208,7 @@ for (let interval of take(offHours(startDate), 3)) {
 ```
 #### Join
 ```typescript
-import {joinSchedules, parseISO, take, Thursdays, Weekends} from "schedule-fns"
+import {joinSchedules, parseISO, take, Thursdays, Weekends} from "schedule.js"
 
 let weekendOrThursday = joinSchedules(Weekends(), Thursdays())
 
@@ -224,7 +224,7 @@ for (let interval of take(weekendOrThursday(startDate), 3)) {
 
 #### Intersect
 ```typescript
-import {DailySchedule, intersectSchedules, Mondays, parseISO, take} from "schedule-fns"
+import {DailySchedule, intersectSchedules, Mondays, parseISO, take} from "schedule.js"
 
 let mondayEvenings = intersectSchedules(DailySchedule("20:00", "00:00"), Mondays())
 
@@ -239,7 +239,7 @@ for (let interval of take(mondayEvenings(startDate), 3)) {
 
 #### Subtract
 ```typescript
-import {DailySchedule, parseISO, subtractSchedules, take} from "schedule-fns"
+import {DailySchedule, parseISO, subtractSchedules, take} from "schedule.js"
 
 let workHours = DailySchedule("08:00", "17:00")
 let breaks = DailySchedule("12:30", "13:30")
@@ -256,7 +256,7 @@ for (let interval of take(workTime(startDate), 3)) {
 
 #### Symmetric Difference
 ```typescript
-import {DailySchedule, parseISO, symmetricDifferenceOfSchedules, take} from "schedule-fns"
+import {DailySchedule, parseISO, symmetricDifferenceOfSchedules, take} from "schedule.js"
 
 let hoursWorker1 = DailySchedule("08:00", "17:00")
 let hoursWorker2 = DailySchedule("09:00", "18:00")
@@ -273,7 +273,7 @@ for (let interval of take(onlyOneWorkerAvailable(startDate), 3)) {
 
 #### Shift
 ```typescript
-import {durationFromDurationObject, Mondays, parseISO, shiftSchedule, take} from "schedule-fns"
+import {durationFromDurationObject, Mondays, parseISO, shiftSchedule, take} from "schedule.js"
 
 let mondayNoonToTuesdayNoon = shiftSchedule(Mondays(), durationFromDurationObject({hours: 12}))
 
@@ -289,7 +289,7 @@ for (let interval of take(mondayNoonToTuesdayNoon(startDate), 3)) {
 ### Miscellaneous
 #### Add Duration
 ```typescript
-import {addDurationWithinSchedule, DailySchedule, durationFromDurationObject, parseISO} from "schedule-fns"
+import {addDurationWithinSchedule, DailySchedule, durationFromDurationObject, parseISO} from "schedule.js"
 
 let schedule = DailySchedule("08:00", "17:00")
 let projectEnd = addDurationWithinSchedule(parseISO("2020-09-01T10:00:00Z"), durationFromDurationObject({hours: 13}), schedule)
@@ -299,7 +299,7 @@ console.log(projectEnd.toISO())
 ```
 #### isWithinSchedule
 ```typescript
-import {DailySchedule, isWithinSchedule, parseISO} from "schedule-fns"
+import {DailySchedule, isWithinSchedule, parseISO} from "schedule.js"
 
 let schedule = DailySchedule("08:00", "17:00")
 console.log(isWithinSchedule(parseISO("2020-01-08T11:00:00.000+0100"), schedule)) // true
@@ -309,7 +309,7 @@ console.log(isWithinSchedule(parseISO("2020-01-08T03:00:00.000+0100"), schedule)
 
 ## Implementation
 ### Definition of a schedule
-The basis of schedule-fns is the definition of a schedule:
+The basis of schedule.js is the definition of a schedule:
 
 ```typescript
 type Schedule = (startDate: Date | number, direction?: direction) => IterableIterator<Interval>

@@ -1,5 +1,5 @@
-import {DailySchedule, intervalFromISOStrings} from "schedule-fns"
-import {parseISO} from "schedule-fns/functions/misc"
+import {DailySchedule, intervalFromISOStrings} from "schedule.js"
+import {parseISO} from "schedule.js/functions/misc"
 
 test("Daily schedule", () => {
     let startDate = "2020-01-01T20:00:00Z"

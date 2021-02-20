@@ -12,10 +12,10 @@
     "outDir": "./lib",
     "baseUrl": "./",
     "paths": {
-      "schedule-fns": [
+      "schedule.js": [
         "src"
       ],
-      "schedule-fns/*": [
+      "schedule.js/*": [
         "src/*"
       ]
     },

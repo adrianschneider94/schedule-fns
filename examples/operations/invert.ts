@@ -1,4 +1,4 @@
-import {DailySchedule, invertSchedule, parseISO, take} from "schedule-fns"
+import {DailySchedule, invertSchedule, parseISO, take} from "schedule.js"
 
 let workHours = DailySchedule("08:00", "17:00")
 let offHours = invertSchedule(workHours)

@@ -1,4 +1,4 @@
-import {From, parseISO, Until} from "schedule-fns"
+import {From, parseISO, Until} from "schedule.js"
 
 let from = From(parseISO("2020-09-01T00:00Z"))
 console.log(from(parseISO("2020-08-01T00:00Z")).next().value.toISO())
