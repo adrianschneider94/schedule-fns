@@ -1,7 +1,6 @@
 # schedule-fns
 
 This package provides functions to work with schedules (work hours, opening hours etc.).
-Its implementation and style are based on [date-fns](https://github.com/date-fns/date-fns).
 
 ## Contents
 * [Installation](#installation)
