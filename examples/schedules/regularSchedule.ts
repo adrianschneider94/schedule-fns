@@ -1,9 +1,11 @@
-import {durationFromDurationObject, parseISO, RegularSchedule, take} from "schedule.js"
+import {DateTime, Duration} from "luxon"
+import {RegularSchedule} from "schedule.js/luxon"
+import {take} from "schedule.js/functions"
 
-let newYear = parseISO("2020-01-01T00:00:00.000+0100")
-let everySixWeeksForOneDay = RegularSchedule(newYear, durationFromDurationObject({days: 1}), durationFromDurationObject({weeks: 6}))
+let newYear = DateTime.fromISO("2020-01-01T00:00:00.000+0100")
+let everySixWeeksForOneDay = RegularSchedule(newYear, Duration.fromObject({days: 1}), Duration.fromObject({weeks: 6}))
 
-let startDate = parseISO("2020-09-01T00:00Z")
+let startDate = DateTime.fromISO("2020-09-01T00:00Z")
 for (let interval of take(everySixWeeksForOneDay(startDate), 3)) {
     console.log(interval.toISO())
 }

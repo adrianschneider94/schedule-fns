@@ -1,15 +1,13 @@
-import {intersectSchedules, Schedule, subtractSchedules} from "../index"
-import {joinSchedules} from "./join"
+import {DateTimeImplementation, Schedule} from "../index"
 
-/**
- * Returns the symmetric difference of two schedules (i.e. those parts of time, where exactly on schedule is on).
- *
- * Corresponds to the logical XOR operation.
- *
- * @param left
- * @param right
- * @category Operations
- */
-export function symmetricDifferenceOfSchedules(left: Schedule, right: Schedule) {
-    return subtractSchedules(joinSchedules(left, right), intersectSchedules(left, right))
-}
+import {joinSchedules} from "./join"
+import {subtractSchedules} from "./subtract"
+import {intersectSchedules} from "./intersect"
+
+export const symmetricDifferenceOfSchedules = (
+    <DT, I, D>(impl: DateTimeImplementation<DT, I, D>) =>
+
+        function (left: Schedule<DT, I, D>, right: Schedule<DT, I, D>): Schedule<DT, I, D> {
+            return subtractSchedules(impl)(joinSchedules(impl)(left, right), intersectSchedules(impl)(left, right))
+        }
+)

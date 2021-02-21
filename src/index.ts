@@ -1,29 +1,5 @@
-import {DateTime as LuxonDateTime, Duration as LuxonDuration, Interval as LuxonInterval} from "luxon"
-
-/**
- * A moment in time
- *
- * @category Definitions
- */
-export type DateTime = LuxonDateTime
-export const DateTime = LuxonDateTime
-
-
-/**
- * A time interval
- *
- * @category Definitions
- */
-export type Interval = LuxonInterval
-export const Interval = LuxonInterval
-
-/**
- * A duration.
- *
- * @category Definitions
- */
-export type Duration = LuxonDuration
-export const Duration = LuxonDuration
+import {DurationObject} from "schedule.js/functions/durations"
+import {IntervalAsISOStrings, IntervalObject} from "schedule.js/functions/intervals"
 
 /**
  * The maximal number of recursions before an error is thrown.
@@ -31,17 +7,6 @@ export const Duration = LuxonDuration
  * @internal
  */
 export const MAX_RECURSIONS = 1000
-
-/**
- * Describes the maximal date in javascript.
- *
- * @internal
- */
-export const DateInfinity = 253402300799999
-export const NegDateInfinity = -253402300799999
-
-export const InfintyDateTime = LuxonDateTime.fromMillis(DateInfinity)
-export const NegInfinityDateTime = LuxonDateTime.fromMillis(NegDateInfinity)
 
 /**
  * The direction in time. "forward" or 1 means into the future, "backward" or -1 into the past-
@@ -61,8 +26,79 @@ export type direction = "forward" | "backward" | 1 | -1
  *
  * @category Definitions
  */
-export type Schedule = (startDate: DateTime, direction?: direction) => IterableIterator<Interval>
+export type Schedule<DateTime, Interval, Duration> = (startDate: DateTime, direction?: direction) => IterableIterator<Interval>
 
-export * from "./schedules"
-export * from "./operations"
-export * from "./functions"
+export interface DateTimeImplementation<DateTime, Interval, Duration> {
+    InfinityDateTime: DateTime
+    NegInfinityDateTime: DateTime
+
+    durationFromDurationObject(duration: DurationObject): Duration
+
+    roughDurationToMilliseconds(duration: Duration): number
+
+    multiplyDuration(duration: Duration, factor: number): Duration
+
+    durationSum(left: Duration, right: Duration): Duration
+
+    isEqual(left: DateTime, right: DateTime): boolean
+
+    compareAsc(left: DateTime, right: DateTime): number
+
+    compareDesc(left: DateTime, right: DateTime): number
+
+    intervalContains(interval: Interval, date: DateTime): boolean
+
+    intervalToMilliseconds(interval: Interval): number
+
+    dateTimeFromDateOrNumber(date: Date | number): DateTime
+
+    intervalFromIntervalObject(intervalObject: IntervalObject): Interval
+
+    intervalFromISOStrings(interval: IntervalAsISOStrings): Interval
+
+    intersectTwoIntervals(left: Interval, right: Interval): Interval
+
+    areTwoIntervalsEqual(left: Interval, right: Interval): boolean
+
+    joinTwoIntervals(left: Interval, right: Interval): Interval
+
+    createInterval(start: DateTime, end: DateTime): Interval
+
+    addDuration(date: DateTime, duration: Duration): DateTime
+
+    durationDifference(left: Duration, right: Duration): Duration
+
+    startOfDay(date: DateTime, timeZone?: string): DateTime
+
+    addDays(date: DateTime, amount: number): DateTime
+
+    isBefore(left: DateTime, right: DateTime): boolean
+
+    isEqualOrBefore(left: DateTime, right: DateTime): boolean
+
+    isAfter(left: DateTime, right: DateTime): boolean
+
+    isEqualOrAfter(left: DateTime, right: DateTime): boolean
+
+    isIntervalEmpty(interval: Interval): boolean
+
+    parseTimeAtGivenDay(timeString: string, day: DateTime, timeZone?: string): DateTime
+
+    intervalToDuration(interval: Interval): Duration
+
+    isWithinInterval(date: DateTime, interval: Interval): boolean
+
+    parseJsDateTime(date: Date | number): DateTime
+
+    getYear(date: DateTime): number
+
+    differenceInMilliseconds(left: DateTime, right: DateTime): number
+
+    setISODay(date: DateTime, day: 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7): DateTime
+
+    parseISO(date: string): DateTime
+
+    getStart(interval: Interval): DateTime
+
+    getEnd(interval: Interval): DateTime
+}

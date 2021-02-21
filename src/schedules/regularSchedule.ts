@@ -1,53 +1,45 @@
-import {DateTime, Duration, durationToMilliseconds, multiplyDuration, Schedule} from "../index"
-import {addDurations} from "../functions/durations"
-import {differenceInMilliseconds, directionToInt, isWithinInterval} from "../functions/misc"
-import {addDuration, createInterval, isBefore} from "../functions/dateLibrary"
+import {DateTimeImplementation, Schedule} from "../index"
+import {addDurations} from "../functions"
+import {directionToInt} from "../functions/misc"
 
-/**
- * Constructs a regularly occurring schedule.
- *
- * The function takes a date, a duration and a period to construct the schedule. The schedule will contain
- * the interval defined by the date and the duration and all intervals that are shifted by n * period.
- * It extends into the future and the past.
- *
- * @param oneStartMoment
- * @param duration
- * @param period
- * @constructor
- * @category Schedules
- */
-export function RegularSchedule(oneStartMoment: DateTime, duration: Duration, period: Duration): Schedule {
-    return function* (startDate, direction = "forward") {
-        let directionInt = directionToInt(direction)
-        let numberOfPeriods: number = 0
 
-        if (oneStartMoment <= startDate) {
-            numberOfPeriods = Math.floor(differenceInMilliseconds(startDate, oneStartMoment) / durationToMilliseconds(period))
+export const RegularSchedule = (
+    <DT, I, D>(impl: DateTimeImplementation<DT, I, D>) =>
 
-            if (directionInt === 1 && isBefore(addDuration(oneStartMoment, addDurations(multiplyDuration(period, numberOfPeriods), duration)), startDate, true)) {
-                numberOfPeriods += 1
+        function (oneStartMoment: DT, duration: D, period: D): Schedule<DT, I, D> {
+            return function* (startDate, direction = "forward") {
+                let directionInt = directionToInt(direction)
+                let numberOfPeriods: number = 0
+
+                if (impl.isEqualOrBefore(oneStartMoment, startDate)) {
+                    numberOfPeriods = Math.floor(impl.differenceInMilliseconds(startDate, oneStartMoment) / impl.roughDurationToMilliseconds(period))
+
+                    if (directionInt === 1 && impl.isEqualOrBefore(impl.addDuration(oneStartMoment, addDurations(impl)(impl.multiplyDuration(period, numberOfPeriods), duration)), startDate)) {
+                        numberOfPeriods += 1
+                    }
+                }
+
+                let firstIntervalStartsAt = impl.addDuration(oneStartMoment, impl.multiplyDuration(period, numberOfPeriods))
+
+                let i = 0
+                while (true) {
+                    let start = impl.addDuration(firstIntervalStartsAt, impl.multiplyDuration(period, i))
+
+                    let interval = impl.createInterval(
+                        start,
+                        impl.addDuration(start, duration)
+                    )
+
+                    if (directionInt === 1 && impl.isWithinInterval(startDate, interval)) {
+                        yield impl.createInterval(startDate, impl.getEnd(interval))
+                    } else if (directionInt === -1 && impl.isWithinInterval(startDate, interval)) {
+                        yield impl.createInterval(impl.getStart(interval), startDate)
+                    } else {
+                        yield interval
+                    }
+                    i += directionInt
+                }
             }
         }
 
-        let firstIntervalStartsAt = addDuration(oneStartMoment, multiplyDuration(period, numberOfPeriods))
-
-        let i = 0
-        while (true) {
-            let start = addDuration(firstIntervalStartsAt, multiplyDuration(period, i))
-
-            let interval = createInterval(
-                start,
-                addDuration(start, duration)
-            )
-
-            if (directionInt === 1 && isWithinInterval(startDate, interval)) {
-                yield createInterval(startDate, interval.end)
-            } else if (directionInt === -1 && isWithinInterval(startDate, interval)) {
-                yield createInterval(interval.start, startDate)
-            } else {
-                yield interval
-            }
-            i += directionInt
-        }
-    }
-}
+)

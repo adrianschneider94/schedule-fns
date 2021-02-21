@@ -1,10 +1,12 @@
-import {DailySchedule, invertSchedule, parseISO, take} from "schedule.js"
+import {DateTime} from "luxon"
+import {DailySchedule, invertSchedule} from "schedule.js/luxon"
+import {take} from "schedule.js/functions"
 
 let workHours = DailySchedule("08:00", "17:00")
 let offHours = invertSchedule(workHours)
 
 
-let startDate = parseISO("2020-09-01T10:00:00Z")
+let startDate = DateTime.fromISO("2020-09-01T10:00:00Z")
 for (let interval of take(offHours(startDate), 3)) {
     console.log(interval.toISO())
 }

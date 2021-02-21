@@ -1,5 +1,6 @@
-import {intervalFromIntervalObject, ScheduleFromIntervals, subtractSchedules} from "schedule.js"
-import {dateTimeFromDateOrNumber} from "schedule.js/functions/dateLibrary"
+import {LuxonImplementation} from "schedule.js/luxon/implementation"
+import {ScheduleFromIntervals} from "schedule.js/schedules"
+import {subtractSchedules} from "schedule.js/operations"
 
 test("Subtract schedules", () => {
     let i1 = {start: 0, end: 10}
@@ -10,23 +11,23 @@ test("Subtract schedules", () => {
     let e2 = {start: 3, end: 4}
     let e3 = {start: 5, end: 10}
 
-    let schedule1 = ScheduleFromIntervals(intervalFromIntervalObject(i1))
-    let schedule2 = ScheduleFromIntervals(intervalFromIntervalObject(i2_1), intervalFromIntervalObject(i2_2))
-    let subtractedSchedule = subtractSchedules(schedule1, schedule2)
+    let schedule1 = ScheduleFromIntervals(LuxonImplementation)(LuxonImplementation.intervalFromIntervalObject(i1))
+    let schedule2 = ScheduleFromIntervals(LuxonImplementation)(LuxonImplementation.intervalFromIntervalObject(i2_1), LuxonImplementation.intervalFromIntervalObject(i2_2))
+    let subtractedSchedule = subtractSchedules(LuxonImplementation)(schedule1, schedule2)
 
-    let generator = subtractedSchedule(dateTimeFromDateOrNumber(startDate))
+    let generator = subtractedSchedule(LuxonImplementation.dateTimeFromDateOrNumber(startDate))
 
     let value = generator.next()
     expect(value.done).toBe(false)
-    expect(value.value).toBeSameIntervalAs(intervalFromIntervalObject(e1))
+    expect(value.value).toBeSameIntervalAs(LuxonImplementation.intervalFromIntervalObject(e1))
 
     value = generator.next()
     expect(value.done).toBe(false)
-    expect(value.value).toBeSameIntervalAs(intervalFromIntervalObject(e2))
+    expect(value.value).toBeSameIntervalAs(LuxonImplementation.intervalFromIntervalObject(e2))
 
     value = generator.next()
     expect(value.done).toBe(false)
-    expect(value.value).toBeSameIntervalAs(intervalFromIntervalObject(e3))
+    expect(value.value).toBeSameIntervalAs(LuxonImplementation.intervalFromIntervalObject(e3))
 
     expect(generator.next()).toStrictEqual({value: undefined, done: true})
 })

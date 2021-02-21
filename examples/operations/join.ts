@@ -1,8 +1,10 @@
-import {joinSchedules, parseISO, take, Thursdays, Weekends} from "schedule.js"
+import {DateTime} from "luxon"
+import {joinSchedules, Thursdays, Weekends} from "schedule.js/luxon"
+import {take} from "schedule.js/functions"
 
 let weekendOrThursday = joinSchedules(Weekends(), Thursdays())
 
-let startDate = parseISO("2020-09-01T10:00:00Z")
+let startDate = DateTime.fromISO("2020-09-01T10:00:00Z")
 for (let interval of take(weekendOrThursday(startDate), 3)) {
     console.log(interval.toISO())
 }

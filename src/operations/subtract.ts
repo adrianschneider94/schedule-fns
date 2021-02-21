@@ -1,4 +1,6 @@
-import {intersectSchedules, invertSchedule, Schedule} from "../index"
+import {DateTimeImplementation, Schedule} from "../index"
+import {intersectSchedules} from "./intersect"
+import {invertSchedule} from "./invert"
 
 /**
  * Subtracts one schedule from another.
@@ -7,6 +9,11 @@ import {intersectSchedules, invertSchedule, Schedule} from "../index"
  * @param right
  * @category Operations
  */
-export function subtractSchedules(left: Schedule, right: Schedule): Schedule {
-    return intersectSchedules(left, invertSchedule(right))
-}
+export const subtractSchedules = (
+    <DT, I, D>(impl: DateTimeImplementation<DT, I, D>) =>
+
+        function (left: Schedule<DT, I, D>, right: Schedule<DT, I, D>): Schedule<DT, I, D> {
+            return intersectSchedules(impl)(left, invertSchedule(impl)(right))
+        }
+
+)

@@ -15,7 +15,7 @@ This package provides functions to work with schedules (work hours, opening hour
 ## Example
 
 ```typescript
-import {DailySchedule, Holidays, joinSchedules, subtractSchedules, Weekends} from "schedule.js"
+import {DailySchedule, Holidays, joinSchedules, subtractSchedules, Weekends} from "schedule.js/luxon"
 
 // Define the schedule: Mo-Fr, 08:00-17:00, break from 12:30 to 13:30
 // Our worker doesn't work on weekends and holidays.
@@ -53,9 +53,11 @@ let schedule = subtractSchedules(workHours, joinSchedules(weekends, breaks, holi
 #### Daily Schedule
 
 ```typescript
-import {DailySchedule, parseISO, take} from "schedule.js"
+import {DateTime} from "luxon"
+import {DailySchedule} from "schedule.js/luxon"
+import {take} from "schedule.js/functions"
 
-let startDate = parseISO("2020-09-01T00:00Z")
+let startDate = DateTime.fromISO("2020-09-01T00:00Z")
 
 let workHours = DailySchedule("08:00", "17:00")
 for (let interval of take(workHours(startDate), 3)) {
@@ -79,12 +81,14 @@ for (let interval of take(workHoursInTokyo(startDate), 3)) {
 
 #### Regular Schedule
 ```typescript
-import {durationFromDurationObject, parseISO, RegularSchedule, take} from "schedule.js"
+import {DateTime, Duration} from "luxon"
+import {RegularSchedule} from "schedule.js/luxon"
+import {take} from "schedule.js/functions"
 
-let newYear = parseISO("2020-01-01T00:00:00.000+0100")
-let everySixWeeksForOneDay = RegularSchedule(newYear, durationFromDurationObject({days: 1}), durationFromDurationObject({weeks: 6}))
+let newYear = DateTime.fromISO("2020-01-01T00:00:00.000+0100")
+let everySixWeeksForOneDay = RegularSchedule(newYear, Duration.fromObject({days: 1}), Duration.fromObject({weeks: 6}))
 
-let startDate = parseISO("2020-09-01T00:00Z")
+let startDate = DateTime.fromISO("2020-09-01T00:00Z")
 for (let interval of take(everySixWeeksForOneDay(startDate), 3)) {
     console.log(interval.toISO())
 }
@@ -96,22 +100,18 @@ for (let interval of take(everySixWeeksForOneDay(startDate), 3)) {
 #### Schedule from Intervals
 
 ```typescript
-import {Interval, intervalFromISOStrings, parseISO, ScheduleFromIntervals, take} from "schedule.js"
+import {DateTime, Interval} from "luxon"
+import {ScheduleFromIntervals} from "schedule.js/luxon"
+import {take} from "schedule.js/functions"
 
 
 let intervals: Array<Interval> = [
-    intervalFromISOStrings({
-        start: "2020-08-22T00:00:00.000+0200",
-        end: "2020-08-31T00:00:00.000+0200"
-    }),
-    intervalFromISOStrings({
-        start: "2020-12-24T14:00:00.000+0100",
-        end: "2021-01-08T00:00:00.000+0100"
-    })
+    Interval.fromISO("2020-08-22T00:00:00.000+0200/2020-08-31T00:00:00.000+0200"),
+    Interval.fromISO("2020-12-24T14:00:00.000+0100/2021-01-08T00:00:00.000+0100")
 ]
 let myHolidays = ScheduleFromIntervals(...intervals)
 
-let startDate = parseISO("2020-01-01T00:00Z")
+let startDate = DateTime.fromISO("2020-01-01T00:00Z")
 for (let interval of take(myHolidays(startDate), 3)) {
     console.log(interval.toISO())
 }
@@ -121,11 +121,13 @@ for (let interval of take(myHolidays(startDate), 3)) {
 
 #### Holidays
 ```typescript
-import {Holidays, parseISO, take} from "schedule.js"
+import {DateTime} from "luxon"
+import {Holidays} from "schedule.js/luxon"
+import {take} from "schedule.js/functions"
 
 let publicHolidaysInBavaria = Holidays("DE", "BY", {types: ["public"]})
 
-let startDate = parseISO("2020-09-01T00:00Z")
+let startDate = DateTime.fromISO("2020-09-01T00:00Z")
 for (let interval of take(publicHolidaysInBavaria(startDate), 3)) {
     console.log(interval.toISO())
 }
@@ -139,9 +141,11 @@ The signature of `Holidays` matches the signature of date-holidays `init` method
 
 #### Weekdays
 ```typescript
-import {Mondays, parseISO, take, Weekends, WorkingDays} from "schedule.js"
+import {DateTime} from "luxon"
+import {Mondays, Weekends, WorkingDays} from "schedule.js/luxon"
+import {take} from "schedule.js/functions"
 
-let startDate = parseISO("2020-09-01T00:00Z")
+let startDate = DateTime.fromISO("2020-09-01T00:00Z")
 
 let mondays = Mondays()
 for (let interval of take(mondays(startDate), 3)) {
@@ -178,27 +182,30 @@ for (let interval of take(workingDaysInTokyo(startDate), 3)) {
 
 #### Simple Schedules
 ```typescript
-import {From, parseISO, Until} from "schedule.js"
+import {DateTime} from "luxon"
+import {From, Until} from "schedule.js/luxon"
 
-let from = From(parseISO("2020-09-01T00:00Z"))
-console.log(from(parseISO("2020-08-01T00:00Z")).next().value.toISO())
+let from = From(DateTime.fromISO("2020-09-01T00:00Z"))
+console.log(from(DateTime.fromISO("2020-08-01T00:00Z")).next().value.toISO())
 // 2020-09-01T02:00:00.000+02:00/+10000-01-01T00:59:59.999+01:00
 
-let until = Until(parseISO("2020-09-01T00:00Z"))
-console.log(until(parseISO("2020-08-01T00:00Z")).next().value.toISO())
+let until = Until(DateTime.fromISO("2020-09-01T00:00Z"))
+console.log(until(DateTime.fromISO("2020-08-01T00:00Z")).next().value.toISO())
 // 2020-08-01T02:00:00.000+02:00/2020-09-01T02:00:00.000+02:00 
 ```
 
 ### Operations
 #### Invert
 ```typescript
-import {DailySchedule, invertSchedule, parseISO, take} from "schedule.js"
+import {DateTime} from "luxon"
+import {DailySchedule, invertSchedule} from "schedule.js/luxon"
+import {take} from "schedule.js/functions"
 
 let workHours = DailySchedule("08:00", "17:00")
 let offHours = invertSchedule(workHours)
 
 
-let startDate = parseISO("2020-09-01T10:00:00Z")
+let startDate = DateTime.fromISO("2020-09-01T10:00:00Z")
 for (let interval of take(offHours(startDate), 3)) {
     console.log(interval.toISO())
 }
@@ -208,11 +215,13 @@ for (let interval of take(offHours(startDate), 3)) {
 ```
 #### Join
 ```typescript
-import {joinSchedules, parseISO, take, Thursdays, Weekends} from "schedule.js"
+import {DateTime} from "luxon"
+import {joinSchedules, Thursdays, Weekends} from "schedule.js/luxon"
+import {take} from "schedule.js/functions"
 
 let weekendOrThursday = joinSchedules(Weekends(), Thursdays())
 
-let startDate = parseISO("2020-09-01T10:00:00Z")
+let startDate = DateTime.fromISO("2020-09-01T10:00:00Z")
 for (let interval of take(weekendOrThursday(startDate), 3)) {
     console.log(interval.toISO())
 }
@@ -224,11 +233,13 @@ for (let interval of take(weekendOrThursday(startDate), 3)) {
 
 #### Intersect
 ```typescript
-import {DailySchedule, intersectSchedules, Mondays, parseISO, take} from "schedule.js"
+import {DateTime} from "luxon"
+import {DailySchedule, intersectSchedules, Mondays} from "schedule.js/luxon"
+import {take} from "schedule.js/functions"
 
 let mondayEvenings = intersectSchedules(DailySchedule("20:00", "00:00"), Mondays())
 
-let startDate = parseISO("2020-09-02")
+let startDate = DateTime.fromISO("2020-09-02")
 for (let interval of take(mondayEvenings(startDate), 3)) {
     console.log(interval.toISO())
 }
@@ -239,13 +250,15 @@ for (let interval of take(mondayEvenings(startDate), 3)) {
 
 #### Subtract
 ```typescript
-import {DailySchedule, parseISO, subtractSchedules, take} from "schedule.js"
+import {DateTime} from "luxon"
+import {DailySchedule, subtractSchedules} from "schedule.js/luxon"
+import {take} from "schedule.js/functions"
 
 let workHours = DailySchedule("08:00", "17:00")
 let breaks = DailySchedule("12:30", "13:30")
 let workTime = subtractSchedules(workHours, breaks)
 
-let startDate = parseISO("2020-09-02")
+let startDate = DateTime.fromISO("2020-09-02")
 for (let interval of take(workTime(startDate), 3)) {
     console.log(interval.toISO())
 }
@@ -256,13 +269,15 @@ for (let interval of take(workTime(startDate), 3)) {
 
 #### Symmetric Difference
 ```typescript
-import {DailySchedule, parseISO, symmetricDifferenceOfSchedules, take} from "schedule.js"
+import {DateTime} from "luxon"
+import {DailySchedule, symmetricDifferenceOfSchedules} from "schedule.js/luxon"
+import {take} from "schedule.js/functions"
 
 let hoursWorker1 = DailySchedule("08:00", "17:00")
 let hoursWorker2 = DailySchedule("09:00", "18:00")
 let onlyOneWorkerAvailable = symmetricDifferenceOfSchedules(hoursWorker1, hoursWorker2)
 
-let startDate = parseISO("2020-09-02")
+let startDate = DateTime.fromISO("2020-09-02")
 for (let interval of take(onlyOneWorkerAvailable(startDate), 3)) {
     console.log(interval.toISO())
 }
@@ -273,11 +288,13 @@ for (let interval of take(onlyOneWorkerAvailable(startDate), 3)) {
 
 #### Shift
 ```typescript
-import {durationFromDurationObject, Mondays, parseISO, shiftSchedule, take} from "schedule.js"
+import {DateTime, Duration} from "luxon"
+import {Mondays, shiftSchedule} from "schedule.js/luxon"
+import {take} from "schedule.js/functions"
 
-let mondayNoonToTuesdayNoon = shiftSchedule(Mondays(), durationFromDurationObject({hours: 12}))
+let mondayNoonToTuesdayNoon = shiftSchedule(Mondays(), Duration.fromObject({hours: 12}))
 
-let startDate = parseISO("2020-09-02")
+let startDate = DateTime.fromISO("2020-09-02")
 for (let interval of take(mondayNoonToTuesdayNoon(startDate), 3)) {
     console.log(interval.toISO())
 }
@@ -289,21 +306,23 @@ for (let interval of take(mondayNoonToTuesdayNoon(startDate), 3)) {
 ### Miscellaneous
 #### Add Duration
 ```typescript
-import {addDurationWithinSchedule, DailySchedule, durationFromDurationObject, parseISO} from "schedule.js"
+import {DateTime, Duration} from "luxon"
+import {addDurationWithinSchedule, DailySchedule} from "schedule.js/luxon"
 
 let schedule = DailySchedule("08:00", "17:00")
-let projectEnd = addDurationWithinSchedule(parseISO("2020-09-01T10:00:00Z"), durationFromDurationObject({hours: 13}), schedule)
+let projectEnd = addDurationWithinSchedule(DateTime.fromISO("2020-09-01T10:00:00Z"), Duration.fromObject({hours: 13}), schedule)
 
 console.log(projectEnd.toISO())
 // 2020-09-02T16:00:00.000+02:00 
 ```
 #### isWithinSchedule
 ```typescript
-import {DailySchedule, isWithinSchedule, parseISO} from "schedule.js"
+import {DateTime} from "luxon"
+import {DailySchedule, isWithinSchedule} from "schedule.js/luxon"
 
 let schedule = DailySchedule("08:00", "17:00")
-console.log(isWithinSchedule(parseISO("2020-01-08T11:00:00.000+0100"), schedule)) // true
-console.log(isWithinSchedule(parseISO("2020-01-08T03:00:00.000+0100"), schedule)) // false
+console.log(isWithinSchedule(DateTime.fromISO("2020-01-08T11:00:00.000+0100"), schedule)) // true
+console.log(isWithinSchedule(DateTime.fromISO("2020-01-08T03:00:00.000+0100"), schedule)) // false
  
 ```
 

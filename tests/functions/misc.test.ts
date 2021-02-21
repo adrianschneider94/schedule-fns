@@ -1,12 +1,6 @@
-import {
-    durationFromDurationObject,
-    intervalFromIntervalObject,
-    RegularSchedule,
-    ScheduleFromIntervals,
-    take
-} from "schedule.js"
-import {directionToInt, isArrayEmpty, isWithinSchedule} from "schedule.js/functions/misc"
-import {dateTimeFromDateOrNumber} from "schedule.js/functions/dateLibrary"
+import {directionToInt, isArrayEmpty, isWithinSchedule, take} from "schedule.js/functions/misc"
+import {LuxonImplementation} from "schedule.js/luxon/implementation"
+import {RegularSchedule, ScheduleFromIntervals} from "schedule.js/schedules"
 
 test("Empty array", () => {
     expect(isArrayEmpty([])).toStrictEqual(true)
@@ -23,8 +17,8 @@ test("isWithinSchedule 1", () => {
     let i3 = {start: 60, end: 70}
     let date = new Date(50)
 
-    let schedule = ScheduleFromIntervals(intervalFromIntervalObject(i1), intervalFromIntervalObject(i2), intervalFromIntervalObject(i3))
-    expect(isWithinSchedule(dateTimeFromDateOrNumber(date), schedule)).toBe(false)
+    let schedule = ScheduleFromIntervals(LuxonImplementation)(LuxonImplementation.intervalFromIntervalObject(i1), LuxonImplementation.intervalFromIntervalObject(i2), LuxonImplementation.intervalFromIntervalObject(i3))
+    expect(isWithinSchedule(LuxonImplementation)(LuxonImplementation.dateTimeFromDateOrNumber(date), schedule)).toBe(false)
 })
 
 
@@ -34,8 +28,8 @@ test("isWithinSchedule 2", () => {
     let i3 = {start: 60, end: 70}
     let date = new Date(65)
 
-    let schedule = ScheduleFromIntervals(intervalFromIntervalObject(i1), intervalFromIntervalObject(i2), intervalFromIntervalObject(i3))
-    expect(isWithinSchedule(dateTimeFromDateOrNumber(date), schedule)).toBe(true)
+    let schedule = ScheduleFromIntervals(LuxonImplementation)(LuxonImplementation.intervalFromIntervalObject(i1), LuxonImplementation.intervalFromIntervalObject(i2), LuxonImplementation.intervalFromIntervalObject(i3))
+    expect(isWithinSchedule(LuxonImplementation)(LuxonImplementation.dateTimeFromDateOrNumber(date), schedule)).toBe(true)
 })
 
 
@@ -45,8 +39,8 @@ test("isWithinSchedule 3", () => {
     let period = {seconds: 2}
     let date = 121500
 
-    let schedule = RegularSchedule(dateTimeFromDateOrNumber(startDate), durationFromDurationObject(duration), durationFromDurationObject(period))
-    expect(isWithinSchedule(dateTimeFromDateOrNumber(date), schedule)).toBe(false)
+    let schedule = RegularSchedule(LuxonImplementation)(LuxonImplementation.dateTimeFromDateOrNumber(startDate), LuxonImplementation.durationFromDurationObject(duration), LuxonImplementation.durationFromDurationObject(period))
+    expect(isWithinSchedule(LuxonImplementation)(LuxonImplementation.dateTimeFromDateOrNumber(date), schedule)).toBe(false)
 })
 
 test("isWithinSchedule 4", () => {
@@ -55,8 +49,8 @@ test("isWithinSchedule 4", () => {
     let i3 = {start: 60, end: 70}
     let date = 80
 
-    let schedule = ScheduleFromIntervals(intervalFromIntervalObject(i1), intervalFromIntervalObject(i2), intervalFromIntervalObject(i3))
-    expect(isWithinSchedule(dateTimeFromDateOrNumber(date), schedule)).toBe(false)
+    let schedule = ScheduleFromIntervals(LuxonImplementation)(LuxonImplementation.intervalFromIntervalObject(i1), LuxonImplementation.intervalFromIntervalObject(i2), LuxonImplementation.intervalFromIntervalObject(i3))
+    expect(isWithinSchedule(LuxonImplementation)(LuxonImplementation.dateTimeFromDateOrNumber(date), schedule)).toBe(false)
 })
 
 test("directionToInt", () => {
