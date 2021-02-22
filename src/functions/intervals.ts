@@ -3,8 +3,8 @@ import {isArrayEmpty} from "./misc"
 import {DateTime} from "luxon"
 
 export type IntervalObject = {
-    start: Date | number | DateTime
-    end: Date | number | DateTime
+    start: Date | number
+    end: Date | number
 }
 
 export type IntervalAsISOStrings = {

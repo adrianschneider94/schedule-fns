@@ -3,6 +3,7 @@
 This package provides functions to work with schedules (work hours, opening hours etc.).
 
 ## Contents
+
 * [Installation](#installation)
 * [Example](#example)
 * [API](#api)
@@ -11,112 +12,133 @@ This package provides functions to work with schedules (work hours, opening hour
 ## Installation
 
     npm i schedule.js
-    
+
 ## Example
 
 ```typescript
-// #include<examples/basic.ts>
+// #include<examples/luxon/basic.ts>
 ```
 
 ## API
+
 ### Overview
 
 * [Schedules](#schedules)
-  * [Daily Schedule](#daily-schedule)
-  * [Regular Schedule](#regular-schedule)
-  * [Schedule from Intervals](#schedule-from-intervals)
-  * [Holidays](#holidays)
-  * [Weekdays](#weekdays)
-  * [Simple Schedules](#simple-schedules)
+    * [Daily Schedule](#daily-schedule)
+    * [Regular Schedule](#regular-schedule)
+    * [Schedule from Intervals](#schedule-from-intervals)
+    * [Holidays](#holidays)
+    * [Weekdays](#weekdays)
+    * [Simple Schedules](#simple-schedules)
 * [Operations](#operations)
-  * [Invert](#invert)
-  * [Join](#join)
-  * [Intersect](#intersect)
-  * [Subtract](#subtract)
-  * [Symmetric Difference](#symmetric-difference)
-  * [Shift](#shift)
+    * [Invert](#invert)
+    * [Join](#join)
+    * [Intersect](#intersect)
+    * [Subtract](#subtract)
+    * [Symmetric Difference](#symmetric-difference)
+    * [Shift](#shift)
 * [Miscellaneous](#miscellaneous)
-  * [Add Duration](#add-duration)
-  * [Is within Schedule](#iswithinschedule)
+    * [Add Duration](#add-duration)
+    * [Is within Schedule](#iswithinschedule)
 
 ### Schedules
+
 #### Daily Schedule
 
 ```typescript
-// #include<examples/schedules/dailySchedule.ts>
+// #include<examples/luxon/schedules/dailySchedule.ts>
 ```
 
 #### Regular Schedule
+
 ```typescript
-// #include<examples/schedules/regularSchedule.ts> 
+// #include<examples/luxon/schedules/regularSchedule.ts> 
 ```
 
 #### Schedule from Intervals
 
 ```typescript
-// #include<examples/schedules/scheduleFromIntervals.ts> 
+// #include<examples/luxon/schedules/scheduleFromIntervals.ts> 
 ```
 
 #### Holidays
+
 ```typescript
-// #include<examples/schedules/holidays.ts> 
+// #include<examples/luxon/schedules/holidays.ts> 
 ```
 
 The holiday calender is created by the excellent [date-holidays](https://github.com/commenthol/date-holidays) package.
-The signature of `Holidays` matches the signature of date-holidays `init` method. For details consult date-holidays documentation.
+The signature of `Holidays` matches the signature of date-holidays `init` method. For details consult date-holidays
+documentation.
 
 #### Weekdays
+
 ```typescript
-// #include<examples/schedules/weekdays.ts> 
+// #include<examples/luxon/schedules/weekdays.ts> 
 ```
 
 #### Simple Schedules
+
 ```typescript
-// #include<examples/schedules/simple.ts> 
+// #include<examples/luxon/schedules/simple.ts> 
 ```
 
 ### Operations
+
 #### Invert
+
 ```typescript
-// #include<examples/operations/invert.ts> 
+// #include<examples/luxon/operations/invert.ts> 
 ```
+
 #### Join
+
 ```typescript
-// #include<examples/operations/join.ts> 
+// #include<examples/luxon/operations/join.ts> 
 ```
 
 #### Intersect
+
 ```typescript
-// #include<examples/operations/intersect.ts> 
+// #include<examples/luxon/operations/intersect.ts> 
 ```
 
 #### Subtract
+
 ```typescript
-// #include<examples/operations/subtract.ts> 
+// #include<examples/luxon/operations/subtract.ts> 
 ```
 
 #### Symmetric Difference
+
 ```typescript
-// #include<examples/operations/symmetricDifference.ts> 
+// #include<examples/luxon/operations/symmetricDifference.ts> 
 ```
 
 #### Shift
+
 ```typescript
-// #include<examples/operations/shift.ts> 
+// #include<examples/luxon/operations/shift.ts> 
 ```
 
 ### Miscellaneous
+
 #### Add Duration
+
 ```typescript
-// #include<examples/miscellaneous/addDuration.ts> 
+// #include<examples/luxon/miscellaneous/addDuration.ts> 
 ```
+
 #### isWithinSchedule
+
 ```typescript
-// #include<examples/miscellaneous/isWithinSchedule.ts> 
+// #include<examples/luxon/miscellaneous/isWithinSchedule.ts> 
 ```
 
 ## Implementation
+
 ### Definition of a schedule
+
 The basis of schedule.js is the definition of a schedule:
 
 ```typescript
