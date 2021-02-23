@@ -1,11 +1,11 @@
-import {DateTimeImplementation, MAX_RECURSIONS, Schedule} from "../index"
+import {DateTimeImplementation, DTypes, MAX_RECURSIONS, Schedule} from "../index"
 import {directionToInt, isArrayEmpty} from "../functions/misc"
 import {intersectIntervals} from "../functions/intervals"
 
 export const intersectSchedules = (
-    <DT, I, D>(impl: DateTimeImplementation<DT, I, D>) =>
+    <T extends DTypes>(impl: DateTimeImplementation<T>) =>
 
-        function (...schedules: Array<Schedule<DT, I, D>>): Schedule<DT, I, D> {
+        function (...schedules: Array<Schedule<T>>): Schedule<T> {
             return function* (startDate, direction = "forward") {
                 if (isArrayEmpty(schedules)) {
                     return

@@ -1,12 +1,12 @@
-import {DateTimeImplementation, Schedule} from "../index"
+import {DateTimeImplementation, DTypes, Schedule} from "../index"
 import {addDurations} from "../functions"
 import {directionToInt} from "../functions/misc"
 
 
 export const RegularSchedule = (
-    <DT, I, D>(impl: DateTimeImplementation<DT, I, D>) =>
+    <T extends DTypes>(impl: DateTimeImplementation<T>) =>
 
-        function (oneStartMoment: DT, duration: D, period: D): Schedule<DT, I, D> {
+        function (oneStartMoment: T['datetime'], duration: T['duration'], period: T['duration']): Schedule<T> {
             return function* (startDate, direction = "forward") {
                 let directionInt = directionToInt(direction)
                 let numberOfPeriods: number = 0

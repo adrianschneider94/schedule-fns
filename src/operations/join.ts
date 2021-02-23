@@ -1,12 +1,12 @@
-import {DateTimeImplementation, MAX_RECURSIONS, Schedule} from "../index"
+import {DateTimeImplementation, DTypes, MAX_RECURSIONS, Schedule} from "../index"
 import {directionToInt, isArrayEmpty} from "../functions/misc"
 import {areIntervalsConnected, joinIntervals} from "../functions/intervals"
 
 
 const getFirstInterval = (
-    <DT, I, D>(impl: DateTimeImplementation<DT, I, D>) =>
+    <T extends DTypes>(impl: DateTimeImplementation<T>) =>
 
-        function (intervals: Array<I>) {
+        function (intervals: Array<T['interval']>) {
             return [...intervals].filter(x => x !== undefined).sort((a, b) => impl.compareAsc(impl.getStart(a), impl.getStart(b)))[0]
         }
 
@@ -14,9 +14,9 @@ const getFirstInterval = (
 
 
 const getLastInterval = (
-    <DT, I, D>(impl: DateTimeImplementation<DT, I, D>) =>
+    <T extends DTypes>(impl: DateTimeImplementation<T>) =>
 
-        function (intervals: Array<I>) {
+        function (intervals: Array<T['interval']>) {
             return [...intervals].filter(x => x !== undefined).sort((a, b) => impl.compareDesc(impl.getEnd(a), impl.getEnd(b)))[0]
         }
 
@@ -24,9 +24,9 @@ const getLastInterval = (
 
 
 export const joinSchedules = (
-    <DT, I, D>(impl: DateTimeImplementation<DT, I, D>) =>
+    <T extends DTypes>(impl: DateTimeImplementation<T>) =>
 
-        function (...schedules: Array<Schedule<DT, I, D>>): Schedule<DT, I, D> {
+        function (...schedules: Array<Schedule<T>>): Schedule<T> {
 
             return function* (startDate, direction = "forward") {
                 if (isArrayEmpty(schedules)) {
@@ -37,7 +37,7 @@ export const joinSchedules = (
 
                 let generators = schedules.map(schedule => schedule(startDate, direction))
                 let currentEntries = generators.map(generator => generator.next())
-                let currentInterval: I
+                let currentInterval: T['interval']
 
                 if (directionInt === 1) {
                     currentInterval = getFirstInterval(impl)([...currentEntries].map(x => x?.value))

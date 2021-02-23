@@ -1,11 +1,11 @@
-import {DateTimeImplementation, Schedule} from "../index"
+import {DateTimeImplementation, DTypes, Schedule} from "../index"
 import {directionToInt} from "../functions/misc"
 
 
 export const DailySchedule = (
-    <DT, I, D>(impl: DateTimeImplementation<DT, I, D>) =>
+    <T extends DTypes>(impl: DateTimeImplementation<T>) =>
 
-        function (startTime: string, endTime: string, options?: { timeZone?: string }): Schedule<DT, I, D> {
+        function (startTime: string, endTime: string, options?: {timeZone?: string}): Schedule<T> {
             let timeZone = options?.timeZone
 
             return function* (startDate, direction = 1) {

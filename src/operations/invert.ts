@@ -1,11 +1,11 @@
-import {DateTimeImplementation, Schedule} from "../index"
+import {DateTimeImplementation, DTypes, Schedule} from "../index"
 import {directionToInt} from "../functions/misc"
 
 
 export const invertSchedule = (
-    <DT, I, D>(impl: DateTimeImplementation<DT, I, D>) =>
+    <T extends DTypes>(impl: DateTimeImplementation<T>) =>
 
-        function (schedule: Schedule<DT, I, D>): Schedule<DT, I, D> {
+        function (schedule: Schedule<T>): Schedule<T> {
             return function* (startDate, direction = "forward") {
                 let directionInt = directionToInt(direction)
 

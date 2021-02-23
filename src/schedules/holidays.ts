@@ -1,21 +1,21 @@
 import DateHolidays, {Country, Options} from "date-holidays"
 
-import {DateTimeImplementation, Schedule} from "../index"
+import {DateTimeImplementation, DTypes, Schedule} from "../index"
 import {directionToInt} from "../functions/misc"
 import {ScheduleFromIntervals} from "./scheduleFromIntervals"
 
 
-export function Holidays<DT, I, D>(impl: DateTimeImplementation<DT, I, D>): (country?: Country | string, opts?: Options) => Schedule<DT, I, D>
-export function Holidays<DT, I, D>(impl: DateTimeImplementation<DT, I, D>): (country?: string, state?: string, opts?: Options) => Schedule<DT, I, D>
-export function Holidays<DT, I, D>(impl: DateTimeImplementation<DT, I, D>): (country?: string, state?: string, region?: string, opts?: Options) => Schedule<DT, I, D>
+export function Holidays<T extends DTypes>(impl: DateTimeImplementation<T>): (country?: Country | string, opts?: Options) => Schedule<T>
+export function Holidays<T extends DTypes>(impl: DateTimeImplementation<T>): (country?: string, state?: string, opts?: Options) => Schedule<T>
+export function Holidays<T extends DTypes>(impl: DateTimeImplementation<T>): (country?: string, state?: string, region?: string, opts?: Options) => Schedule<T>
 
 
-export function Holidays<DT, I, D>(impl: DateTimeImplementation<DT, I, D>) {
-    function Inner<DT, I, D>(country?: Country | string, opts?: Options): Schedule<DT, I, D>
-    function Inner<DT, I, D>(country?: string, state?: string, opts?: Options): Schedule<DT, I, D>
-    function Inner<DT, I, D>(country?: string, state?: string, region?: string, opts?: Options): Schedule<DT, I, D>
+export function Holidays<T extends DTypes>(impl: DateTimeImplementation<T>) {
+    function Inner<T extends DTypes>(country?: Country | string, opts?: Options): Schedule<T>
+    function Inner<T extends DTypes>(country?: string, state?: string, opts?: Options): Schedule<T>
+    function Inner<T extends DTypes>(country?: string, state?: string, region?: string, opts?: Options): Schedule<T>
 
-    function Inner(...args: any): Schedule<DT, I, D> {
+    function Inner(...args: any): Schedule<T> {
         return function* (startDate, direction = "forward") {
             let directionInt = directionToInt(direction)
 

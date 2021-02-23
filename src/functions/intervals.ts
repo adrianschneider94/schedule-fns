@@ -1,6 +1,5 @@
-import {DateTimeImplementation} from "../index"
+import {DateTimeImplementation, DTypes} from "../index"
 import {isArrayEmpty} from "./misc"
-import {DateTime} from "luxon"
 
 export type IntervalObject = {
     start: Date | number
@@ -13,8 +12,8 @@ export type IntervalAsISOStrings = {
 }
 
 export const areIntervalsIntersecting = (
-    <DT, I, D>(impl: DateTimeImplementation<DT, I, D>) =>
-        function (...intervals: Array<I>): boolean {
+    <T extends DTypes>(impl: DateTimeImplementation<T>) =>
+        function (...intervals: Array<T['interval']>): boolean {
             if (isArrayEmpty(intervals) || intervals.length === 1) {
                 return true
             }
@@ -31,8 +30,8 @@ export const areIntervalsIntersecting = (
 
 
 export const areIntervalsConnected = (
-    <DT, I, D>(impl: DateTimeImplementation<DT, I, D>) =>
-        function (...intervals: Array<I>): boolean {
+    <T extends DTypes>(impl: DateTimeImplementation<T>) =>
+        function (...intervals: Array<T['interval']>): boolean {
             if (isArrayEmpty(intervals)) {
                 return true
             }
@@ -53,8 +52,8 @@ export const areIntervalsConnected = (
 
 
 export const areIntervalsEqual = (
-    <DT, I, D>(impl: DateTimeImplementation<DT, I, D>) =>
-        function (...intervals: Array<I>): boolean {
+    <T extends DTypes>(impl: DateTimeImplementation<T>) =>
+        function (...intervals: Array<T['interval']>): boolean {
             if (isArrayEmpty(intervals)) {
                 return true
             }
@@ -64,7 +63,7 @@ export const areIntervalsEqual = (
 
 
 export const joinIntervals = (
-    <DT, I, D>(impl: DateTimeImplementation<DT, I, D>) => function (...intervals: Array<I>): I {
+    <T extends DTypes>(impl: DateTimeImplementation<T>) => function (...intervals: Array<T['interval']>): T['interval'] {
         if (isArrayEmpty(intervals)) {
             throw Error("Need to provide at least one interval to join.")
         }
@@ -77,14 +76,14 @@ export const joinIntervals = (
 
 
 export const mergeIntervals = (
-    <DT, I, D>(impl: DateTimeImplementation<DT, I, D>) =>
+    <T extends DTypes>(impl: DateTimeImplementation<T>) =>
 
-        function (...intervals: Array<I>): Array<I> {
+        function (...intervals: Array<T['interval']>): Array<T['interval']> {
             if (isArrayEmpty(intervals)) {
                 return []
             }
 
-            function reducer(aggregate: Array<I>, currentValue: I): Array<I> {
+            function reducer(aggregate: Array<T['interval']>, currentValue: T['interval']): Array<T['interval']> {
                 let lastInterval = aggregate.slice(-1)[0]
                 if (areIntervalsConnected(impl)(lastInterval, currentValue)) {
                     return [...aggregate.slice(0, -1), impl.joinTwoIntervals(lastInterval, currentValue)]
@@ -100,9 +99,9 @@ export const mergeIntervals = (
 
 
 export const intersectIntervals = (
-    <DT, I, D>(impl: DateTimeImplementation<DT, I, D>) =>
+    <T extends DTypes>(impl: DateTimeImplementation<T>) =>
 
-        function (...intervals: Array<I>): I {
+        function (...intervals: Array<T['interval']>): T['interval'] {
             if (isArrayEmpty(intervals)) {
                 throw Error("Please provide at least one interval!")
             }

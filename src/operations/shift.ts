@@ -1,10 +1,10 @@
-import {DateTimeImplementation, Schedule} from "../index"
+import {DateTimeImplementation, DTypes, Schedule} from "../index"
 
 
 export const shiftSchedule = (
-    <DT, I, D>(impl: DateTimeImplementation<DT, I, D>) =>
+    <T extends DTypes>(impl: DateTimeImplementation<T>) =>
 
-        function (schedule: Schedule<DT, I, D>, duration: D): Schedule<DT, I, D> {
+        function (schedule: Schedule<T>, duration: T['duration']): Schedule<T> {
             return function* (startDate, direction) {
                 let generator = schedule(impl.addDuration(startDate, impl.multiplyDuration(duration, -1)), direction)
                 for (let entry of generator) {

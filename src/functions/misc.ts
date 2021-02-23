@@ -1,4 +1,4 @@
-import {DateTimeImplementation, direction, Schedule} from "../index"
+import {DateTimeImplementation, direction, DTypes, Schedule} from "../index"
 
 /**
  * Determines if an array is empty.
@@ -13,11 +13,11 @@ export function isArrayEmpty<T>(array: Array<T>) {
 
 
 export const isWithinSchedule = (
-    <DT, I, D>(impl: DateTimeImplementation<DT, I, D>) =>
+    <T extends DTypes>(impl: DateTimeImplementation<T>) =>
 
-        function (date: DT, schedule: Schedule<DT, I, D>) {
+        function (date: T['datetime'], schedule: Schedule<T>) {
             let generator = schedule(date)
-            let interval = generator.next()?.value as I | undefined
+            let interval = generator.next()?.value as T['interval'] | undefined
 
             if (interval === undefined) {
                 return false

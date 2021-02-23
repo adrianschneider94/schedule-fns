@@ -1,5 +1,5 @@
+import {IntervalAsISOStrings} from "schedule.js/functions/intervals"
 import {DurationObject} from "schedule.js/functions/durations"
-import {IntervalAsISOStrings, IntervalObject} from "schedule.js/functions/intervals"
 
 /**
  * The maximal number of recursions before an error is thrown.
@@ -15,6 +15,12 @@ export const MAX_RECURSIONS = 1000
  */
 export type direction = "forward" | "backward" | 1 | -1
 
+export type DTypes = {
+    datetime: unknown
+    interval: unknown
+    duration: unknown
+}
+
 /**
  * Definition of a schedule.
  *
@@ -26,79 +32,76 @@ export type direction = "forward" | "backward" | 1 | -1
  *
  * @category Definitions
  */
-export type Schedule<DateTime, Interval, Duration> = (startDate: DateTime, direction?: direction) => IterableIterator<Interval>
+export type Schedule<T extends DTypes> = (startDate: T['datetime'], direction?: direction) => IterableIterator<T['interval']>
 
-export interface DateTimeImplementation<DateTime, Interval, Duration> {
-    InfinityDateTime: DateTime
-    NegInfinityDateTime: DateTime
 
-    durationFromDurationObject(duration: DurationObject): Duration
+export interface DateTimeImplementation<T extends DTypes> {
+    InfinityDateTime: T['datetime']
+    NegInfinityDateTime: T['datetime']
 
-    roughDurationToMilliseconds(duration: Duration): number
+    roughDurationToMilliseconds(duration: T['duration']): number
 
-    multiplyDuration(duration: Duration, factor: number): Duration
+    multiplyDuration(duration: T['duration'], factor: number): T['duration']
 
-    durationSum(left: Duration, right: Duration): Duration
+    durationSum(left: T['duration'], right: T['duration']): T['duration']
 
-    isEqual(left: DateTime, right: DateTime): boolean
+    isEqual(left: T['datetime'], right: T['datetime']): boolean
 
-    compareAsc(left: DateTime, right: DateTime): number
+    compareAsc(left: T['datetime'], right: T['datetime']): number
 
-    compareDesc(left: DateTime, right: DateTime): number
+    compareDesc(left: T['datetime'], right: T['datetime']): number
 
-    intervalContains(interval: Interval, date: DateTime): boolean
+    intervalContains(interval: T['interval'], date: T['datetime']): boolean
 
-    intervalToMilliseconds(interval: Interval): number
+    intervalToMilliseconds(interval: T['interval']): number
 
-    dateTimeFromDateOrNumber(date: Date | number): DateTime
+    intervalFromISOStrings(interval: IntervalAsISOStrings): T['interval']
 
-    intervalFromIntervalObject(intervalObject: IntervalObject): Interval
+    intersectTwoIntervals(left: T['interval'], right: T['interval']): T['interval']
 
-    intervalFromISOStrings(interval: IntervalAsISOStrings): Interval
+    areTwoIntervalsEqual(left: T['interval'], right: T['interval']): boolean
 
-    intersectTwoIntervals(left: Interval, right: Interval): Interval
+    joinTwoIntervals(left: T['interval'], right: T['interval']): T['interval']
 
-    areTwoIntervalsEqual(left: Interval, right: Interval): boolean
+    createInterval(start: T['datetime'], end: T['datetime']): T['interval']
 
-    joinTwoIntervals(left: Interval, right: Interval): Interval
+    addDuration(date: T['datetime'], duration: T['duration']): T['datetime']
 
-    createInterval(start: DateTime, end: DateTime): Interval
+    durationDifference(left: T['duration'], right: T['duration']): T['duration']
 
-    addDuration(date: DateTime, duration: Duration): DateTime
+    startOfDay(date: T['datetime'], timeZone?: string): T['datetime']
 
-    durationDifference(left: Duration, right: Duration): Duration
+    addDays(date: T['datetime'], amount: number): T['datetime']
 
-    startOfDay(date: DateTime, timeZone?: string): DateTime
+    isBefore(left: T['datetime'], right: T['datetime']): boolean
 
-    addDays(date: DateTime, amount: number): DateTime
+    isEqualOrBefore(left: T['datetime'], right: T['datetime']): boolean
 
-    isBefore(left: DateTime, right: DateTime): boolean
+    isAfter(left: T['datetime'], right: T['datetime']): boolean
 
-    isEqualOrBefore(left: DateTime, right: DateTime): boolean
+    isEqualOrAfter(left: T['datetime'], right: T['datetime']): boolean
 
-    isAfter(left: DateTime, right: DateTime): boolean
+    isIntervalEmpty(interval: T['interval']): boolean
 
-    isEqualOrAfter(left: DateTime, right: DateTime): boolean
+    parseTimeAtGivenDay(timeString: string, day: T['datetime'], timeZone?: string): T['datetime']
 
-    isIntervalEmpty(interval: Interval): boolean
+    intervalToDuration(interval: T['interval']): T['duration']
 
-    parseTimeAtGivenDay(timeString: string, day: DateTime, timeZone?: string): DateTime
+    isWithinInterval(date: T['datetime'], interval: T['interval']): boolean
 
-    intervalToDuration(interval: Interval): Duration
+    parseJsDateTime(date: Date | number): T['datetime']
 
-    isWithinInterval(date: DateTime, interval: Interval): boolean
+    getYear(date: T['datetime']): number
 
-    parseJsDateTime(date: Date | number): DateTime
+    differenceInMilliseconds(left: T['datetime'], right: T['datetime']): number
 
-    getYear(date: DateTime): number
+    setISODay(date: T['datetime'], day: 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7): T['datetime']
 
-    differenceInMilliseconds(left: DateTime, right: DateTime): number
+    parseISO(date: string): T['datetime']
 
-    setISODay(date: DateTime, day: 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7): DateTime
+    getStart(interval: T['interval']): T['datetime']
 
-    parseISO(date: string): DateTime
+    getEnd(interval: T['interval']): T['datetime']
 
-    getStart(interval: Interval): DateTime
-
-    getEnd(interval: Interval): DateTime
+    durationFromDurationObject(duration: DurationObject): T['duration']
 }

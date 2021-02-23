@@ -2,6 +2,7 @@ import {DateTimeImplementation} from "schedule.js"
 import {
     add,
     addDays,
+    addWeeks,
     areIntervalsOverlapping,
     differenceInMilliseconds,
     Duration,
@@ -20,7 +21,13 @@ function orZero(value?: number): number {
     return value !== undefined ? value : 0
 }
 
-export const DateFnsImplementation: DateTimeImplementation<Date | number, Interval, Duration> = {
+export type DateFnsTypes = {
+    datetime: Date | number
+    interval: Interval
+    duration: Duration
+}
+
+export const DateFnsImplementation: DateTimeImplementation<DateFnsTypes> = {
     InfinityDateTime: new Date(8640000000000000),
     NegInfinityDateTime: new Date(-8640000000000000),
 
@@ -56,14 +63,6 @@ export const DateFnsImplementation: DateTimeImplementation<Date | number, Interv
         return Object.values(inMilliseconds).reduce((a, b) => a + b)
     },
 
-    /**
-     * Multiplies a duration with a factor.
-     *
-     * @param duration
-     * @param factor
-     *
-     * @internal
-     */
     multiplyDuration(duration, factor) {
         return {
             years: orZero(duration?.years) * factor,
@@ -106,14 +105,6 @@ export const DateFnsImplementation: DateTimeImplementation<Date | number, Interv
 
     intervalToMilliseconds(interval) {
         return differenceInMilliseconds(interval.end, interval.start)
-    },
-
-    dateTimeFromDateOrNumber(date) {
-        return date
-    },
-
-    intervalFromIntervalObject(intervalObject) {
-        return intervalObject
     },
 
     intervalFromISOStrings(interval) {

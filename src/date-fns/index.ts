@@ -1,10 +1,10 @@
 import * as operations from "schedule.js/operations"
 import * as schedules from "schedule.js/schedules"
 import * as functions from "schedule.js/functions"
-import {DateFnsImplementation} from "schedule.js/date-fns/implementation"
+import {DateFnsImplementation, DateFnsTypes} from "schedule.js/date-fns/implementation"
 import {Schedule} from "schedule.js"
 import {Country, Options} from "date-holidays"
-import {Duration, formatISO, Interval} from "date-fns"
+import {formatISO, Interval} from "date-fns"
 
 export function formatIntervalISO(interval: Interval) {
     return formatISO(interval.start) + "/" + formatISO(interval.end)
@@ -18,9 +18,9 @@ export const subtractSchedules = operations.subtractSchedules(DateFnsImplementat
 export const symmetricDifferenceOfSchedules = operations.symmetricDifferenceOfSchedules(DateFnsImplementation)
 export const DailySchedule = schedules.DailySchedule(DateFnsImplementation)
 
-export function Holidays(country?: Country | string, opts?: Options): Schedule<Date | number, Interval, Duration>
-export function Holidays(country?: string, state?: string, opts?: Options): Schedule<Date | number, Interval, Duration>
-export function Holidays(country?: string, state?: string, region?: string, opts?: Options): Schedule<Date | number, Interval, Duration>
+export function Holidays(country?: Country | string, opts?: Options): Schedule<DateFnsTypes>
+export function Holidays(country?: string, state?: string, opts?: Options): Schedule<DateFnsTypes>
+export function Holidays(country?: string, state?: string, region?: string, opts?: Options): Schedule<DateFnsTypes>
 export function Holidays(...args: any) {
     return schedules.Holidays(DateFnsImplementation)(...args)
 }

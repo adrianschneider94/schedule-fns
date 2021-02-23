@@ -1,12 +1,12 @@
-import {DateTimeImplementation, Schedule} from "../index"
+import {DateTimeImplementation, DTypes, Schedule} from "../index"
 import {mergeIntervals} from "../functions/intervals"
 import {directionToInt} from "../functions/misc"
 
 
 export const ScheduleFromIntervals = (
-    <DT, I, D>(impl: DateTimeImplementation<DT, I, D>) =>
+    <T extends DTypes>(impl: DateTimeImplementation<T>) =>
 
-        function (...intervals: Array<I>): Schedule<DT, I, D> {
+        function (...intervals: Array<T['interval']>): Schedule<T> {
             return function* (startDate, direction = "forward") {
                 let directionInt = directionToInt(direction)
 

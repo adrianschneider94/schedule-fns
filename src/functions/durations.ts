@@ -1,4 +1,4 @@
-import {DateTimeImplementation, MAX_RECURSIONS, Schedule} from "../index"
+import {DateTimeImplementation, DTypes, MAX_RECURSIONS, Schedule} from "../index"
 
 
 export type DurationObject = {
@@ -15,24 +15,24 @@ export type DurationObject = {
 
 
 export const addDurations = (
-    <DT, I, D>(impl: DateTimeImplementation<DT, I, D>) =>
+    <T extends DTypes>(impl: DateTimeImplementation<T>) =>
 
-        function (...durations: Array<D>) {
+        function (...durations: Array<T['duration']>) {
             return durations.reduce((aggregate, current) => impl.durationSum(aggregate, current))
         }
 
 )
 
 export const addDurationWithinSchedule = (
-    <DT, I, D>(impl: DateTimeImplementation<DT, I, D>) =>
+    <T extends DTypes>(impl: DateTimeImplementation<T>) =>
 
-        function (date: DT, duration: D, schedule: Schedule<DT, I, D>) {
+        function (date: T['datetime'], duration: T['duration'], schedule: Schedule<T>) {
             let durationLeft = duration
             let generator = schedule(date)
             let i = 0
             while (i <= MAX_RECURSIONS) {
                 i++
-                let block = generator.next() as IteratorYieldResult<I>
+                let block = generator.next() as IteratorYieldResult<T['interval']>
                 if (block.value === undefined) {
                     throw Error("Duration does not fit into the given schedule!")
                 } else {

@@ -1,4 +1,4 @@
-import {DateTimeImplementation, Schedule} from "../index"
+import {DateTimeImplementation, DTypes, Schedule} from "../index"
 import {RegularSchedule} from "./regularSchedule"
 import {invertSchedule, joinSchedules} from "../operations"
 
@@ -16,9 +16,9 @@ export type WeekDayOptions = {
  * @category Schedules
  */
 export const OnSpecificWeekday = (
-    <DT, I, D>(impl: DateTimeImplementation<DT, I, D>) =>
+    <T extends DTypes>(impl: DateTimeImplementation<T>) =>
 
-        function (day: 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7, options?: WeekDayOptions): Schedule<DT, I, D> {
+        function (day: 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7, options?: WeekDayOptions): Schedule<T> {
             let timeZone = options?.timeZone
 
             return function (startDate, direction) {
@@ -37,9 +37,9 @@ export const OnSpecificWeekday = (
  * @category Weekday Schedules
  */
 export const Mondays = (
-    <DT, I, D>(impl: DateTimeImplementation<DT, I, D>) =>
+    <T extends DTypes>(impl: DateTimeImplementation<T>) =>
 
-        function (options?: WeekDayOptions): Schedule<DT, I, D> {
+        function (options?: WeekDayOptions): Schedule<T> {
             return OnSpecificWeekday(impl)(1, options)
         }
 
@@ -52,9 +52,9 @@ export const Mondays = (
  * @category Weekday Schedules
  */
 export const Tuesdays = (
-    <DT, I, D>(impl: DateTimeImplementation<DT, I, D>) =>
+    <T extends DTypes>(impl: DateTimeImplementation<T>) =>
 
-        function (options?: WeekDayOptions): Schedule<DT, I, D> {
+        function (options?: WeekDayOptions): Schedule<T> {
             return OnSpecificWeekday(impl)(2, options)
         }
 
@@ -67,9 +67,9 @@ export const Tuesdays = (
  * @category Weekday Schedules
  */
 export const Wednesdays = (
-    <DT, I, D>(impl: DateTimeImplementation<DT, I, D>) =>
+    <T extends DTypes>(impl: DateTimeImplementation<T>) =>
 
-        function (options?: WeekDayOptions): Schedule<DT, I, D> {
+        function (options?: WeekDayOptions): Schedule<T> {
             return OnSpecificWeekday(impl)(3, options)
         }
 
@@ -82,9 +82,9 @@ export const Wednesdays = (
  * @category Weekday Schedules
  */
 export const Thursdays = (
-    <DT, I, D>(impl: DateTimeImplementation<DT, I, D>) =>
+    <T extends DTypes>(impl: DateTimeImplementation<T>) =>
 
-        function (options?: WeekDayOptions): Schedule<DT, I, D> {
+        function (options?: WeekDayOptions): Schedule<T> {
             return OnSpecificWeekday(impl)(4, options)
         }
 
@@ -97,9 +97,9 @@ export const Thursdays = (
  * @category Weekday Schedules
  */
 export const Fridays = (
-    <DT, I, D>(impl: DateTimeImplementation<DT, I, D>) =>
+    <T extends DTypes>(impl: DateTimeImplementation<T>) =>
 
-        function (options?: WeekDayOptions): Schedule<DT, I, D> {
+        function (options?: WeekDayOptions): Schedule<T> {
             return OnSpecificWeekday(impl)(5, options)
         }
 
@@ -112,9 +112,9 @@ export const Fridays = (
  * @category Weekday Schedules
  */
 export const Saturdays = (
-    <DT, I, D>(impl: DateTimeImplementation<DT, I, D>) =>
+    <T extends DTypes>(impl: DateTimeImplementation<T>) =>
 
-        function (options?: WeekDayOptions): Schedule<DT, I, D> {
+        function (options?: WeekDayOptions): Schedule<T> {
             return OnSpecificWeekday(impl)(6, options)
         }
 
@@ -127,9 +127,9 @@ export const Saturdays = (
  * @category Weekday Schedules
  */
 export const Sundays = (
-    <DT, I, D>(impl: DateTimeImplementation<DT, I, D>) =>
+    <T extends DTypes>(impl: DateTimeImplementation<T>) =>
 
-        function (options?: WeekDayOptions): Schedule<DT, I, D> {
+        function (options?: WeekDayOptions): Schedule<T> {
             return OnSpecificWeekday(impl)(7, options)
         }
 
@@ -141,9 +141,9 @@ export const Sundays = (
  * @category Weekday Schedules
  */
 export const Weekends = (
-    <DT, I, D>(impl: DateTimeImplementation<DT, I, D>) =>
+    <T extends DTypes>(impl: DateTimeImplementation<T>) =>
 
-        function (options?: WeekDayOptions): Schedule<DT, I, D> {
+        function (options?: WeekDayOptions): Schedule<T> {
             return joinSchedules(impl)(Saturdays(impl)(options), Sundays(impl)(options))
         }
 
@@ -156,9 +156,9 @@ export const Weekends = (
  * @category Weekday Schedules
  */
 export const WorkingDays = (
-    <DT, I, D>(impl: DateTimeImplementation<DT, I, D>) =>
+    <T extends DTypes>(impl: DateTimeImplementation<T>) =>
 
-        function (options?: WeekDayOptions): Schedule<DT, I, D> {
+        function (options?: WeekDayOptions): Schedule<T> {
             return invertSchedule(impl)(Weekends(impl)(options))
         }
 
