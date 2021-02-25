@@ -2,7 +2,6 @@ import {DateTimeImplementation} from "schedule.js"
 import {
     add,
     addDays,
-    addWeeks,
     areIntervalsOverlapping,
     differenceInMilliseconds,
     Duration,
@@ -26,6 +25,11 @@ export type DateFnsTypes = {
     interval: Interval
     duration: Duration
 }
+
+function normalizeDuration(duration: Duration): Duration {
+    throw Error("Not implemented")
+}
+
 
 export const DateFnsImplementation: DateTimeImplementation<DateFnsTypes> = {
     InfinityDateTime: new Date(8640000000000000),
@@ -235,5 +239,9 @@ export const DateFnsImplementation: DateTimeImplementation<DateFnsTypes> = {
 
     getEnd(interval) {
         return interval.end
-    }
+    },
+
+    areDurationsEqual(left: DateFnsTypes["duration"], right: DateFnsTypes["duration"]): boolean {
+        return normalizeDuration(left) === normalizeDuration(right)
+    },
 }

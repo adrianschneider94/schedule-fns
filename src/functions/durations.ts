@@ -26,7 +26,7 @@ export const addDurations = (
 export const addDurationWithinSchedule = (
     <T extends DTypes>(impl: DateTimeImplementation<T>) =>
 
-        function (date: T['datetime'], duration: T['duration'], schedule: Schedule<T>) {
+        function (date: T['datetime'], duration: T['duration'], schedule: Schedule<T>): T['datetime'] {
             let durationLeft = duration
             let generator = schedule(date)
             let i = 0

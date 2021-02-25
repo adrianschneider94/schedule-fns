@@ -177,5 +177,9 @@ export const LuxonImplementation: DateTimeImplementation<LuxonTypes> = {
 
     getEnd(interval) {
         return interval.end
-    }
+    },
+
+    areDurationsEqual(left: LuxonTypes["duration"], right: LuxonTypes["duration"]): boolean {
+        return left.equals(right)
+    },
 }

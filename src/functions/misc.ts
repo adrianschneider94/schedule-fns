@@ -15,7 +15,7 @@ export function isArrayEmpty<T>(array: Array<T>) {
 export const isWithinSchedule = (
     <T extends DTypes>(impl: DateTimeImplementation<T>) =>
 
-        function (date: T['datetime'], schedule: Schedule<T>) {
+        function (date: T['datetime'], schedule: Schedule<T>): boolean {
             let generator = schedule(date)
             let interval = generator.next()?.value as T['interval'] | undefined
 

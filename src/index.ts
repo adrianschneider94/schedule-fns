@@ -1,5 +1,7 @@
 import {IntervalAsISOStrings} from "schedule.js/functions/intervals"
 import {DurationObject} from "schedule.js/functions/durations"
+import {Country, Options} from "date-holidays"
+import {WeekDayOptions} from "schedule.js/schedules/weekdays"
 
 /**
  * The maximal number of recursions before an error is thrown.
@@ -104,4 +106,59 @@ export interface DateTimeImplementation<T extends DTypes> {
     getEnd(interval: T['interval']): T['datetime']
 
     durationFromDurationObject(duration: DurationObject): T['duration']
+
+    areDurationsEqual(left: T['duration'], right: T['duration']): boolean
+}
+
+export interface Exports<T extends DTypes> {
+    intersectSchedules(...schedules: Array<Schedule<T>>): Schedule<T>
+
+    invertSchedule(schedule: Schedule<T>): Schedule<T>
+
+    joinSchedules(...schedules: Array<Schedule<T>>): Schedule<T>
+
+    shiftSchedule(schedule: Schedule<T>, duration: T['duration']): Schedule<T>
+
+    subtractSchedules(left: Schedule<T>, right: Schedule<T>): Schedule<T>,
+
+    symmetricDifferenceOfSchedules(left: Schedule<T>, right: Schedule<T>): Schedule<T>,
+
+    DailySchedule(startTime: string, endTime: string, options?: {timeZone?: string}): Schedule<T>,
+
+    Holidays(country?: Country | string, opts?: Options): Schedule<T>
+
+    Holidays(country?: string, state?: string, opts?: Options): Schedule<T>
+
+    Holidays(country?: string, state?: string, region?: string, opts?: Options): Schedule<T>
+
+    RegularSchedule(oneStartMoment: T['datetime'], duration: T['duration'], period: T['duration']): Schedule<T>
+
+    ScheduleFromIntervals(...intervals: Array<T['interval']>): Schedule<T>
+
+    From(startDate: T['datetime']): Schedule<T>
+
+    Until(endDate: T['datetime']): Schedule<T>
+
+    Mondays(options?: WeekDayOptions): Schedule<T>
+
+    Tuesdays(options?: WeekDayOptions): Schedule<T>
+
+    Wednesdays(options?: WeekDayOptions): Schedule<T>
+
+    Thursdays(options?: WeekDayOptions): Schedule<T>
+
+    Fridays(options?: WeekDayOptions): Schedule<T>
+
+    Saturdays(options?: WeekDayOptions): Schedule<T>
+
+    Sundays(options?: WeekDayOptions): Schedule<T>
+
+    WorkingDays(options?: WeekDayOptions): Schedule<T>
+
+    Weekends(options?: WeekDayOptions): Schedule<T>
+
+    addDurationWithinSchedule(date: T['datetime'], duration: T['duration'], schedule: Schedule<T>): T['datetime']
+
+    isWithinSchedule(date: T['datetime'], schedule: Schedule<T>): boolean
+
 }
