@@ -6,6 +6,7 @@ import {
     differenceInMilliseconds,
     Duration,
     formatISO,
+    formatISODuration,
     getYear,
     Interval,
     intervalToDuration,
@@ -14,7 +15,6 @@ import {
     setISODay,
     startOfDay
 } from "date-fns"
-
 
 function orZero(value?: number): number {
     return value !== undefined ? value : 0
@@ -27,13 +27,54 @@ export type DateFnsTypes = {
 }
 
 function normalizeDuration(duration: Duration): Duration {
-    throw Error("Not implemented")
+    let seconds = orZero(duration.seconds)
+    let pureSeconds = Math.sign(seconds) * (Math.abs(seconds) % 60)
+    let minutes_from_seconds = Math.sign(seconds) * Math.floor(Math.abs(seconds / 60))
+
+    let minutes = orZero(duration.minutes) + minutes_from_seconds
+    let pureMinutes = Math.sign(minutes) * (Math.abs(minutes) % 60)
+    let hoursFromMinutes = Math.sign(minutes) * Math.floor(Math.abs(minutes) / 60)
+
+    let hours = orZero(duration.hours) + hoursFromMinutes
+    let pureHours = Math.sign(hours) * (Math.abs(hours) % 24)
+    let daysFromHours = Math.sign(hours) * Math.floor(Math.abs(hours) / 24)
+
+    let days = orZero(duration.days) + daysFromHours
+
+    let months = orZero(duration.months)
+    let pureMonths = Math.sign(months) * (Math.abs(months) % 12)
+    let yearsFromMonths = Math.sign(months) * Math.floor(Math.abs(months) / 12)
+
+    let years = orZero(duration.years) + yearsFromMonths
+
+    return {
+        seconds: pureSeconds,
+        minutes: pureMinutes,
+        hours: pureHours,
+        days: days,
+        months: pureMonths,
+        years: years
+    }
 }
 
 
+const InfinityDateTime = new Date(8640000000000000)
+const NegInfinityDateTime = new Date(-8640000000000000)
+
+function catchInfinity(date: Date | number) {
+    if (date.valueOf() >= InfinityDateTime.valueOf()) {
+        return InfinityDateTime
+    } else if (date.valueOf() <= NegInfinityDateTime.valueOf()) {
+        return NegInfinityDateTime
+    } else {
+        return date
+    }
+}
+
 export const DateFnsImplementation: DateTimeImplementation<DateFnsTypes> = {
-    InfinityDateTime: new Date(8640000000000000),
-    NegInfinityDateTime: new Date(-8640000000000000),
+    InfinityDateTime: InfinityDateTime,
+    NegInfinityDateTime: NegInfinityDateTime,
+
 
     durationFromDurationObject(duration) {
         return {
@@ -146,8 +187,8 @@ export const DateFnsImplementation: DateTimeImplementation<DateFnsTypes> = {
 
     createInterval(start, end) {
         return {
-            start: start,
-            end: end
+            start: catchInfinity(start),
+            end: catchInfinity(end)
         }
     },
 
@@ -241,7 +282,27 @@ export const DateFnsImplementation: DateTimeImplementation<DateFnsTypes> = {
         return interval.end
     },
 
-    areDurationsEqual(left: DateFnsTypes["duration"], right: DateFnsTypes["duration"]): boolean {
-        return normalizeDuration(left) === normalizeDuration(right)
+    areDurationsEqual(left, right) {
+        left = normalizeDuration(left)
+        right = normalizeDuration(right)
+        return (orZero(left.years) === orZero(right.years)) &&
+            (orZero(left.months) === orZero(right.months)) &&
+            (orZero(left.weeks) === orZero(right.weeks)) &&
+            (orZero(left.days) == orZero(right.days)) &&
+            (orZero(left.hours) === orZero(right.hours)) &&
+            (orZero(left.minutes) === orZero(right.minutes)) &&
+            (orZero(left.seconds) === orZero(right.seconds))
     },
+
+    toISO(date: DateFnsTypes["datetime"]): string {
+        return formatISO(date)
+    },
+
+    intervalToIso(interval: DateFnsTypes["interval"]): string {
+        return this.toISO(interval.start) + "/" + this.toISO(interval.end)
+    },
+
+    durationToIso(duration) {
+        return formatISODuration(duration)
+    }
 }

@@ -1,162 +1,184 @@
-import {
-    Fridays,
-    Mondays,
-    OnSpecificWeekday,
-    Saturdays,
-    Sundays,
-    Thursdays,
-    Tuesdays,
-    Wednesdays,
-    Weekends,
-    WorkingDays
-} from "schedule.js/schedules/weekdays"
-import {LuxonImplementation} from "schedule.js/luxon/implementation"
-import {DateTime, Duration, Interval} from "luxon"
-import {Schedule} from "schedule.js"
+import {Interval} from "luxon"
+import {DateTimeImplementation, Exports, Schedule} from "schedule.js"
+import {Creators, implementation} from "../jest.setup"
+import {OnSpecificWeekday} from "schedule.js/schedules/weekdays"
 
-test("SpecificDay", () => {
-    let schedule = OnSpecificWeekday(LuxonImplementation)(1)
-    let generator = schedule(LuxonImplementation.parseISO("2020-09-23"))
+describe.each(implementation)('%#', <DT, I, D>(x: any) => {
+    type T = {
+        datetime: DT,
+        interval: I,
+        duration: D
+    }
+    let impl = x.impl as DateTimeImplementation<T>
 
-    let e1 = {
-        start: LuxonImplementation.parseISO("2020-09-27T22:00Z"),
-        end: LuxonImplementation.parseISO("2020-09-28T22:00Z")
+    let {
+        Fridays,
+        Mondays,
+        Saturdays,
+        Sundays,
+        Thursdays,
+        Tuesdays,
+        Wednesdays,
+        Weekends,
+        WorkingDays
+    } = x.fns as Exports<T>
+
+    let {
+        createDuration,
+        createInterval,
+        createDateTime
+    } = x.creators as Creators<T>
+
+    function intervalFromIsoStrings(interval: {start: string, end: string}): I {
+        return createInterval({start: new Date(interval.start), end: new Date(interval.end)})
     }
 
-    let e2 = {
-        start: LuxonImplementation.parseISO("2020-10-04T22:00Z"),
-        end: LuxonImplementation.parseISO("2020-10-05T22:00Z")
-    }
 
-    let value = generator.next()
-    expect(value.done).toBe(false)
-    expect(value.value).toBeSameIntervalAs(LuxonImplementation.intervalFromIntervalObject(e1))
+    test("SpecificDay", () => {
+        let schedule = OnSpecificWeekday(impl)(1)
+        let generator = schedule(createDateTime(Date.parse("2020-09-23")))
 
-    value = generator.next()
-    expect(value.done).toBe(false)
-    expect(value.value).toBeSameIntervalAs(LuxonImplementation.intervalFromIntervalObject(e2))
-})
+        let e1 = {
+            start: Date.parse("2020-09-27T22:00Z"),
+            end: Date.parse("2020-09-28T22:00Z")
+        }
 
-test("Specific Day in Tokyo", () => {
-    let schedule = OnSpecificWeekday(LuxonImplementation)(1, {timeZone: "Asia/Tokyo"})
-    let generator = schedule(LuxonImplementation.parseISO("2020-01-01T00:00+09:00"))
+        let e2 = {
+            start: Date.parse("2020-10-04T22:00Z"),
+            end: Date.parse("2020-10-05T22:00Z")
+        }
 
-    let e1 = {
-        start: LuxonImplementation.parseISO("2020-01-07T00:00+09:00"),
-        end: LuxonImplementation.parseISO("2020-01-08T00:00+09:00")
-    }
+        let value = generator.next()
+        expect(value.done).toBe(false)
+        expect(value.value).toBeSameIntervalAs(impl, createInterval(e1))
 
-    let e2 = {
-        start: LuxonImplementation.parseISO("2020-01-14T00:00+09:00"),
-        end: LuxonImplementation.parseISO("2020-01-15T00:00+09:00")
-    }
+        value = generator.next()
+        expect(value.done).toBe(false)
+        expect(value.value).toBeSameIntervalAs(impl, createInterval(e2))
+    })
 
-    let value = generator.next()
-    expect(value.done).toBe(false)
-    expect(value.value).toBeSameIntervalAs(LuxonImplementation.intervalFromIntervalObject(e1))
+    test("Specific Day in Tokyo", () => {
+        let schedule = OnSpecificWeekday(impl)(1, {timeZone: "Asia/Tokyo"})
+        let generator = schedule(createDateTime(Date.parse("2020-01-01T00:00+09:00")))
 
-    value = generator.next()
-    expect(value.done).toBe(false)
-    expect(value.value).toBeSameIntervalAs(LuxonImplementation.intervalFromIntervalObject(e2))
-})
+        let e1 = {
+            start: Date.parse("2020-01-07T00:00+09:00"),
+            end: Date.parse("2020-01-08T00:00+09:00")
+        }
 
-test("Weekdays", () => {
-    let schedule: Schedule<DateTime, Interval, Duration>
-    let nextInterval: Interval
-    let startDate = LuxonImplementation.parseISO("2020-09-28T00:00Z")
+        let e2 = {
+            start: Date.parse("2020-01-14T00:00+09:00"),
+            end: Date.parse("2020-01-15T00:00+09:00")
+        }
 
-    schedule = Mondays(LuxonImplementation)()
+        let value = generator.next()
+        expect(value.done).toBe(false)
+        expect(value.value).toBeSameIntervalAs(impl, createInterval(e1))
 
-    let e1 = {
-        start: LuxonImplementation.parseISO("2020-09-28T00:00Z"),
-        end: LuxonImplementation.parseISO("2020-09-28T22:00Z")
-    }
+        value = generator.next()
+        expect(value.done).toBe(false)
+        expect(value.value).toBeSameIntervalAs(impl, createInterval(e2))
+    })
 
-    nextInterval = schedule(startDate).next().value
-    expect(nextInterval).toBeSameIntervalAs(LuxonImplementation.intervalFromIntervalObject(e1))
+    test("Weekdays", () => {
+        let schedule: Schedule<T>
+        let nextInterval: Interval
+        let startDate = Date.parse("2020-09-28T00:00Z")
 
-    schedule = Tuesdays(LuxonImplementation)()
+        schedule = Mondays()
 
-    let e2 = {
-        start: LuxonImplementation.parseISO("2020-09-28T22:00Z"),
-        end: LuxonImplementation.parseISO("2020-09-29T22:00Z")
-    }
+        let e1 = {
+            start: Date.parse("2020-09-28T00:00Z"),
+            end: Date.parse("2020-09-28T22:00Z")
+        }
 
-    nextInterval = schedule(startDate).next().value
-    expect(nextInterval).toBeSameIntervalAs(LuxonImplementation.intervalFromIntervalObject(e2))
+        nextInterval = schedule(createDateTime(startDate)).next().value
+        expect(nextInterval).toBeSameIntervalAs(impl, createInterval(e1))
 
-    schedule = Wednesdays(LuxonImplementation)()
-    let e3 = {
-        start: LuxonImplementation.parseISO("2020-09-29T22:00Z"),
-        end: LuxonImplementation.parseISO("2020-09-30T22:00Z")
-    }
+        schedule = Tuesdays()
 
-    nextInterval = schedule(startDate).next().value
-    expect(nextInterval).toBeSameIntervalAs(LuxonImplementation.intervalFromIntervalObject(e3))
+        let e2 = {
+            start: Date.parse("2020-09-28T22:00Z"),
+            end: Date.parse("2020-09-29T22:00Z")
+        }
 
-    schedule = Thursdays(LuxonImplementation)()
+        nextInterval = schedule(createDateTime(startDate)).next().value
+        expect(nextInterval).toBeSameIntervalAs(impl, createInterval(e2))
 
-    let e4 = {
-        start: LuxonImplementation.parseISO("2020-09-30T22:00Z"),
-        end: LuxonImplementation.parseISO("2020-10-01T22:00Z")
-    }
+        schedule = Wednesdays()
+        let e3 = {
+            start: Date.parse("2020-09-29T22:00Z"),
+            end: Date.parse("2020-09-30T22:00Z")
+        }
 
-    nextInterval = schedule(startDate).next().value
-    expect(nextInterval).toBeSameIntervalAs(LuxonImplementation.intervalFromIntervalObject(e4))
+        nextInterval = schedule(createDateTime(startDate)).next().value
+        expect(nextInterval).toBeSameIntervalAs(impl, createInterval(e3))
 
-    schedule = Fridays(LuxonImplementation)()
+        schedule = Thursdays()
 
-    let e5 = {
-        start: LuxonImplementation.parseISO("2020-10-01T22:00Z"),
-        end: LuxonImplementation.parseISO("2020-10-02T22:00Z")
-    }
+        let e4 = {
+            start: Date.parse("2020-09-30T22:00Z"),
+            end: Date.parse("2020-10-01T22:00Z")
+        }
 
-    nextInterval = schedule(startDate).next().value
-    expect(nextInterval).toBeSameIntervalAs(LuxonImplementation.intervalFromIntervalObject(e5))
+        nextInterval = schedule(createDateTime(startDate)).next().value
+        expect(nextInterval).toBeSameIntervalAs(impl, createInterval(e4))
 
-    schedule = Saturdays(LuxonImplementation)()
+        schedule = Fridays()
 
-    let e6 = {
-        start: LuxonImplementation.parseISO("2020-10-02T22:00Z"),
-        end: LuxonImplementation.parseISO("2020-10-03T22:00Z")
-    }
+        let e5 = {
+            start: Date.parse("2020-10-01T22:00Z"),
+            end: Date.parse("2020-10-02T22:00Z")
+        }
 
-    nextInterval = schedule(startDate).next().value
-    expect(nextInterval).toBeSameIntervalAs(LuxonImplementation.intervalFromIntervalObject(e6))
+        nextInterval = schedule(createDateTime(startDate)).next().value
+        expect(nextInterval).toBeSameIntervalAs(impl, createInterval(e5))
+
+        schedule = Saturdays()
+
+        let e6 = {
+            start: Date.parse("2020-10-02T22:00Z"),
+            end: Date.parse("2020-10-03T22:00Z")
+        }
+
+        nextInterval = schedule(createDateTime(startDate)).next().value
+        expect(nextInterval).toBeSameIntervalAs(impl, createInterval(e6))
 
 
-    schedule = Sundays(LuxonImplementation)()
+        schedule = Sundays()
 
-    let e7 = {
-        start: LuxonImplementation.parseISO("2020-10-03T22:00Z"),
-        end: LuxonImplementation.parseISO("2020-10-04T22:00Z")
-    }
-    nextInterval = schedule(startDate).next().value
-    expect(nextInterval).toBeSameIntervalAs(LuxonImplementation.intervalFromIntervalObject(e7))
+        let e7 = {
+            start: Date.parse("2020-10-03T22:00Z"),
+            end: Date.parse("2020-10-04T22:00Z")
+        }
+        nextInterval = schedule(createDateTime(startDate)).next().value
+        expect(nextInterval).toBeSameIntervalAs(impl, createInterval(e7))
 
-})
+    })
 
-test("Weekends", () => {
-    let schedule = Weekends(LuxonImplementation)()
-    let startDate = LuxonImplementation.parseISO("2020-09-28T00:00Z")
+    test("Weekends", () => {
+        let schedule = Weekends()
+        let startDate = Date.parse("2020-09-28T00:00Z")
 
-    let e1 = {
-        start: LuxonImplementation.parseISO("2020-10-02T22:00Z"),
-        end: LuxonImplementation.parseISO("2020-10-04T22:00Z")
-    }
-    let nextInterval = schedule(startDate).next().value
-    expect(nextInterval).toBeSameIntervalAs(LuxonImplementation.intervalFromIntervalObject(e1))
-})
+        let e1 = {
+            start: Date.parse("2020-10-02T22:00Z"),
+            end: Date.parse("2020-10-04T22:00Z")
+        }
+        let nextInterval = schedule(createDateTime(startDate)).next().value
+        expect(nextInterval).toBeSameIntervalAs(impl, createInterval(e1))
+    })
 
-test("WorkingDays", () => {
-    let schedule = WorkingDays(LuxonImplementation)()
-    let startDate = LuxonImplementation.parseISO("2020-09-28T00:00Z")
+    test("WorkingDays", () => {
+        let schedule = WorkingDays()
+        let startDate = Date.parse("2020-09-28T00:00Z")
 
-    let e1 = {
-        start: LuxonImplementation.parseISO("2020-09-28T00:00Z"),
-        end: LuxonImplementation.parseISO("2020-10-02T22:00Z")
-    }
+        let e1 = {
+            start: Date.parse("2020-09-28T00:00Z"),
+            end: Date.parse("2020-10-02T22:00Z")
+        }
 
-    let nextInterval = schedule(startDate).next().value
-    expect(nextInterval).toBeSameIntervalAs(LuxonImplementation.intervalFromIntervalObject(e1))
+        let nextInterval = schedule(createDateTime(startDate)).next().value
+        expect(nextInterval).toBeSameIntervalAs(impl, createInterval(e1))
+    })
+
 })

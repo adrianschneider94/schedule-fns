@@ -47,7 +47,7 @@ export const LuxonImplementation: DateTimeImplementation<LuxonTypes> = {
     },
 
     isEqual(left, right) {
-        return left.toMillis() === right.toMillis()
+        return left.valueOf() === right.valueOf()
     },
 
     compareAsc(left, right) {
@@ -81,7 +81,7 @@ export const LuxonImplementation: DateTimeImplementation<LuxonTypes> = {
     },
 
     areTwoIntervalsEqual(left, right) {
-        return left.equals(right)
+        return left.start.valueOf() === right.start.valueOf() && left.end.valueOf() === right.end.valueOf()
     },
 
     joinTwoIntervals(left, right) {
@@ -182,4 +182,14 @@ export const LuxonImplementation: DateTimeImplementation<LuxonTypes> = {
     areDurationsEqual(left: LuxonTypes["duration"], right: LuxonTypes["duration"]): boolean {
         return left.equals(right)
     },
+
+    toISO(date: LuxonTypes["datetime"]): string {
+        return date.toISO()
+    },
+    intervalToIso(interval: LuxonTypes["interval"]): string {
+        return interval.toISO()
+    },
+    durationToIso(duration) {
+        return duration.toISO()
+    }
 }

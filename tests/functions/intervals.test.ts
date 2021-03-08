@@ -1,11 +1,7 @@
-import {LuxonImplementation} from "schedule.js/luxon/implementation"
-import {
-
-} from "schedule.js/functions/intervals"
 import {Creators, implementation} from "../jest.setup"
-import {DateTimeImplementation, Exports} from "schedule.js"
+import {Exports} from "schedule.js"
 
-describe.each(implementation)('durations', <DT, I, D>(x: any) => {
+describe.each(implementation)('%#', <DT, I, D>(x: any) => {
     type T = {
         datetime: DT,
         interval: I,
@@ -14,21 +10,16 @@ describe.each(implementation)('durations', <DT, I, D>(x: any) => {
     let impl = x.impl
 
     let {
-        roughDurationToMilliseconds,
-        multiplyDuration,
-        durationSum,
-    } = x.impl as DateTimeImplementation<T>
-
-    let {
-        addDurationWithinSchedule,
-        ScheduleFromIntervals,
-        RegularSchedule
+        areIntervalsConnected,
+        areIntervalsEqual,
+        joinIntervals,
+        mergeIntervals,
+        areIntervalsIntersecting,
+        intersectIntervals
     } = x.fns as Exports<T>
 
     let {
-        createDuration,
         createInterval,
-        createDateTime
     } = x.creators as Creators<T>
 
     test("Two connected intervals", () => {
@@ -91,7 +82,7 @@ describe.each(implementation)('durations', <DT, I, D>(x: any) => {
         let interval1 = {start: 0, end: 11}
         let interval2 = {start: 9, end: 19}
         let expected = {start: 0, end: 19}
-        expect(joinIntervals(createInterval(interval1), createInterval(interval2))).toBeSameIntervalAs(createInterval(expected))
+        expect(joinIntervals(createInterval(interval1), createInterval(interval2))).toBeSameIntervalAs(impl, createInterval(expected))
     })
 
     test("Join three intervals", () => {
@@ -99,7 +90,7 @@ describe.each(implementation)('durations', <DT, I, D>(x: any) => {
         let interval2 = {start: 9, end: 19}
         let interval3 = {start: 18, end: 30}
         let expected = {start: 0, end: 30}
-        expect(joinIntervals(createInterval(interval1), createInterval(interval2), createInterval(interval3))).toBeSameIntervalAs(createInterval(expected))
+        expect(joinIntervals(createInterval(interval1), createInterval(interval2), createInterval(interval3))).toBeSameIntervalAs(impl, createInterval(expected))
     })
 
     test("Try to join disjoint intervals", () => {
@@ -125,7 +116,7 @@ describe.each(implementation)('durations', <DT, I, D>(x: any) => {
             end: Infinity
         }
 
-        expect(mergeIntervals(createInterval(interval1), createInterval(interval2))[0]).toBeSameIntervalAs(createInterval(expected))
+        expect(mergeIntervals(createInterval(interval1), createInterval(interval2))[0]).toBeSameIntervalAs(impl, createInterval(expected))
     })
 
     test("Merge single interval", () => {
@@ -179,14 +170,14 @@ describe.each(implementation)('durations', <DT, I, D>(x: any) => {
     test("intersectIntervals: Single interval intersects to itself", () => {
         let i = {start: 0, end: 1}
         let e = {start: 0, end: 1}
-        expect(intersectIntervals(createInterval(i))).toBeSameIntervalAs(createInterval(e))
+        expect(intersectIntervals(createInterval(i))).toBeSameIntervalAs(impl, createInterval(e))
     })
 
     test("intersectIntervals: Intersect two intervals", () => {
         let i1 = {start: 0, end: 2}
         let i2 = {start: 1, end: 3}
         let e = {start: 1, end: 2}
-        expect(intersectIntervals(createInterval(i1), createInterval(i2))).toBeSameIntervalAs(createInterval(e))
+        expect(intersectIntervals(createInterval(i1), createInterval(i2))).toBeSameIntervalAs(impl, createInterval(e))
     })
 
     test("intersectIntervals: Intersect two tangent intervals", () => {
@@ -207,7 +198,7 @@ describe.each(implementation)('durations', <DT, I, D>(x: any) => {
         let i2 = {start: 2, end: 5}
         let i3 = {start: 2.5, end: 4}
         let e = {start: 2.4, end: 3}
-        expect(intersectIntervals(createInterval(i1), createInterval(i2), createInterval(i3))).toBeSameIntervalAs(createInterval(e))
+        expect(intersectIntervals(createInterval(i1), createInterval(i2), createInterval(i3))).toBeSameIntervalAs(impl, createInterval(e))
     })
 
 })

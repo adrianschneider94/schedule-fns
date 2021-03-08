@@ -1,33 +1,51 @@
-import {LuxonImplementation} from "schedule.js/luxon/implementation"
-import {ScheduleFromIntervals} from "schedule.js/schedules"
-import {subtractSchedules} from "schedule.js/operations"
+import {Creators, implementation} from "../jest.setup"
+import {Exports} from "schedule.js"
 
-test("Subtract schedules", () => {
-    let i1 = {start: 0, end: 10}
-    let i2_1 = {start: 2, end: 3}
-    let i2_2 = {start: 4, end: 5}
-    let startDate = 0
-    let e1 = {start: 0, end: 2}
-    let e2 = {start: 3, end: 4}
-    let e3 = {start: 5, end: 10}
+describe.each(implementation)('%#', <DT, I, D>(x: any) => {
+    type T = {
+        datetime: DT,
+        interval: I,
+        duration: D
+    }
+    let impl = x.impl
 
-    let schedule1 = ScheduleFromIntervals(LuxonImplementation)(LuxonImplementation.intervalFromIntervalObject(i1))
-    let schedule2 = ScheduleFromIntervals(LuxonImplementation)(LuxonImplementation.intervalFromIntervalObject(i2_1), LuxonImplementation.intervalFromIntervalObject(i2_2))
-    let subtractedSchedule = subtractSchedules(LuxonImplementation)(schedule1, schedule2)
+    let {
+        ScheduleFromIntervals,
+        subtractSchedules
+    } = x.fns as Exports<T>
 
-    let generator = subtractedSchedule(LuxonImplementation.dateTimeFromDateOrNumber(startDate))
+    let {
+        createDuration,
+        createInterval,
+        createDateTime
+    } = x.creators as Creators<T>
+    test("Subtract schedules", () => {
+        let i1 = {start: 0, end: 10}
+        let i2_1 = {start: 2, end: 3}
+        let i2_2 = {start: 4, end: 5}
+        let startDate = 0
+        let e1 = {start: 0, end: 2}
+        let e2 = {start: 3, end: 4}
+        let e3 = {start: 5, end: 10}
 
-    let value = generator.next()
-    expect(value.done).toBe(false)
-    expect(value.value).toBeSameIntervalAs(LuxonImplementation.intervalFromIntervalObject(e1))
+        let schedule1 = ScheduleFromIntervals(createInterval(i1))
+        let schedule2 = ScheduleFromIntervals(createInterval(i2_1), createInterval(i2_2))
+        let subtractedSchedule = subtractSchedules(schedule1, schedule2)
 
-    value = generator.next()
-    expect(value.done).toBe(false)
-    expect(value.value).toBeSameIntervalAs(LuxonImplementation.intervalFromIntervalObject(e2))
+        let generator = subtractedSchedule(createDateTime(startDate))
 
-    value = generator.next()
-    expect(value.done).toBe(false)
-    expect(value.value).toBeSameIntervalAs(LuxonImplementation.intervalFromIntervalObject(e3))
+        let value = generator.next()
+        expect(value.done).toBe(false)
+        expect(value.value).toBeSameIntervalAs(impl, createInterval(e1))
 
-    expect(generator.next()).toStrictEqual({value: undefined, done: true})
+        value = generator.next()
+        expect(value.done).toBe(false)
+        expect(value.value).toBeSameIntervalAs(impl, createInterval(e2))
+
+        value = generator.next()
+        expect(value.done).toBe(false)
+        expect(value.value).toBeSameIntervalAs(impl, createInterval(e3))
+
+        expect(generator.next()).toStrictEqual({value: undefined, done: true})
+    })
 })

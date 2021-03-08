@@ -108,6 +108,12 @@ export interface DateTimeImplementation<T extends DTypes> {
     durationFromDurationObject(duration: DurationObject): T['duration']
 
     areDurationsEqual(left: T['duration'], right: T['duration']): boolean
+
+    toISO(date: T['datetime']): string
+
+    intervalToIso(interval: T['interval']): string
+
+    durationToIso(duration: T['duration']): string
 }
 
 export interface Exports<T extends DTypes> {
@@ -161,4 +167,17 @@ export interface Exports<T extends DTypes> {
 
     isWithinSchedule(date: T['datetime'], schedule: Schedule<T>): boolean
 
+    addDurations(...durations: Array<T['duration']>): T['duration']
+
+    areIntervalsIntersecting(...intervals: Array<T['interval']>): boolean
+
+    areIntervalsConnected(...intervals: Array<T['interval']>): boolean
+
+    areIntervalsEqual(...intervals: Array<T['interval']>): boolean
+
+    joinIntervals(...intervals: Array<T['interval']>): T['interval']
+
+    mergeIntervals(...intervals: Array<T['interval']>): Array<T['interval']>
+
+    intersectIntervals(...intervals: Array<T['interval']>): T['interval']
 }

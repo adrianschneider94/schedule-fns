@@ -1,27 +1,46 @@
-import {LuxonImplementation} from "schedule.js/luxon/implementation"
-import {ScheduleFromIntervals} from "schedule.js/schedules"
-import {symmetricDifferenceOfSchedules} from "schedule.js/operations"
+import {Creators, implementation} from "../jest.setup"
+import {Exports} from "schedule.js"
 
-test("Symmetric difference of schedules", () => {
-    let i1 = {start: 0, end: 2}
-    let i2 = {start: 1, end: 3}
-    let startDate = 0
-    let e1 = {start: 0, end: 1}
-    let e2 = {start: 2, end: 3}
+describe.each(implementation)('%#', <DT, I, D>(x: any) => {
+    type T = {
+        datetime: DT,
+        interval: I,
+        duration: D
+    }
+    let impl = x.impl
 
-    let schedule1 = ScheduleFromIntervals(LuxonImplementation)(LuxonImplementation.intervalFromIntervalObject(i1))
-    let schedule2 = ScheduleFromIntervals(LuxonImplementation)(LuxonImplementation.intervalFromIntervalObject(i2))
-    let schedule = symmetricDifferenceOfSchedules(LuxonImplementation)(schedule1, schedule2)
+    let {
+        ScheduleFromIntervals,
+        symmetricDifferenceOfSchedules
+    } = x.fns as Exports<T>
 
-    let generator = schedule(LuxonImplementation.dateTimeFromDateOrNumber(startDate))
+    let {
+        createInterval,
+        createDateTime
+    } = x.creators as Creators<T>
 
-    let value = generator.next()
-    expect(value.done).toBe(false)
-    expect(value.value).toBeSameIntervalAs(LuxonImplementation.intervalFromIntervalObject(e1))
+    test("Symmetric difference of schedules", () => {
+        let i1 = {start: 0, end: 2}
+        let i2 = {start: 1, end: 3}
+        let startDate = 0
+        let e1 = {start: 0, end: 1}
+        let e2 = {start: 2, end: 3}
 
-    value = generator.next()
-    expect(value.done).toBe(false)
-    expect(value.value).toBeSameIntervalAs(LuxonImplementation.intervalFromIntervalObject(e2))
+        let schedule1 = ScheduleFromIntervals(createInterval(i1))
+        let schedule2 = ScheduleFromIntervals(createInterval(i2))
+        let schedule = symmetricDifferenceOfSchedules(schedule1, schedule2)
 
-    expect(generator.next()).toStrictEqual({value: undefined, done: true})
+        let generator = schedule(createDateTime(startDate))
+
+        let value = generator.next()
+        expect(value.done).toBe(false)
+        expect(value.value).toBeSameIntervalAs(impl, createInterval(e1))
+
+        value = generator.next()
+        expect(value.done).toBe(false)
+        expect(value.value).toBeSameIntervalAs(impl, createInterval(e2))
+
+        expect(generator.next()).toStrictEqual({value: undefined, done: true})
+    })
+
 })

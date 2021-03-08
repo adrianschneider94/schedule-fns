@@ -1,7 +1,7 @@
 import {Creators, implementation} from "../jest.setup"
 import {DateTimeImplementation, Exports} from "schedule.js"
 
-describe.each(implementation)('durations', <DT, I, D>(x: any) => {
+describe.each(implementation)('%#', <DT, I, D>(x: any) => {
     type T = {
         datetime: DT,
         interval: I,

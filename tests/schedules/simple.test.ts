@@ -1,32 +1,51 @@
-import {LuxonImplementation} from "schedule.js/luxon/implementation"
-import {From, Until} from "schedule.js/schedules"
+import {Creators, implementation} from "../jest.setup"
+import {Exports} from "schedule.js"
 
-test("From", () => {
-    let startDate = LuxonImplementation.parseISO("2020-09-01T13:00Z")
-    let schedule = From(LuxonImplementation)(startDate)
+describe.each(implementation)('%#', <DT, I, D>(x: any) => {
+    type T = {
+        datetime: DT,
+        interval: I,
+        duration: D
+    }
+    let impl = x.impl
 
-    let start = LuxonImplementation.parseISO("2020-09-01T14:00Z")
-    let e1 = {start, end: Infinity}
-    let e2 = {start: startDate, end: start}
+    let {
+        From,
+        Until
+    } = x.fns as Exports<T>
 
-    let generator = schedule(start)
-    expect(generator.next().value).toBeSameIntervalAs(LuxonImplementation.intervalFromIntervalObject(e1))
+    let {
+        createInterval,
+        createDateTime
+    } = x.creators as Creators<T>
 
-    generator = schedule(start, "backward")
-    expect(generator.next().value).toBeSameIntervalAs(LuxonImplementation.intervalFromIntervalObject(e2))
-})
+    test("From", () => {
+        let startDate = Date.parse("2020-09-01T13:00Z")
+        let schedule = From(createDateTime(startDate))
 
-test("Until", () => {
-    let endDate = LuxonImplementation.parseISO("2020-09-01T14:00Z")
-    let schedule = Until(LuxonImplementation)(endDate)
+        let start = Date.parse("2020-09-01T14:00Z")
+        let e1 = {start, end: Infinity}
+        let e2 = {start: startDate, end: start}
 
-    let start = LuxonImplementation.parseISO("2020-09-01T13:00Z")
-    let e1 = {start: start, end: endDate}
-    let e2 = {start: -Infinity, end: start}
+        let generator = schedule(createDateTime(start))
+        expect(generator.next().value).toBeSameIntervalAs(impl, createInterval(e1))
 
-    let generator = schedule(start)
-    expect(generator.next().value).toBeSameIntervalAs(LuxonImplementation.intervalFromIntervalObject(e1))
+        generator = schedule(createDateTime(start), "backward")
+        expect(generator.next().value).toBeSameIntervalAs(impl, createInterval(e2))
+    })
 
-    generator = schedule(start, "backward")
-    expect(generator.next().value).toBeSameIntervalAs(LuxonImplementation.intervalFromIntervalObject(e2))
+    test("Until", () => {
+        let endDate = Date.parse("2020-09-01T14:00Z")
+        let schedule = Until(createDateTime(endDate))
+
+        let start = Date.parse("2020-09-01T13:00Z")
+        let e1 = {start: start, end: endDate}
+        let e2 = {start: -Infinity, end: start}
+
+        let generator = schedule(createDateTime(start))
+        expect(generator.next().value).toBeSameIntervalAs(impl, createInterval(e1))
+
+        generator = schedule(createDateTime(start), "backward")
+        expect(generator.next().value).toBeSameIntervalAs(impl, createInterval(e2))
+    })
 })

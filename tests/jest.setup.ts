@@ -27,19 +27,19 @@ declare global {
 expect.extend({
     toBeSameDateTimeAs: function toBeSameDateTimeAs(actual: any, impl: DateTimeImplementation<any>, expected: any): CustomMatcherResult {
         return {
-            message: () => `Should be equal. Actual: ${actual.toISO()}, expected: ${expected.toISO()}`,
+            message: () => `Should be equal. Actual: ${impl.toISO(actual)}, expected: ${impl.toISO(expected)}`,
             pass: impl.isEqual(actual, expected)
         }
     },
     toBeSameIntervalAs: function (actual: any, impl: DateTimeImplementation<any>, expected: any): CustomMatcherResult {
         return {
-            message: () => `Should be equal. Actual: ${actual.toISO()}, expected: ${expected.toISO()}`,
+            message: () => `Should be equal. Actual: ${impl.intervalToIso(actual)}, expected: ${impl.intervalToIso(expected)}`,
             pass: impl.areTwoIntervalsEqual(actual, expected)
         }
     },
     toBeSameDurationAs: (actual: any, impl: DateTimeImplementation<any>, expected: any) => {
         return {
-            message: () => `Should be equal. Actual: ${actual.toISO()}, expected: ${expected.toISO()}`,
+            message: () => `Should be equal. Actual: ${impl.durationToIso(actual)}, expected: ${impl.durationToIso(expected)}`,
             pass: impl.areDurationsEqual(actual, expected)
         }
     }
@@ -51,8 +51,9 @@ export type Creators<T extends DTypes> = {
     createDuration: (duration: DurationObject) => T['duration'],
 }
 
-export type Implementation<T extends DTypes> = {
-    impl: DateTimeImplementation<T>,
+export type Implementation<T extends DTypes, I extends DateTimeImplementation<T> = DateTimeImplementation<T>> = {
+    name: "luxon" | "date-fns"
+    impl: I,
     fns: Exports<T>,
     creators: Creators<T>
 }
@@ -65,6 +66,7 @@ export type Implementations = [
 
 export const implementation: Implementations = [
     {
+        name: "luxon",
         impl: LuxonImplementation,
         fns: LuxonExports,
         creators: {
@@ -74,6 +76,7 @@ export const implementation: Implementations = [
         }
     },
     {
+        name: "date-fns",
         impl: DateFnsImplementation,
         fns: DateFnsExports,
         creators: {

@@ -63,7 +63,8 @@ export const areIntervalsEqual = (
 
 
 export const joinIntervals = (
-    <T extends DTypes>(impl: DateTimeImplementation<T>) => function (...intervals: Array<T['interval']>): T['interval'] {
+    <T extends DTypes>(impl: DateTimeImplementation<T>) =>
+        function (...intervals: Array<T['interval']>): T['interval'] {
         if (isArrayEmpty(intervals)) {
             throw Error("Need to provide at least one interval to join.")
         }
@@ -100,7 +101,6 @@ export const mergeIntervals = (
 
 export const intersectIntervals = (
     <T extends DTypes>(impl: DateTimeImplementation<T>) =>
-
         function (...intervals: Array<T['interval']>): T['interval'] {
             if (isArrayEmpty(intervals)) {
                 throw Error("Please provide at least one interval!")
