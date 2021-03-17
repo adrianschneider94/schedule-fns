@@ -1,176 +1,191 @@
-import {
-    durationFromDurationObject,
-    intervalFromIntervalObject,
-    joinSchedules,
-    RegularSchedule,
-    ScheduleFromIntervals
-} from "schedule.js"
-import {dateTimeFromDateOrNumber} from "schedule.js/functions/dateLibrary"
+import {Creators, implementation} from "../jest.setup"
+import {Exports} from "schedule.js"
 
-test("Join single schedule", () => {
-    let i1 = {start: 0, end: 1}
-    let i2 = {start: 2, end: 3}
-    let startDate = 0
+describe.each(implementation)('%#', <DT, I, D>(x: any) => {
+    type T = {
+        datetime: DT,
+        interval: I,
+        duration: D
+    }
+    let impl = x.impl
 
-    let e1 = {start: 0, end: 1}
-    let e2 = {start: 2, end: 3}
+    let {
+        ScheduleFromIntervals,
+        RegularSchedule,
+        joinSchedules
+    } = x.fns as Exports<T>
 
-    let schedule = ScheduleFromIntervals(intervalFromIntervalObject(i1), intervalFromIntervalObject(i2))
-    let joinedSchedule = joinSchedules(schedule)
-    let generator = joinedSchedule(dateTimeFromDateOrNumber(startDate))
+    let {
+        createDuration,
+        createInterval,
+        createDateTime
+    } = x.creators as Creators<T>
+    test("Join single schedule", () => {
+        let i1 = {start: 0, end: 1}
+        let i2 = {start: 2, end: 3}
+        let startDate = 0
 
-    let value = generator.next()
-    expect(value.done).toBe(false)
-    expect(value.value).toBeSameIntervalAs(intervalFromIntervalObject(e1))
+        let e1 = {start: 0, end: 1}
+        let e2 = {start: 2, end: 3}
 
-    value = generator.next()
-    expect(value.done).toBe(false)
-    expect(value.value).toBeSameIntervalAs(intervalFromIntervalObject(e2))
+        let schedule = ScheduleFromIntervals(createInterval(i1), createInterval(i2))
+        let joinedSchedule = joinSchedules(schedule)
+        let generator = joinedSchedule(createDateTime(startDate))
 
-    expect(generator.next()).toStrictEqual({value: undefined, done: true})
-})
+        let value = generator.next()
+        expect(value.done).toBe(false)
+        expect(value.value).toBeSameIntervalAs(impl, createInterval(e1))
 
-test("Join two simple schedules", () => {
-    let i1_1 = {start: 0, end: 10}
-    let i1_2 = {start: 19, end: 30}
-    let i2 = {start: 9, end: 20}
-    let startDate = 0
+        value = generator.next()
+        expect(value.done).toBe(false)
+        expect(value.value).toBeSameIntervalAs(impl, createInterval(e2))
 
-    let e1 = {start: 0, end: 30}
+        expect(generator.next()).toStrictEqual({value: undefined, done: true})
+    })
 
-    let schedule1 = ScheduleFromIntervals(intervalFromIntervalObject(i1_1), intervalFromIntervalObject(i1_2))
-    let schedule2 = ScheduleFromIntervals(intervalFromIntervalObject(i2))
-    let joinedSchedule = joinSchedules(schedule1, schedule2)
+    test("Join two simple schedules", () => {
+        let i1_1 = {start: 0, end: 10}
+        let i1_2 = {start: 19, end: 30}
+        let i2 = {start: 9, end: 20}
+        let startDate = 0
 
-    let generator = joinedSchedule(dateTimeFromDateOrNumber(startDate))
-    let value = generator.next()
-    expect(value.done).toBe(false)
-    expect(value.value).toBeSameIntervalAs(intervalFromIntervalObject(e1))
-    expect(generator.next()).toStrictEqual({value: undefined, done: true})
-})
+        let e1 = {start: 0, end: 30}
 
-test("Join three simple schedules", () => {
-    let i1_1 = {start: 0, end: 1}
-    let i1_2 = {start: 3, end: 4}
-    let i2_1 = {start: 1, end: 2}
-    let i2_2 = {start: 5, end: 6}
-    let i3_1 = {start: 2, end: 3}
-    let i3_2 = {start: 6, end: 7}
-    let startDate = -10
-    let e1 = {start: 0, end: 4}
-    let e2 = {start: 5, end: 7}
+        let schedule1 = ScheduleFromIntervals(createInterval(i1_1), createInterval(i1_2))
+        let schedule2 = ScheduleFromIntervals(createInterval(i2))
+        let joinedSchedule = joinSchedules(schedule1, schedule2)
 
-    let schedule1 = ScheduleFromIntervals(intervalFromIntervalObject(i1_1), intervalFromIntervalObject(i1_2))
-    let schedule2 = ScheduleFromIntervals(intervalFromIntervalObject(i2_1), intervalFromIntervalObject(i2_2))
-    let schedule3 = ScheduleFromIntervals(intervalFromIntervalObject(i3_1), intervalFromIntervalObject(i3_2))
-    let joinedSchedule = joinSchedules(schedule1, schedule2, schedule3)
-    let generator = joinedSchedule(dateTimeFromDateOrNumber(startDate))
+        let generator = joinedSchedule(createDateTime(startDate))
+        let value = generator.next()
+        expect(value.done).toBe(false)
+        expect(value.value).toBeSameIntervalAs(impl, createInterval(e1))
+        expect(generator.next()).toStrictEqual({value: undefined, done: true})
+    })
 
-    let value = generator.next()
-    expect(value.done).toBe(false)
-    expect(value.value).toBeSameIntervalAs(intervalFromIntervalObject(e1))
+    test("Join three simple schedules", () => {
+        let i1_1 = {start: 0, end: 1}
+        let i1_2 = {start: 3, end: 4}
+        let i2_1 = {start: 1, end: 2}
+        let i2_2 = {start: 5, end: 6}
+        let i3_1 = {start: 2, end: 3}
+        let i3_2 = {start: 6, end: 7}
+        let startDate = -10
+        let e1 = {start: 0, end: 4}
+        let e2 = {start: 5, end: 7}
 
-    value = generator.next()
-    expect(value.done).toBe(false)
-    expect(value.value).toBeSameIntervalAs(intervalFromIntervalObject(e2))
+        let schedule1 = ScheduleFromIntervals(createInterval(i1_1), createInterval(i1_2))
+        let schedule2 = ScheduleFromIntervals(createInterval(i2_1), createInterval(i2_2))
+        let schedule3 = ScheduleFromIntervals(createInterval(i3_1), createInterval(i3_2))
+        let joinedSchedule = joinSchedules(schedule1, schedule2, schedule3)
+        let generator = joinedSchedule(createDateTime(startDate))
 
-    expect(generator.next()).toStrictEqual({value: undefined, done: true})
-})
+        let value = generator.next()
+        expect(value.done).toBe(false)
+        expect(value.value).toBeSameIntervalAs(impl, createInterval(e1))
 
-test("Join three simple schedules, reverse order", () => {
-    let i1_1 = {start: 0, end: 1}
-    let i1_2 = {start: 3, end: 4}
+        value = generator.next()
+        expect(value.done).toBe(false)
+        expect(value.value).toBeSameIntervalAs(impl, createInterval(e2))
 
-    let i2_1 = {start: 1, end: 2}
-    let i2_2 = {start: 5, end: 6}
+        expect(generator.next()).toStrictEqual({value: undefined, done: true})
+    })
 
-    let i3_1 = {start: 2, end: 3}
-    let i3_2 = {start: 6, end: 7}
+    test("Join three simple schedules, reverse order", () => {
+        let i1_1 = {start: 0, end: 1}
+        let i1_2 = {start: 3, end: 4}
 
-    let startDate = 6.5
+        let i2_1 = {start: 1, end: 2}
+        let i2_2 = {start: 5, end: 6}
 
-    let e1 = {start: 5, end: 6.5}
-    let e2 = {start: 0, end: 4}
+        let i3_1 = {start: 2, end: 3}
+        let i3_2 = {start: 6, end: 7}
 
-    let schedule1 = ScheduleFromIntervals(intervalFromIntervalObject(i1_1), intervalFromIntervalObject(i1_2))
-    let schedule2 = ScheduleFromIntervals(intervalFromIntervalObject(i2_1), intervalFromIntervalObject(i2_2))
-    let schedule3 = ScheduleFromIntervals(intervalFromIntervalObject(i3_1), intervalFromIntervalObject(i3_2))
-    let joinedSchedule = joinSchedules(schedule1, schedule2, schedule3)
-    let generator = joinedSchedule(dateTimeFromDateOrNumber(startDate), "backward")
+        let startDate = 6.5
 
-    let value = generator.next()
-    expect(value.done).toBe(false)
-    expect(value.value).toBeSameIntervalAs(intervalFromIntervalObject(e1))
+        let e1 = {start: 5, end: 6.5}
+        let e2 = {start: 0, end: 4}
 
-    value = generator.next()
-    expect(value.done).toBe(false)
-    expect(value.value).toBeSameIntervalAs(intervalFromIntervalObject(e2))
+        let schedule1 = ScheduleFromIntervals(createInterval(i1_1), createInterval(i1_2))
+        let schedule2 = ScheduleFromIntervals(createInterval(i2_1), createInterval(i2_2))
+        let schedule3 = ScheduleFromIntervals(createInterval(i3_1), createInterval(i3_2))
+        let joinedSchedule = joinSchedules(schedule1, schedule2, schedule3)
+        let generator = joinedSchedule(createDateTime(startDate), "backward")
 
-    expect(generator.next()).toStrictEqual({value: undefined, done: true})
-})
+        let value = generator.next()
+        expect(value.done).toBe(false)
+        expect(value.value).toBeSameIntervalAs(impl, createInterval(e1))
 
-test("Join two schedules (with infinity)", () => {
-    let i1 = {start: 0, end: Infinity}
-    let i2 = {start: 1, end: 2}
-    let startDate = -10
-    let e1 = {start: 0, end: Infinity}
+        value = generator.next()
+        expect(value.done).toBe(false)
+        expect(value.value).toBeSameIntervalAs(impl, createInterval(e2))
 
-    let schedule1 = ScheduleFromIntervals(intervalFromIntervalObject(i1))
-    let schedule2 = ScheduleFromIntervals(intervalFromIntervalObject(i2))
-    let joinedSchedule = joinSchedules(schedule1, schedule2)
-    let generator = joinedSchedule(dateTimeFromDateOrNumber(startDate))
+        expect(generator.next()).toStrictEqual({value: undefined, done: true})
+    })
 
-    let value = generator.next()
-    expect(value.done).toBe(false)
-    expect(value.value).toBeSameIntervalAs(intervalFromIntervalObject(e1))
+    test("Join two schedules (with infinity)", () => {
+        let i1 = {start: 0, end: Infinity}
+        let i2 = {start: 1, end: 2}
+        let startDate = -10
+        let e1 = {start: 0, end: Infinity}
 
-    expect(generator.next()).toStrictEqual({value: undefined, done: true})
-})
+        let schedule1 = ScheduleFromIntervals(createInterval(i1))
+        let schedule2 = ScheduleFromIntervals(createInterval(i2))
+        let joinedSchedule = joinSchedules(schedule1, schedule2)
+        let generator = joinedSchedule(createDateTime(startDate))
 
-test("Join two schedules (one long-running)", () => {
-    let i1 = {start: 0, end: 1000}
-    let i2_1 = {start: 1, end: 2}
-    let i2_2 = {start: 3, end: 4}
-    let i2_3 = {start: 5, end: 6}
-    let i2_4 = {start: 7, end: 8}
-    let startDate = -10
-    let e1 = {start: 0, end: 1000}
+        let value = generator.next()
+        expect(value.done).toBe(false)
+        expect(value.value).toBeSameIntervalAs(impl, createInterval(e1))
 
-    let schedule1 = ScheduleFromIntervals(intervalFromIntervalObject(i1))
-    let schedule2 = ScheduleFromIntervals(
-        intervalFromIntervalObject(i2_1),
-        intervalFromIntervalObject(i2_2),
-        intervalFromIntervalObject(i2_3),
-        intervalFromIntervalObject(i2_4)
-    )
-    let joinedSchedule = joinSchedules(schedule1, schedule2)
-    let generator = joinedSchedule(dateTimeFromDateOrNumber(startDate))
+        expect(generator.next()).toStrictEqual({value: undefined, done: true})
+    })
 
-    let value = generator.next()
-    expect(value.done).toBe(false)
-    expect(value.value).toBeSameIntervalAs(intervalFromIntervalObject(e1))
+    test("Join two schedules (one long-running)", () => {
+        let i1 = {start: 0, end: 1000}
+        let i2_1 = {start: 1, end: 2}
+        let i2_2 = {start: 3, end: 4}
+        let i2_3 = {start: 5, end: 6}
+        let i2_4 = {start: 7, end: 8}
+        let startDate = -10
+        let e1 = {start: 0, end: 1000}
 
-    expect(generator.next()).toStrictEqual({value: undefined, done: true})
-})
+        let schedule1 = ScheduleFromIntervals(createInterval(i1))
+        let schedule2 = ScheduleFromIntervals(
+            createInterval(i2_1),
+            createInterval(i2_2),
+            createInterval(i2_3),
+            createInterval(i2_4)
+        )
+        let joinedSchedule = joinSchedules(schedule1, schedule2)
+        let generator = joinedSchedule(createDateTime(startDate))
 
-test("Join no schedules", () => {
-    let startDate = 0
+        let value = generator.next()
+        expect(value.done).toBe(false)
+        expect(value.value).toBeSameIntervalAs(impl, createInterval(e1))
 
-    let joinedSchedule = joinSchedules()
-    let generator = joinedSchedule(dateTimeFromDateOrNumber(startDate))
-    expect(generator.next()).toStrictEqual({value: undefined, done: true})
-})
+        expect(generator.next()).toStrictEqual({value: undefined, done: true})
+    })
 
-test("Join schedules: Reach maximal number of recursions", () => {
-    let sd = 0
-    let d = {seconds: 1}
-    let p = {seconds: 2}
-    let i = {start: -Infinity, end: Infinity}
-    let startDate = 0
+    test("Join no schedules", () => {
+        let startDate = 0
 
-    let schedule1 = RegularSchedule(dateTimeFromDateOrNumber(sd), durationFromDurationObject(d), durationFromDurationObject(p))
-    let schedule2 = ScheduleFromIntervals(intervalFromIntervalObject(i))
-    let joinedSchedule = joinSchedules(schedule1, schedule2)
-    let generator = joinedSchedule(dateTimeFromDateOrNumber(startDate))
-    expect(() => generator.next()).toThrowError()
+        let joinedSchedule = joinSchedules()
+        let generator = joinedSchedule(createDateTime(startDate))
+        expect(generator.next()).toStrictEqual({value: undefined, done: true})
+    })
+
+    test("Join schedules: Reach maximal number of recursions", () => {
+        let sd = 0
+        let d = {seconds: 1}
+        let p = {seconds: 2}
+        let i = {start: -Infinity, end: Infinity}
+        let startDate = 0
+
+        let schedule1 = RegularSchedule(createDateTime(sd), createDuration(d), createDuration(p))
+        let schedule2 = ScheduleFromIntervals(createInterval(i))
+        let joinedSchedule = joinSchedules(schedule1, schedule2)
+        let generator = joinedSchedule(createDateTime(startDate))
+        expect(() => generator.next()).toThrowError()
+    })
+
 })

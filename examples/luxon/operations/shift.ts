@@ -1,8 +1,10 @@
-import {durationFromDurationObject, Mondays, parseISO, shiftSchedule, take} from "schedule.js"
+import {DateTime, Duration} from "luxon"
+import {Mondays, shiftSchedule} from "schedule.js/luxon"
+import {take} from "schedule.js/functions"
 
-let mondayNoonToTuesdayNoon = shiftSchedule(Mondays(), durationFromDurationObject({hours: 12}))
+let mondayNoonToTuesdayNoon = shiftSchedule(Mondays(), Duration.fromObject({hours: 12}))
 
-let startDate = parseISO("2020-09-02")
+let startDate = DateTime.fromISO("2020-09-02")
 for (let interval of take(mondayNoonToTuesdayNoon(startDate), 3)) {
     console.log(interval.toISO())
 }

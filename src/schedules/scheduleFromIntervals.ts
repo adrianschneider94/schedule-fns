@@ -1,33 +1,31 @@
-import {Interval, Schedule} from "../index"
+import {DateTimeImplementation, DTypes, Schedule} from "../index"
 import {mergeIntervals} from "../functions/intervals"
-import {directionToInt, isWithinInterval} from "../functions/misc"
-import {createInterval, isEqualOrAfter, isEqualOrBefore} from "../functions/dateLibrary"
+import {directionToInt} from "../functions/misc"
 
-/**
- * Returns a schedule from the given intervals.
- *
- * @param intervals
- * @constructor
- * @category Schedules
- */
-export function ScheduleFromIntervals(...intervals: Array<Interval>): Schedule {
-    return function* (startDate, direction = "forward") {
-        let directionInt = directionToInt(direction)
 
-        if (directionInt === 1) {
-            intervals = mergeIntervals(...intervals).filter(interval => isEqualOrAfter(interval.end, startDate))
-        } else {
-            intervals = mergeIntervals(...intervals).filter(interval => isEqualOrBefore(interval.start, startDate)).reverse()
-        }
+export const ScheduleFromIntervals = (
+    <T extends DTypes>(impl: DateTimeImplementation<T>) =>
 
-        for (const interval of intervals) {
-            if (directionInt === 1 && isWithinInterval(startDate, interval)) {
-                yield createInterval(startDate, interval.end)
-            } else if (directionInt === -1 && isWithinInterval(startDate, interval)) {
-                yield createInterval(interval.start, startDate)
-            } else {
-                yield interval
+        function (...intervals: Array<T['interval']>): Schedule<T> {
+            return function* (startDate, direction = "forward") {
+                let directionInt = directionToInt(direction)
+
+                if (directionInt === 1) {
+                    intervals = mergeIntervals(impl)(...intervals).filter(interval => impl.isEqualOrAfter(impl.getEnd(interval), startDate))
+                } else {
+                    intervals = mergeIntervals(impl)(...intervals).filter(interval => impl.isEqualOrBefore(impl.getStart(interval), startDate)).reverse()
+                }
+
+                for (const interval of intervals) {
+                    if (directionInt === 1 && impl.isWithinInterval(startDate, interval)) {
+                        yield impl.createInterval(startDate, impl.getEnd(interval))
+                    } else if (directionInt === -1 && impl.isWithinInterval(startDate, interval)) {
+                        yield impl.createInterval(impl.getStart(interval), startDate)
+                    } else {
+                        yield interval
+                    }
+                }
             }
         }
-    }
-}
+
+)

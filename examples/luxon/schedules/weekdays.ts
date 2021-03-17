@@ -1,6 +1,8 @@
-import {Mondays, parseISO, take, Weekends, WorkingDays} from "schedule.js"
+import {DateTime} from "luxon"
+import {Mondays, Weekends, WorkingDays} from "schedule.js/luxon"
+import {take} from "schedule.js/functions"
 
-let startDate = parseISO("2020-09-01T00:00Z")
+let startDate = DateTime.fromISO("2020-09-01T00:00Z")
 
 let mondays = Mondays()
 for (let interval of take(mondays(startDate), 3)) {

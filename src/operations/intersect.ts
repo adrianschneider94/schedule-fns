@@ -1,53 +1,51 @@
-import {MAX_RECURSIONS, Schedule} from "../index"
+import {DateTimeImplementation, DTypes, MAX_RECURSIONS, Schedule} from "../index"
 import {directionToInt, isArrayEmpty} from "../functions/misc"
 import {intersectIntervals} from "../functions/intervals"
-import {compareAsc, compareDesc, isEqual, isEqualOrAfter, isEqualOrBefore} from "../functions/dateLibrary"
 
-/**
- * Intersects schedules.
- *
- * @param schedules
- * @category Operations
- */
-export function intersectSchedules(...schedules: Array<Schedule>): Schedule {
-    return function* (startDate, direction = "forward") {
-        if (isArrayEmpty(schedules)) {
-            return
-        }
+export const intersectSchedules = (
+    <T extends DTypes>(impl: DateTimeImplementation<T>) =>
 
-        let directionInt = directionToInt(direction)
-
-        let generators = schedules.map(schedule => schedule(startDate, direction))
-        let currentEntries = generators.map(generator => generator.next())
-        let recursions = 0
-        while (recursions <= MAX_RECURSIONS) {
-            if (currentEntries.some(entry => entry?.value === undefined)) {
-                return
-            }
-            try {
-                let intersection = intersectIntervals(...currentEntries.map(x => x.value))
-                yield intersection
-                recursions = 0
-                currentEntries = currentEntries.map((entry, i) => {
-                    if ((directionInt === 1 && isEqualOrBefore(entry.value.end, intersection.end)) || (directionInt === -1 && isEqualOrAfter(entry.value.start, intersection.start))) {
-                        return generators[i].next()
-                    } else {
-                        return entry
-                    }
-                })
-            } catch (e) {
-                let i: number
-                if (directionInt === 1) {
-                    let firstEnd = [...currentEntries].sort((a, b) => compareAsc(a.value.end, b.value.end))[0].value.end
-                    i = currentEntries.findIndex(x => isEqual(x.value.end, firstEnd))
-                } else {
-                    let lastStart = [...currentEntries].sort((a, b) => compareDesc(a.value.start, b.value.start))[0].value.start
-                    i = currentEntries.findIndex(x => isEqual(x.value.start, lastStart))
+        function (...schedules: Array<Schedule<T>>): Schedule<T> {
+            return function* (startDate, direction = "forward") {
+                if (isArrayEmpty(schedules)) {
+                    return
                 }
-                currentEntries[i] = generators[i].next()
+
+                let directionInt = directionToInt(direction)
+
+                let generators = schedules.map(schedule => schedule(startDate, direction))
+                let currentEntries = generators.map(generator => generator.next())
+                let recursions = 0
+                while (recursions <= MAX_RECURSIONS) {
+                    if (currentEntries.some(entry => entry?.value === undefined)) {
+                        return
+                    }
+                    try {
+                        let intersection = intersectIntervals(impl)(...currentEntries.map(x => x.value))
+                        yield intersection
+                        recursions = 0
+                        currentEntries = currentEntries.map((entry, i) => {
+                            if ((directionInt === 1 && impl.isEqualOrBefore(entry.value.end, impl.getEnd(intersection))) || (directionInt === -1 && impl.isEqualOrAfter(entry.value.start, impl.getStart(intersection)))) {
+                                return generators[i].next()
+                            } else {
+                                return entry
+                            }
+                        })
+                    } catch (e) {
+                        let i: number
+                        if (directionInt === 1) {
+                            let firstEnd = impl.getEnd([...currentEntries].sort((a, b) => impl.compareAsc(impl.getEnd(a.value), impl.getEnd(b.value)))[0].value)
+                            i = currentEntries.findIndex(x => impl.isEqual(x.value.end, firstEnd))
+                        } else {
+                            let lastStart = impl.getStart([...currentEntries].sort((a, b) => impl.compareDesc(impl.getStart(a.value), impl.getStart(b.value)))[0].value)
+                            i = currentEntries.findIndex(x => impl.isEqual(x.value.start, lastStart))
+                        }
+                        currentEntries[i] = generators[i].next()
+                    }
+                    recursions++
+                }
+                throw Error("Maximal number of recursions reached.")
             }
-            recursions++
         }
-        throw Error("Maximal number of recursions reached.")
-    }
-}
+
+)

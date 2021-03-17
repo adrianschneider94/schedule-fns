@@ -1,8 +1,10 @@
-import {DailySchedule, intersectSchedules, Mondays, parseISO, take} from "schedule.js"
+import {DateTime} from "luxon"
+import {DailySchedule, intersectSchedules, Mondays} from "schedule.js/luxon"
+import {take} from "schedule.js/functions"
 
 let mondayEvenings = intersectSchedules(DailySchedule("20:00", "00:00"), Mondays())
 
-let startDate = parseISO("2020-09-02")
+let startDate = DateTime.fromISO("2020-09-02")
 for (let interval of take(mondayEvenings(startDate), 3)) {
     console.log(interval.toISO())
 }

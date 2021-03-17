@@ -1,9 +1,10 @@
 export {addDurationWithinSchedule, addDurations} from "./durations"
-export {take, isWithinSchedule, parseISO} from "./misc"
+export {take, isWithinSchedule} from "./misc"
 export {
-    durationFromDurationObject,
-    durationToMilliseconds,
-    multiplyDuration,
-    intervalFromIntervalObject,
-    intervalFromISOStrings
-} from "./dateLibrary"
+    areIntervalsIntersecting,
+    areIntervalsConnected,
+    areIntervalsEqual,
+    joinIntervals,
+    mergeIntervals,
+    intersectIntervals
+} from "./intervals"

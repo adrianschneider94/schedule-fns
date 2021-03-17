@@ -1,60 +1,53 @@
-import {Schedule} from "../index"
-import {directionToInt, isWithinInterval} from "../functions/misc"
-import {addDays, createInterval, isAfter, isBefore, parseTimeAtGivenDay, startOfDay} from "../functions/dateLibrary"
+import {DateTimeImplementation, DTypes, Schedule} from "../index"
+import {directionToInt} from "../functions/misc"
 
-/**
- * Creates a daily schedule.
- *
- * If the start time is **after** the end time, the interval will pass midnight.
- *
- * @param startTime The start time in the format specified by timeFormat.
- * @param endTime The start time in the format specified by timeFormat.
- * @param options
- * @constructor
- * @category Schedules
- */
-export function DailySchedule(startTime: string, endTime: string, options?: { timeZone?: string }): Schedule {
-    let timeZone = options?.timeZone
 
-    return function* (startDate, direction = 1) {
-        let directionInt = directionToInt(direction)
+export const DailySchedule = (
+    <T extends DTypes>(impl: DateTimeImplementation<T>) =>
 
-        let day = startOfDay(startDate, timeZone)
-        let dayBefore = addDays(day, -1)
-        let overMidnight: boolean = parseTimeAtGivenDay(startTime, day, timeZone) > parseTimeAtGivenDay(endTime, day, timeZone)
+        function (startTime: string, endTime: string, options?: {timeZone?: string}): Schedule<T> {
+            let timeZone = options?.timeZone
 
-        let firstInterval = createInterval(
-            overMidnight ? parseTimeAtGivenDay(startTime, dayBefore, timeZone) : parseTimeAtGivenDay(startTime, day, timeZone),
-            parseTimeAtGivenDay(endTime, day, timeZone)
-        )
+            return function* (startDate, direction = 1) {
+                let directionInt = directionToInt(direction)
 
-        let i = 0
-        while (true) {
-            let interval = createInterval(
-                addDays(firstInterval.start, i),
-                addDays(firstInterval.end, i)
-            )
-            i += directionInt
+                let day = impl.startOfDay(startDate, timeZone)
+                let dayBefore = impl.addDays(day, -1)
+                let overMidnight: boolean = impl.isAfter(impl.parseTimeAtGivenDay(startTime, day, timeZone), impl.parseTimeAtGivenDay(endTime, day, timeZone))
 
-            if ((directionInt === 1 && isAfter(startDate, interval.end)) || (directionInt === -1 && isBefore(startDate, interval.start))) {
-                continue
-            }
+                let firstInterval = impl.createInterval(
+                    overMidnight ? impl.parseTimeAtGivenDay(startTime, dayBefore, timeZone) : impl.parseTimeAtGivenDay(startTime, day, timeZone),
+                    impl.parseTimeAtGivenDay(endTime, day, timeZone)
+                )
 
-            if (isWithinInterval(startDate, interval)) {
-                if (directionInt === 1) {
-                    yield createInterval(
-                        startDate,
-                        interval.end
+                let i = 0
+                while (true) {
+                    let interval = impl.createInterval(
+                        impl.addDays(impl.getStart(firstInterval), i),
+                        impl.addDays(impl.getEnd(firstInterval), i)
                     )
-                } else {
-                    yield createInterval(
-                        interval.start,
-                        startDate
-                    )
+                    i += directionInt
+
+                    if ((directionInt === 1 && impl.isAfter(startDate, impl.getEnd(interval))) || (directionInt === -1 && impl.isBefore(startDate, impl.getStart(interval)))) {
+                        continue
+                    }
+
+                    if (impl.isWithinInterval(startDate, interval)) {
+                        if (directionInt === 1) {
+                            yield impl.createInterval(
+                                startDate,
+                                impl.getEnd(interval)
+                            )
+                        } else {
+                            yield impl.createInterval(
+                                impl.getStart(interval),
+                                startDate
+                            )
+                        }
+                    } else {
+                        yield interval
+                    }
                 }
-            } else {
-                yield interval
             }
         }
-    }
-}
+)

@@ -29,6 +29,7 @@
   },
   "dependencies": {
     "@types/luxon": "^1.26.0",
+    "date-fns": "^2.17.0",
     "date-holidays": "^1.6.2",
     "luxon": "^1.26.0"
   },

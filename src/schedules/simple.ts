@@ -1,10 +1,19 @@
-import {DateTime, InfintyDateTime, NegInfinityDateTime, Schedule, ScheduleFromIntervals} from "../index"
-import {createInterval} from "../functions/dateLibrary"
+import {DateTimeImplementation, DTypes, Schedule} from "../index"
+import {ScheduleFromIntervals} from "./scheduleFromIntervals"
 
-export function From(startDate: DateTime): Schedule {
-    return ScheduleFromIntervals(createInterval(startDate, InfintyDateTime))
-}
+export const From = (
+    <T extends DTypes>(impl: DateTimeImplementation<T>) =>
 
-export function Until(endDate: DateTime): Schedule {
-    return ScheduleFromIntervals(createInterval(NegInfinityDateTime, endDate))
-}
+        function (startDate: T['datetime']): Schedule<T> {
+            return ScheduleFromIntervals(impl)(impl.createInterval(startDate, impl.InfinityDateTime))
+        }
+)
+
+export const Until = (
+    <T extends DTypes>(impl: DateTimeImplementation<T>) =>
+
+        function (endDate: T['datetime']): Schedule<T> {
+            return ScheduleFromIntervals(impl)(impl.createInterval(impl.NegInfinityDateTime, endDate))
+        }
+
+)
