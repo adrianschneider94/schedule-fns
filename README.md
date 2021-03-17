@@ -3,6 +3,7 @@
 This package provides functions to work with schedules (work hours, opening hours etc.).
 
 ## Contents
+
 * [Installation](#installation)
 * [Example](#example)
 * [API](#api)
@@ -11,7 +12,7 @@ This package provides functions to work with schedules (work hours, opening hour
 ## Installation
 
     npm i schedule.js
-    
+
 ## Example
 
 ```typescript
@@ -29,27 +30,29 @@ let schedule = subtractSchedules(workHours, joinSchedules(weekends, breaks, holi
 ```
 
 ## API
+
 ### Overview
 
 * [Schedules](#schedules)
-  * [Daily Schedule](#daily-schedule)
-  * [Regular Schedule](#regular-schedule)
-  * [Schedule from Intervals](#schedule-from-intervals)
-  * [Holidays](#holidays)
-  * [Weekdays](#weekdays)
-  * [Simple Schedules](#simple-schedules)
+    * [Daily Schedule](#daily-schedule)
+    * [Regular Schedule](#regular-schedule)
+    * [Schedule from Intervals](#schedule-from-intervals)
+    * [Holidays](#holidays)
+    * [Weekdays](#weekdays)
+    * [Simple Schedules](#simple-schedules)
 * [Operations](#operations)
-  * [Invert](#invert)
-  * [Join](#join)
-  * [Intersect](#intersect)
-  * [Subtract](#subtract)
-  * [Symmetric Difference](#symmetric-difference)
-  * [Shift](#shift)
+    * [Invert](#invert)
+    * [Join](#join)
+    * [Intersect](#intersect)
+    * [Subtract](#subtract)
+    * [Symmetric Difference](#symmetric-difference)
+    * [Shift](#shift)
 * [Miscellaneous](#miscellaneous)
-  * [Add Duration](#add-duration)
-  * [Is within Schedule](#iswithinschedule)
+    * [Add Duration](#add-duration)
+    * [Is within Schedule](#iswithinschedule)
 
 ### Schedules
+
 #### Daily Schedule
 
 ```typescript
@@ -80,6 +83,7 @@ for (let interval of take(workHoursInTokyo(startDate), 3)) {
 ```
 
 #### Regular Schedule
+
 ```typescript
 import {DateTime, Duration} from "luxon"
 import {RegularSchedule} from "schedule.js/luxon"
@@ -94,7 +98,8 @@ for (let interval of take(everySixWeeksForOneDay(startDate), 3)) {
 }
 // 2020-09-09T00:00:00.000+02:00/2020-09-10T00:00:00.000+02:00
 // 2020-10-21T00:00:00.000+02:00/2020-10-22T00:00:00.000+02:00
-// 2020-12-02T00:00:00.000+01:00/2020-12-03T00:00:00.000+01:00 
+// 2020-12-02T00:00:00.000+01:00/2020-12-03T00:00:00.000+01:00
+ 
 ```
 
 #### Schedule from Intervals
@@ -120,6 +125,7 @@ for (let interval of take(myHolidays(startDate), 3)) {
 ```
 
 #### Holidays
+
 ```typescript
 import {DateTime} from "luxon"
 import {Holidays} from "schedule.js/luxon"
@@ -137,9 +143,11 @@ for (let interval of take(publicHolidaysInBavaria(startDate), 3)) {
 ```
 
 The holiday calender is created by the excellent [date-holidays](https://github.com/commenthol/date-holidays) package.
-The signature of `Holidays` matches the signature of date-holidays `init` method. For details consult date-holidays documentation.
+The signature of `Holidays` matches the signature of date-holidays `init` method. For details consult date-holidays
+documentation.
 
 #### Weekdays
+
 ```typescript
 import {DateTime} from "luxon"
 import {Mondays, Weekends, WorkingDays} from "schedule.js/luxon"
@@ -181,6 +189,7 @@ for (let interval of take(workingDaysInTokyo(startDate), 3)) {
 ```
 
 #### Simple Schedules
+
 ```typescript
 import {DateTime} from "luxon"
 import {From, Until} from "schedule.js/luxon"
@@ -195,7 +204,9 @@ console.log(until(DateTime.fromISO("2020-08-01T00:00Z")).next().value.toISO())
 ```
 
 ### Operations
+
 #### Invert
+
 ```typescript
 import {DateTime} from "luxon"
 import {DailySchedule, invertSchedule} from "schedule.js/luxon"
@@ -213,7 +224,9 @@ for (let interval of take(offHours(startDate), 3)) {
 // 2020-09-02T17:00:00.000+02:00/2020-09-03T08:00:00.000+02:00
 // 2020-09-03T17:00:00.000+02:00/2020-09-04T08:00:00.000+02:00 
 ```
+
 #### Join
+
 ```typescript
 import {DateTime} from "luxon"
 import {joinSchedules, Thursdays, Weekends} from "schedule.js/luxon"
@@ -232,6 +245,7 @@ for (let interval of take(weekendOrThursday(startDate), 3)) {
 ```
 
 #### Intersect
+
 ```typescript
 import {DateTime} from "luxon"
 import {DailySchedule, intersectSchedules, Mondays} from "schedule.js/luxon"
@@ -249,6 +263,7 @@ for (let interval of take(mondayEvenings(startDate), 3)) {
 ```
 
 #### Subtract
+
 ```typescript
 import {DateTime} from "luxon"
 import {DailySchedule, subtractSchedules} from "schedule.js/luxon"
@@ -268,6 +283,7 @@ for (let interval of take(workTime(startDate), 3)) {
 ```
 
 #### Symmetric Difference
+
 ```typescript
 import {DateTime} from "luxon"
 import {DailySchedule, symmetricDifferenceOfSchedules} from "schedule.js/luxon"
@@ -287,6 +303,7 @@ for (let interval of take(onlyOneWorkerAvailable(startDate), 3)) {
 ```
 
 #### Shift
+
 ```typescript
 import {DateTime, Duration} from "luxon"
 import {Mondays, shiftSchedule} from "schedule.js/luxon"
@@ -304,7 +321,9 @@ for (let interval of take(mondayNoonToTuesdayNoon(startDate), 3)) {
 ```
 
 ### Miscellaneous
+
 #### Add Duration
+
 ```typescript
 import {DateTime, Duration} from "luxon"
 import {addDurationWithinSchedule, DailySchedule} from "schedule.js/luxon"
@@ -315,7 +334,9 @@ let projectEnd = addDurationWithinSchedule(DateTime.fromISO("2020-09-01T10:00:00
 console.log(projectEnd.toISO())
 // 2020-09-02T16:00:00.000+02:00 
 ```
+
 #### isWithinSchedule
+
 ```typescript
 import {DateTime} from "luxon"
 import {DailySchedule, isWithinSchedule} from "schedule.js/luxon"
@@ -327,7 +348,9 @@ console.log(isWithinSchedule(DateTime.fromISO("2020-01-08T03:00:00.000+0100"), s
 ```
 
 ## Implementation
+
 ### Definition of a schedule
+
 The basis of schedule.js is the definition of a schedule:
 
 ```typescript

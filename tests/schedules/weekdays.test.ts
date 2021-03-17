@@ -10,6 +10,7 @@ describe.each(implementation)('%#', <DT, I, D>(x: any) => {
         duration: D
     }
     let impl = x.impl as DateTimeImplementation<T>
+    let implementationName = x.name
 
     let {
         Fridays,
@@ -56,29 +57,32 @@ describe.each(implementation)('%#', <DT, I, D>(x: any) => {
         expect(value.done).toBe(false)
         expect(value.value).toBeSameIntervalAs(impl, createInterval(e2))
     })
+    
+    if (implementationName !== "date-fns") {
+        test("Specific Day in Tokyo", () => {
+            let schedule = OnSpecificWeekday(impl)(1, {timeZone: "Asia/Tokyo"})
 
-    test("Specific Day in Tokyo", () => {
-        let schedule = OnSpecificWeekday(impl)(1, {timeZone: "Asia/Tokyo"})
-        let generator = schedule(createDateTime(Date.parse("2020-01-01T00:00+09:00")))
+            let generator = schedule(createDateTime(Date.parse("2020-01-01T00:00+09:00")))
 
-        let e1 = {
-            start: Date.parse("2020-01-07T00:00+09:00"),
-            end: Date.parse("2020-01-08T00:00+09:00")
-        }
+            let e1 = {
+                start: Date.parse("2020-01-07T00:00+09:00"),
+                end: Date.parse("2020-01-08T00:00+09:00")
+            }
 
-        let e2 = {
-            start: Date.parse("2020-01-14T00:00+09:00"),
-            end: Date.parse("2020-01-15T00:00+09:00")
-        }
+            let e2 = {
+                start: Date.parse("2020-01-14T00:00+09:00"),
+                end: Date.parse("2020-01-15T00:00+09:00")
+            }
 
-        let value = generator.next()
-        expect(value.done).toBe(false)
-        expect(value.value).toBeSameIntervalAs(impl, createInterval(e1))
+            let value = generator.next()
+            expect(value.done).toBe(false)
+            expect(value.value).toBeSameIntervalAs(impl, createInterval(e1))
 
-        value = generator.next()
-        expect(value.done).toBe(false)
-        expect(value.value).toBeSameIntervalAs(impl, createInterval(e2))
-    })
+            value = generator.next()
+            expect(value.done).toBe(false)
+            expect(value.value).toBeSameIntervalAs(impl, createInterval(e2))
+        })
+    }
 
     test("Weekdays", () => {
         let schedule: Schedule<T>

@@ -70,35 +70,35 @@ describe.each(implementation)('%#', <DT, I, D>(x: any) => {
     })
 
     test("addDuration 1", () => {
-        let interval1 = {start: 0, end: 10}
-        let interval2 = {start: 20, end: 30}
+        let interval1 = {start: 0, end: 10*1000}
+        let interval2 = {start: 20*1000, end: 30*1000}
         let schedule = ScheduleFromIntervals(createInterval(interval1), createInterval(interval2))
         let startDate = 0
-        let duration = {seconds: 0.015}
-        let expected = 25
+        let duration = {seconds: 15}
+        let expected = 25*1000
 
         let result = addDurationWithinSchedule(createDateTime(startDate), createDuration(duration), schedule)
         expect(result).toBeSameDateTimeAs(impl, createDateTime(expected))
     })
 
     test("addDuration 2", () => {
-        let interval1 = {start: 5, end: 10}
-        let interval2 = {start: 20, end: 30}
+        let interval1 = {start: 5*1000, end: 10*1000}
+        let interval2 = {start: 20*1000, end: 30*1000}
         let schedule = ScheduleFromIntervals(createInterval(interval1), createInterval(interval2))
         let startDate = 0
-        let duration = {seconds: 0.015}
-        let expected = 30
+        let duration = {seconds: 15}
+        let expected = 30*1000
 
         let result = addDurationWithinSchedule(createDateTime(startDate), createDuration(duration), schedule)
         expect(result).toBeSameDateTimeAs(impl, createDateTime(expected))
     })
 
     test("addDuration 3", () => {
-        let interval1 = {start: 5, end: 10}
-        let interval2 = {start: 20, end: 30}
+        let interval1 = {start: 5*1000, end: 10*1000}
+        let interval2 = {start: 20*1000, end: 30*1000}
         let schedule = ScheduleFromIntervals(createInterval(interval1), createInterval(interval2))
         let startDate = 0
-        let duration = {seconds: 0.030}
+        let duration = {seconds: 30}
 
         expect(() => addDurationWithinSchedule(createDateTime(startDate), createDuration(duration), schedule)).toThrowError()
     })

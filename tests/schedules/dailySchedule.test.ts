@@ -9,6 +9,7 @@ describe.each(implementation)('%#', <DT, I, D>(x: any) => {
         duration: D
     }
     let impl = x.impl
+    let implementationName = x.name
 
     let {
         DailySchedule
@@ -48,30 +49,32 @@ describe.each(implementation)('%#', <DT, I, D>(x: any) => {
         expect(value.value).toBeSameIntervalAs(impl, intervalFromIsoStrings(e2))
     })
 
-    test("Daily schedule in Tokyo", () => {
-        let startDate = "2020-01-01T20:00:00.000+09:00"
+    if (implementationName !== "date-fns") {
+        test("Daily schedule in Tokyo", () => {
+            let startDate = "2020-01-01T20:00:00.000+09:00"
 
-        let e1 = {
-            start: "2020-01-02T08:00:00.000+09:00",
-            end: "2020-01-02T16:00:00.000+09:00"
-        }
+            let e1 = {
+                start: "2020-01-02T08:00:00.000+09:00",
+                end: "2020-01-02T16:00:00.000+09:00"
+            }
 
-        let e2 = {
-            start: "2020-01-03T08:00:00.000+09:00",
-            end: "2020-01-03T16:00:00.000+09:00"
-        }
+            let e2 = {
+                start: "2020-01-03T08:00:00.000+09:00",
+                end: "2020-01-03T16:00:00.000+09:00"
+            }
 
-        let schedule = DailySchedule("08:00", "16:00", {timeZone: "Asia/Tokyo"})
-        let generator = schedule(createDateTime(new Date(startDate)))
+            let schedule = DailySchedule("08:00", "16:00", {timeZone: "Asia/Tokyo"})
+            let generator = schedule(createDateTime(new Date(startDate)))
 
-        let value = generator.next()
-        expect(value.done).toBeFalsy()
-        expect(value.value).toBeSameIntervalAs(impl, intervalFromIsoStrings(e1))
+            let value = generator.next()
+            expect(value.done).toBeFalsy()
+            expect(value.value).toBeSameIntervalAs(impl, intervalFromIsoStrings(e1))
 
-        value = generator.next()
-        expect(value.done).toBeFalsy()
-        expect(value.value).toBeSameIntervalAs(impl, intervalFromIsoStrings(e2))
-    })
+            value = generator.next()
+            expect(value.done).toBeFalsy()
+            expect(value.value).toBeSameIntervalAs(impl, intervalFromIsoStrings(e2))
+        })
+    }
 
     test("Daily schedule: DST switch", () => {
         let startDate = "2020-03-27T20:00"

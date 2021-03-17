@@ -105,7 +105,9 @@ describe.each(implementation)('%#', <DT, I, D>(x: any) => {
         let interval3 = {start: 21, end: 30}
         let expected = [{start: 0, end: 20}, {start: 21, end: 30}]
 
-        expect(mergeIntervals(createInterval(interval1), createInterval(interval2), createInterval(interval3))).toStrictEqual([createInterval(expected[0]), createInterval(expected[1])])
+        let result =mergeIntervals(createInterval(interval1), createInterval(interval2), createInterval(interval3))
+        expect(result[0]).toBeSameIntervalAs(impl, createInterval(expected[0]))
+        expect(result[1]).toBeSameIntervalAs(impl, createInterval(expected[1]))
     })
 
     test("Merge infinite intervals", () => {

@@ -63,6 +63,26 @@ export type Implementations = [
     Implementation<DateFnsTypes>
 ]
 
+function createLuxonDateTime(date: Date | number) {
+    if (date.valueOf() >= 253402300799999) {
+        return LuxonImplementation.InfinityDateTime
+    } else if (date.valueOf() <= -253402300799999) {
+        return LuxonImplementation.NegInfinityDateTime
+    } else {
+        return DateTime.fromJSDate(new Date(date))
+    }
+}
+
+function createDateFnsDateTime(date: Date | number) {
+    if (date.valueOf() >= 8640000000000000) {
+        return 8640000000000000
+    } else if (date.valueOf() <= -8640000000000000) {
+        return -8640000000000000
+    } else {
+        return new Date(date)
+    }
+}
+
 
 export const implementation: Implementations = [
     {
@@ -70,8 +90,8 @@ export const implementation: Implementations = [
         impl: LuxonImplementation,
         fns: LuxonExports,
         creators: {
-            createDateTime: (date: Date | number) => DateTime.fromJSDate(new Date(date)),
-            createInterval: (interval: IntervalObject) => Interval.fromDateTimes(new Date(interval.start), new Date(interval.end)),
+            createDateTime: createLuxonDateTime,
+            createInterval: (interval: IntervalObject) => Interval.fromDateTimes(createLuxonDateTime(interval.start), createLuxonDateTime(interval.end)),
             createDuration: (duration: DurationObject) => Duration.fromObject(duration)
         }
     },
@@ -80,8 +100,13 @@ export const implementation: Implementations = [
         impl: DateFnsImplementation,
         fns: DateFnsExports,
         creators: {
-            createDateTime: (date: Date | number) => date,
-            createInterval: (interval: IntervalObject) => interval,
+            createDateTime: createDateFnsDateTime,
+            createInterval: (interval: IntervalObject) => {
+                return {
+                    start: createDateFnsDateTime(interval.start),
+                    end: createDateFnsDateTime(interval.end)
+                }
+            },
             createDuration: (duration) => ({
                 years: orZero(duration?.years),
                 months: orZero(duration?.months) + orZero(duration.quarters) * 3,
