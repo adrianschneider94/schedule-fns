@@ -1,47 +1,10 @@
-import {DateTime as LuxonDateTime, Duration as LuxonDuration, Interval as LuxonInterval} from "luxon"
-
-/**
- * A moment in time
- *
- * @category Definitions
- */
-export type DateTime = LuxonDateTime
-export const DateTime = LuxonDateTime
-
-
-/**
- * A time interval
- *
- * @category Definitions
- */
-export type Interval = LuxonInterval
-export const Interval = LuxonInterval
-
-/**
- * A duration.
- *
- * @category Definitions
- */
-export type Duration = LuxonDuration
-export const Duration = LuxonDuration
-
 /**
  * The maximal number of recursions before an error is thrown.
  *
  * @internal
  */
+
 export const MAX_RECURSIONS = 1000
-
-/**
- * Describes the maximal date in javascript.
- *
- * @internal
- */
-export const DateInfinity = 253402300799999
-export const NegDateInfinity = -253402300799999
-
-export const InfintyDateTime = LuxonDateTime.fromMillis(DateInfinity)
-export const NegInfinityDateTime = LuxonDateTime.fromMillis(NegDateInfinity)
 
 /**
  * The direction in time. "forward" or 1 means into the future, "backward" or -1 into the past-
@@ -61,8 +24,29 @@ export type direction = "forward" | "backward" | 1 | -1
  *
  * @category Definitions
  */
-export type Schedule = (startDate: DateTime, direction?: direction) => IterableIterator<Interval>
+export type Schedule<DateTime, Interval, Duration> = (startDate: DateTime, direction?: direction) => IterableIterator<Interval>
 
-export * from "./schedules"
-export * from "./operations"
-export * from "./functions"
+
+export type DurationObject = {
+    years?: number,
+    quarters?: number,
+    months?: number,
+    weeks?: number,
+    days?: number,
+    hours?: number,
+    minutes?: number,
+    seconds?: number
+    milliseconds?: number
+}
+
+export type IntervalObject = {
+    start: Date | number
+    end: Date | number
+}
+
+export type IntervalAsISOStrings = {
+    start: string
+    end: string
+}
+
+export {LuxonImplementation, LuxonScheduleFns} from "./implementations/luxon"

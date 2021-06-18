@@ -1,6 +1,6 @@
 import {Schedule} from "../index"
-import {directionToInt, isWithinInterval} from "../functions/misc"
-import {addDays, createInterval, isAfter, isBefore, parseTimeAtGivenDay, startOfDay} from "../functions/dateLibrary"
+import {directionToInt} from "../misc/misc"
+import {ScheduleFnsLibrary} from "../implementations"
 
 /**
  * Creates a daily schedule.
@@ -13,42 +13,42 @@ import {addDays, createInterval, isAfter, isBefore, parseTimeAtGivenDay, startOf
  * @constructor
  * @category Schedules
  */
-export function DailySchedule(startTime: string, endTime: string, options?: { timeZone?: string }): Schedule {
+export function DailySchedule<DT, I, D>(this: ScheduleFnsLibrary<DT, I, D>, startTime: string, endTime: string, options?: {timeZone?: string}): Schedule<DT, I, D> {
     let timeZone = options?.timeZone
 
-    return function* (startDate, direction = 1) {
+    let generator: Schedule<DT, I, D> = function* (this: ScheduleFnsLibrary<DT, I, D>, startDate, direction = 1) {
         let directionInt = directionToInt(direction)
 
-        let day = startOfDay(startDate, timeZone)
-        let dayBefore = addDays(day, -1)
-        let overMidnight: boolean = parseTimeAtGivenDay(startTime, day, timeZone) > parseTimeAtGivenDay(endTime, day, timeZone)
+        let day = this.startOfDay(startDate, timeZone)
+        let dayBefore = this.addDays(day, -1)
+        let overMidnight: boolean = this.parseTimeAtGivenDay(startTime, day, timeZone) > this.parseTimeAtGivenDay(endTime, day, timeZone)
 
-        let firstInterval = createInterval(
-            overMidnight ? parseTimeAtGivenDay(startTime, dayBefore, timeZone) : parseTimeAtGivenDay(startTime, day, timeZone),
-            parseTimeAtGivenDay(endTime, day, timeZone)
+        let firstInterval = this.createInterval(
+            overMidnight ? this.parseTimeAtGivenDay(startTime, dayBefore, timeZone) : this.parseTimeAtGivenDay(startTime, day, timeZone),
+            this.parseTimeAtGivenDay(endTime, day, timeZone)
         )
 
         let i = 0
         while (true) {
-            let interval = createInterval(
-                addDays(firstInterval.start, i),
-                addDays(firstInterval.end, i)
+            let interval = this.createInterval(
+                this.addDays(this.getIntervalStart(firstInterval), i),
+                this.addDays(this.getIntervalEnd(firstInterval), i)
             )
             i += directionInt
 
-            if ((directionInt === 1 && isAfter(startDate, interval.end)) || (directionInt === -1 && isBefore(startDate, interval.start))) {
+            if ((directionInt === 1 && this.isAfter(startDate, this.getIntervalEnd(interval))) || (directionInt === -1 && this.isBefore(startDate, this.getIntervalStart(interval)))) {
                 continue
             }
 
-            if (isWithinInterval(startDate, interval)) {
+            if (this.intervalContains(interval, startDate)) {
                 if (directionInt === 1) {
-                    yield createInterval(
+                    yield this.createInterval(
                         startDate,
-                        interval.end
+                        this.getIntervalEnd(interval)
                     )
                 } else {
-                    yield createInterval(
-                        interval.start,
+                    yield this.createInterval(
+                        this.getIntervalStart(interval),
                         startDate
                     )
                 }
@@ -57,4 +57,5 @@ export function DailySchedule(startTime: string, endTime: string, options?: { ti
             }
         }
     }
+    return generator.bind(this)
 }

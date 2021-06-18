@@ -1,7 +1,6 @@
-import {DateTime, Duration, durationToMilliseconds, multiplyDuration, Schedule} from "../index"
-import {addDurations} from "../functions/durations"
-import {differenceInMilliseconds, directionToInt, isWithinInterval} from "../functions/misc"
-import {addDuration, createInterval, isBefore} from "../functions/dateLibrary"
+import {Schedule} from "../index"
+import {directionToInt} from "../misc/misc"
+import {ScheduleFnsLibrary} from "../implementations"
 
 /**
  * Constructs a regularly occurring schedule.
@@ -16,38 +15,40 @@ import {addDuration, createInterval, isBefore} from "../functions/dateLibrary"
  * @constructor
  * @category Schedules
  */
-export function RegularSchedule(oneStartMoment: DateTime, duration: Duration, period: Duration): Schedule {
-    return function* (startDate, direction = "forward") {
+export function RegularSchedule<DT, I, D>(this: ScheduleFnsLibrary<DT, I, D>, oneStartMoment: DT, duration: D, period: D): Schedule<DT, I, D> {
+    let generator: Schedule<DT, I, D> = function* (this: ScheduleFnsLibrary<DT, I, D>, startDate, direction = "forward") {
         let directionInt = directionToInt(direction)
         let numberOfPeriods: number = 0
 
         if (oneStartMoment <= startDate) {
-            numberOfPeriods = Math.floor(differenceInMilliseconds(startDate, oneStartMoment) / durationToMilliseconds(period))
+            let timeToStartMoment = this.intervalToMilliseconds(this.createInterval(startDate, oneStartMoment))
+            numberOfPeriods = Math.floor(timeToStartMoment / this.durationToMilliseconds(period))
 
-            if (directionInt === 1 && isBefore(addDuration(oneStartMoment, addDurations(multiplyDuration(period, numberOfPeriods), duration)), startDate, true)) {
+            if (directionInt === 1 && this.isEqualOrBefore(this.addDuration(oneStartMoment, this.addDurations(this.multiplyDuration(period, numberOfPeriods), duration)), startDate)) {
                 numberOfPeriods += 1
             }
         }
 
-        let firstIntervalStartsAt = addDuration(oneStartMoment, multiplyDuration(period, numberOfPeriods))
+        let firstIntervalStartsAt = this.addDuration(oneStartMoment, this.multiplyDuration(period, numberOfPeriods))
 
         let i = 0
         while (true) {
-            let start = addDuration(firstIntervalStartsAt, multiplyDuration(period, i))
+            let start = this.addDuration(firstIntervalStartsAt, this.multiplyDuration(period, i))
 
-            let interval = createInterval(
+            let interval = this.createInterval(
                 start,
-                addDuration(start, duration)
+                this.addDuration(start, duration)
             )
 
-            if (directionInt === 1 && isWithinInterval(startDate, interval)) {
-                yield createInterval(startDate, interval.end)
-            } else if (directionInt === -1 && isWithinInterval(startDate, interval)) {
-                yield createInterval(interval.start, startDate)
+            if (directionInt === 1 && this.intervalContains(interval, startDate)) {
+                yield this.createInterval(startDate, this.getIntervalEnd(interval))
+            } else if (directionInt === -1 && this.intervalContains(interval, startDate)) {
+                yield this.createInterval(this.getIntervalStart(interval), startDate)
             } else {
                 yield interval
             }
             i += directionInt
         }
     }
+    return generator.bind(this)
 }

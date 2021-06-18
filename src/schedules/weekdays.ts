@@ -1,6 +1,5 @@
-import {durationFromDurationObject, invertSchedule, joinSchedules, RegularSchedule, Schedule} from "../index"
-import {setISODay} from "../functions/misc"
-import {startOfDay} from "../functions/dateLibrary"
+import {Schedule} from "../index"
+import {ScheduleFnsLibrary} from "../implementations"
 
 export type WeekDayOptions = {
     timeZone?: string
@@ -15,15 +14,16 @@ export type WeekDayOptions = {
  * @internal
  * @category Schedules
  */
-export function OnSpecificWeekday(day: 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7, options?: WeekDayOptions): Schedule {
+export function OnSpecificWeekday<DT, I, D>(this: ScheduleFnsLibrary<DT, I, D>, day: 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7, options?: WeekDayOptions): Schedule<DT, I, D> {
     let timeZone = options?.timeZone
 
-    return function (startDate, direction) {
-        let weekday = setISODay(startDate, day)
-        let startDayMoment = startOfDay(weekday, timeZone)
-        let schedule = RegularSchedule(startDayMoment, durationFromDurationObject({days: 1}), durationFromDurationObject({weeks: 1}))
+    let generator: Schedule<DT, I, D> = function (this: ScheduleFnsLibrary<DT, I, D>, startDate, direction) {
+        let weekday = this.setISODay(startDate, day)
+        let startDayMoment = this.startOfDay(weekday, timeZone)
+        let schedule = this.RegularSchedule(startDayMoment, this.durationFromDurationObject({days: 1}), this.durationFromDurationObject({weeks: 1}))
         return schedule(startDate, direction)
     }
+    return generator.bind(this)
 }
 
 /**
@@ -32,8 +32,8 @@ export function OnSpecificWeekday(day: 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7, options?: 
  * @constructor
  * @category Weekday Schedules
  */
-export function Mondays(options?: WeekDayOptions): Schedule {
-    return OnSpecificWeekday(1, options)
+export function Mondays<DT, I, D>(this: ScheduleFnsLibrary<DT, I, D>, options?: WeekDayOptions): Schedule<DT, I, D> {
+    return this.OnSpecificWeekday(1, options)
 }
 
 /**
@@ -42,8 +42,8 @@ export function Mondays(options?: WeekDayOptions): Schedule {
  * @constructor
  * @category Weekday Schedules
  */
-export function Tuesdays(options?: WeekDayOptions): Schedule {
-    return OnSpecificWeekday(2, options)
+export function Tuesdays<DT, I, D>(this: ScheduleFnsLibrary<DT, I, D>, options?: WeekDayOptions): Schedule<DT, I, D> {
+    return this.OnSpecificWeekday(2, options)
 }
 
 /**
@@ -52,8 +52,8 @@ export function Tuesdays(options?: WeekDayOptions): Schedule {
  * @constructor
  * @category Weekday Schedules
  */
-export function Wednesdays(options?: WeekDayOptions): Schedule {
-    return OnSpecificWeekday(3, options)
+export function Wednesdays<DT, I, D>(this: ScheduleFnsLibrary<DT, I, D>, options?: WeekDayOptions): Schedule<DT, I, D> {
+    return this.OnSpecificWeekday(3, options)
 }
 
 /**
@@ -62,8 +62,8 @@ export function Wednesdays(options?: WeekDayOptions): Schedule {
  * @constructor
  * @category Weekday Schedules
  */
-export function Thursdays(options?: WeekDayOptions): Schedule {
-    return OnSpecificWeekday(4, options)
+export function Thursdays<DT, I, D>(this: ScheduleFnsLibrary<DT, I, D>, options?: WeekDayOptions): Schedule<DT, I, D> {
+    return this.OnSpecificWeekday(4, options)
 }
 
 /**
@@ -72,8 +72,8 @@ export function Thursdays(options?: WeekDayOptions): Schedule {
  * @constructor
  * @category Weekday Schedules
  */
-export function Fridays(options?: WeekDayOptions): Schedule {
-    return OnSpecificWeekday(5, options)
+export function Fridays<DT, I, D>(this: ScheduleFnsLibrary<DT, I, D>, options?: WeekDayOptions): Schedule<DT, I, D> {
+    return this.OnSpecificWeekday(5, options)
 }
 
 /**
@@ -82,8 +82,8 @@ export function Fridays(options?: WeekDayOptions): Schedule {
  * @constructor
  * @category Weekday Schedules
  */
-export function Saturdays(options?: WeekDayOptions): Schedule {
-    return OnSpecificWeekday(6, options)
+export function Saturdays<DT, I, D>(this: ScheduleFnsLibrary<DT, I, D>, options?: WeekDayOptions): Schedule<DT, I, D> {
+    return this.OnSpecificWeekday(6, options)
 }
 
 /**
@@ -92,8 +92,8 @@ export function Saturdays(options?: WeekDayOptions): Schedule {
  * @constructor
  * @category Weekday Schedules
  */
-export function Sundays(options?: WeekDayOptions): Schedule {
-    return OnSpecificWeekday(7, options)
+export function Sundays<DT, I, D>(this: ScheduleFnsLibrary<DT, I, D>, options?: WeekDayOptions): Schedule<DT, I, D> {
+    return this.OnSpecificWeekday(7, options)
 }
 
 /**
@@ -101,8 +101,8 @@ export function Sundays(options?: WeekDayOptions): Schedule {
  * @constructor
  * @category Weekday Schedules
  */
-export function Weekends(options?: WeekDayOptions): Schedule {
-    return joinSchedules(Saturdays(options), Sundays(options))
+export function Weekends<DT, I, D>(this: ScheduleFnsLibrary<DT, I, D>, options?: WeekDayOptions): Schedule<DT, I, D> {
+    return this.joinSchedules(this.Saturdays(options), this.Sundays(options))
 }
 
 /**
@@ -111,6 +111,6 @@ export function Weekends(options?: WeekDayOptions): Schedule {
  * @constructor
  * @category Weekday Schedules
  */
-export function WorkingDays(options?: WeekDayOptions): Schedule {
-    return invertSchedule(Weekends(options))
+export function WorkingDays<DT, I, D>(this: ScheduleFnsLibrary<DT, I, D>, options?: WeekDayOptions): Schedule<DT, I, D> {
+    return this.invertSchedule(this.Weekends(options))
 }

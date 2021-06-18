@@ -1,5 +1,4 @@
-import {intervalFromIntervalObject, ScheduleFromIntervals, symmetricDifferenceOfSchedules} from "schedule.js"
-import {dateTimeFromDateOrNumber} from "schedule.js/functions/dateLibrary"
+import {LuxonScheduleFns as lib} from "schedule.js"
 
 test("Symmetric difference of schedules", () => {
     let i1 = {start: 0, end: 2}
@@ -8,19 +7,19 @@ test("Symmetric difference of schedules", () => {
     let e1 = {start: 0, end: 1}
     let e2 = {start: 2, end: 3}
 
-    let schedule1 = ScheduleFromIntervals(intervalFromIntervalObject(i1))
-    let schedule2 = ScheduleFromIntervals(intervalFromIntervalObject(i2))
-    let schedule = symmetricDifferenceOfSchedules(schedule1, schedule2)
+    let schedule1 = lib.ScheduleFromIntervals(lib.intervalFromIntervalObject(i1))
+    let schedule2 = lib.ScheduleFromIntervals(lib.intervalFromIntervalObject(i2))
+    let schedule = lib.symmetricDifferenceOfSchedules(schedule1, schedule2)
 
-    let generator = schedule(dateTimeFromDateOrNumber(startDate))
+    let generator = schedule(lib.dateTimeFromDateOrNumber(startDate))
 
     let value = generator.next()
     expect(value.done).toBe(false)
-    expect(value.value).toBeSameIntervalAs(intervalFromIntervalObject(e1))
+    expect(value.value).toBeSameIntervalAs(lib.intervalFromIntervalObject(e1))
 
     value = generator.next()
     expect(value.done).toBe(false)
-    expect(value.value).toBeSameIntervalAs(intervalFromIntervalObject(e2))
+    expect(value.value).toBeSameIntervalAs(lib.intervalFromIntervalObject(e2))
 
     expect(generator.next()).toStrictEqual({value: undefined, done: true})
 })

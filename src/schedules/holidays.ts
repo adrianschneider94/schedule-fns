@@ -1,12 +1,13 @@
 import DateHolidays, {Country, Options} from "date-holidays"
 
-import {Schedule, ScheduleFromIntervals} from "../index"
-import {directionToInt, getYear, parseJsDateTime} from "../functions/misc"
-import {createInterval} from "../functions/dateLibrary"
+import {Schedule} from "../index"
+import {directionToInt} from "../misc/misc"
+import {ScheduleFnsLibrary} from "../implementations"
 
-export function Holidays(country?: Country | string, opts?: Options): Schedule
-export function Holidays(country?: string, state?: string, opts?: Options): Schedule
-export function Holidays(country?: string, state?: string, region?: string, opts?: Options): Schedule
+
+export function Holidays<DT, I, D>(this: ScheduleFnsLibrary<DT, I, D>, country?: Country | string, opts?: Options): Schedule<DT, I, D>
+export function Holidays<DT, I, D>(this: ScheduleFnsLibrary<DT, I, D>, country?: string, state?: string, opts?: Options): Schedule<DT, I, D>
+export function Holidays<DT, I, D>(this: ScheduleFnsLibrary<DT, I, D>, country?: string, state?: string, region?: string, opts?: Options): Schedule<DT, I, D>
 
 /**
  * Returns a schedule according to the holiday calendar of a region.
@@ -18,18 +19,18 @@ export function Holidays(country?: string, state?: string, region?: string, opts
  * @constructor
  * @category Schedules
  */
-export function Holidays(...args: any): Schedule {
-    return function* (startDate, direction = "forward") {
+export function Holidays<DT, I, D>(this: ScheduleFnsLibrary<DT, I, D>, ...args: any): Schedule<DT, I, D> {
+    let generator: Schedule<DT, I, D> = function* (this: ScheduleFnsLibrary<DT, I, D>, startDate, direction = "forward") {
         let directionInt = directionToInt(direction)
 
         let holidays = new DateHolidays()
         holidays.init(...args)
 
-        let year = getYear(startDate)
+        let year = this.getYear(startDate)
         while (true) {
-            let innerSchedule = ScheduleFromIntervals(...holidays.getHolidays(year).map(holiday => (createInterval(
-                parseJsDateTime(holiday.start),
-                parseJsDateTime(holiday.end)
+            let innerSchedule = this.ScheduleFromIntervals(...holidays.getHolidays(year).map(holiday => (this.createInterval(
+                this.dateTimeFromDateOrNumber(holiday.start),
+                this.dateTimeFromDateOrNumber(holiday.end)
             ))))
             for (let interval of innerSchedule(startDate, direction)) {
                 yield interval
@@ -37,5 +38,6 @@ export function Holidays(...args: any): Schedule {
             year += directionInt
         }
     }
+    return generator.bind(this)
 }
 

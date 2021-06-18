@@ -1,10 +1,10 @@
-import {DateTime, InfintyDateTime, NegInfinityDateTime, Schedule, ScheduleFromIntervals} from "../index"
-import {createInterval} from "../functions/dateLibrary"
+import {Schedule} from "../index"
+import {ScheduleFnsLibrary} from "../implementations"
 
-export function From(startDate: DateTime): Schedule {
-    return ScheduleFromIntervals(createInterval(startDate, InfintyDateTime))
+export function From<DT, I, D>(this: ScheduleFnsLibrary<DT, I, D>, startDate: DT): Schedule<DT, I, D> {
+    return this.ScheduleFromIntervals(this.createInterval(startDate, this.infinityDateTime))
 }
 
-export function Until(endDate: DateTime): Schedule {
-    return ScheduleFromIntervals(createInterval(NegInfinityDateTime, endDate))
+export function Until<DT, I, D>(this: ScheduleFnsLibrary<DT, I, D>, endDate: DT): Schedule<DT, I, D> {
+    return this.ScheduleFromIntervals(this.createInterval(this.negativeInfinityDateTime, endDate))
 }

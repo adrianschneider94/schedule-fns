@@ -1,5 +1,5 @@
-import {DateTime, direction, Interval, Schedule} from "../index"
-import {intervalContains} from "./dateLibrary"
+import {direction, Schedule} from "schedule.js"
+import {DateTimeLibrary} from "../dateTimeLibrary"
 
 /**
  * Determines if an array is empty.
@@ -19,15 +19,15 @@ export function isArrayEmpty<T>(array: Array<T>) {
  * @param schedule
  * @category Helper functions
  */
-export function isWithinSchedule(date: DateTime, schedule: Schedule) {
+export function isWithinSchedule<DT, I, D>(this: DateTimeLibrary<DT, I, D>, date: DT, schedule: Schedule<DT, I, D>) {
     let generator = schedule(date)
-    let interval = generator.next()?.value as Interval | undefined
+    let interval = generator.next()?.value as I | undefined
 
     if (interval === undefined) {
         return false
     }
 
-    return intervalContains(interval, date)
+    return this.intervalContains(interval, date)
 }
 
 /**
@@ -69,26 +69,28 @@ export function* take<T>(iterable: IterableIterator<T>, n: number): IterableIter
     }
 }
 
-export function isWithinInterval(date: DateTime, interval: Interval) {
-    return interval.contains(date)
+/**
+ export function isWithinInterval<DT, I, D>(this: DateTimeLibrary<DT, I, D>, date: DT, interval: I) {
+    return this.intervalContains(interval, date)
 }
 
-export function parseJsDateTime(date: Date | number): DateTime {
+ export function parseJsDateTime(date: Date | number): DateTime {
     return DateTime.fromJSDate(new Date(date))
 }
 
-export function getYear(date: DateTime) {
+ export function getYear(date: DateTime) {
     return date.year
 }
 
-export function differenceInMilliseconds(left: DateTime, right: DateTime) {
+ export function differenceInMilliseconds(left: DateTime, right: DateTime) {
     return left.toMillis() - right.toMillis()
 }
 
-export function setISODay(date: DateTime, day: 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7) {
+ export function setISODay(date: DateTime, day: 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7) {
     return date.set({weekday: day})
 }
 
-export function parseISO(date: string): DateTime {
+ export function parseISO(date: string): DateTime {
     return DateTime.fromISO(date)
 }
+ **/

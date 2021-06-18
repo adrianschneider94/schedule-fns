@@ -1,163 +1,149 @@
-import {
-    Fridays,
-    Interval,
-    intervalFromIntervalObject,
-    Mondays,
-    Saturdays,
-    Schedule,
-    Sundays,
-    Thursdays,
-    Tuesdays,
-    Wednesdays,
-    Weekends,
-    WorkingDays
-} from "schedule.js"
-import {OnSpecificWeekday} from "schedule.js/schedules/weekdays"
-import {parseISO} from "schedule.js/functions/misc"
+import {LuxonScheduleFns as lib, Schedule} from "schedule.js"
+import {DateTime, Duration, Interval} from "luxon"
 
 test("SpecificDay", () => {
-    let schedule = OnSpecificWeekday(1)
-    let generator = schedule(parseISO("2020-09-23"))
+    let schedule = lib.OnSpecificWeekday(1)
+    let generator = schedule(DateTime.fromISO("2020-09-23"))
 
     let e1 = {
-        start: parseISO("2020-09-27T22:00Z"),
-        end: parseISO("2020-09-28T22:00Z")
+        start: DateTime.fromISO("2020-09-27T22:00Z").toMillis(),
+        end: DateTime.fromISO("2020-09-28T22:00Z").toMillis()
     }
 
     let e2 = {
-        start: parseISO("2020-10-04T22:00Z"),
-        end: parseISO("2020-10-05T22:00Z")
+        start: DateTime.fromISO("2020-10-04T22:00Z").toMillis(),
+        end: DateTime.fromISO("2020-10-05T22:00Z").toMillis()
     }
 
     let value = generator.next()
     expect(value.done).toBe(false)
-    expect(value.value).toBeSameIntervalAs(intervalFromIntervalObject(e1))
+    expect(value.value).toBeSameIntervalAs(lib.intervalFromIntervalObject(e1))
 
     value = generator.next()
     expect(value.done).toBe(false)
-    expect(value.value).toBeSameIntervalAs(intervalFromIntervalObject(e2))
+    expect(value.value).toBeSameIntervalAs(lib.intervalFromIntervalObject(e2))
 })
 
 test("Specific Day in Tokyo", () => {
-    let schedule = OnSpecificWeekday(1, {timeZone: "Asia/Tokyo"})
-    let generator = schedule(parseISO("2020-01-01T00:00+09:00"))
+    let schedule = lib.OnSpecificWeekday(1, {timeZone: "Asia/Tokyo"})
+    let generator = schedule(DateTime.fromISO("2020-01-01T00:00+09:00"))
 
     let e1 = {
-        start: parseISO("2020-01-07T00:00+09:00"),
-        end: parseISO("2020-01-08T00:00+09:00")
+        start: DateTime.fromISO("2020-01-07T00:00+09:00").toMillis(),
+        end: DateTime.fromISO("2020-01-08T00:00+09:00").toMillis()
     }
 
     let e2 = {
-        start: parseISO("2020-01-14T00:00+09:00"),
-        end: parseISO("2020-01-15T00:00+09:00")
+        start: DateTime.fromISO("2020-01-14T00:00+09:00").toMillis(),
+        end: DateTime.fromISO("2020-01-15T00:00+09:00").toMillis()
     }
 
     let value = generator.next()
     expect(value.done).toBe(false)
-    expect(value.value).toBeSameIntervalAs(intervalFromIntervalObject(e1))
+    expect(value.value).toBeSameIntervalAs(lib.intervalFromIntervalObject(e1))
 
     value = generator.next()
     expect(value.done).toBe(false)
-    expect(value.value).toBeSameIntervalAs(intervalFromIntervalObject(e2))
+    expect(value.value).toBeSameIntervalAs(lib.intervalFromIntervalObject(e2))
 })
 
 test("Weekdays", () => {
-    let schedule: Schedule
+    let schedule: Schedule<DateTime, Interval, Duration>
     let nextInterval: Interval
-    let startDate = parseISO("2020-09-28T00:00Z")
+    let startDate = DateTime.fromISO("2020-09-28T00:00Z")
 
-    schedule = Mondays()
+    schedule = lib.Mondays()
 
     let e1 = {
-        start: parseISO("2020-09-28T00:00Z"),
-        end: parseISO("2020-09-28T22:00Z")
+        start: DateTime.fromISO("2020-09-28T00:00Z").toMillis(),
+        end: DateTime.fromISO("2020-09-28T22:00Z").toMillis()
     }
 
     nextInterval = schedule(startDate).next().value
-    expect(nextInterval).toBeSameIntervalAs(intervalFromIntervalObject(e1))
+    expect(nextInterval).toBeSameIntervalAs(lib.intervalFromIntervalObject(e1))
 
-    schedule = Tuesdays()
+    schedule = lib.Tuesdays()
 
     let e2 = {
-        start: parseISO("2020-09-28T22:00Z"),
-        end: parseISO("2020-09-29T22:00Z")
+        start: DateTime.fromISO("2020-09-28T22:00Z").toMillis(),
+        end: DateTime.fromISO("2020-09-29T22:00Z").toMillis()
     }
 
     nextInterval = schedule(startDate).next().value
-    expect(nextInterval).toBeSameIntervalAs(intervalFromIntervalObject(e2))
+    expect(nextInterval).toBeSameIntervalAs(lib.intervalFromIntervalObject(e2))
 
-    schedule = Wednesdays()
+    schedule = lib.Wednesdays()
     let e3 = {
-        start: parseISO("2020-09-29T22:00Z"),
-        end: parseISO("2020-09-30T22:00Z")
+        start: DateTime.fromISO("2020-09-29T22:00Z").toMillis(),
+        end: DateTime.fromISO("2020-09-30T22:00Z").toMillis()
     }
 
     nextInterval = schedule(startDate).next().value
-    expect(nextInterval).toBeSameIntervalAs(intervalFromIntervalObject(e3))
+    expect(nextInterval).toBeSameIntervalAs(lib.intervalFromIntervalObject(e3))
 
-    schedule = Thursdays()
+    schedule = lib.Thursdays()
 
     let e4 = {
-        start: parseISO("2020-09-30T22:00Z"),
-        end: parseISO("2020-10-01T22:00Z")
+        start: DateTime.fromISO("2020-09-30T22:00Z").toMillis(),
+        end: DateTime.fromISO("2020-10-01T22:00Z").toMillis()
     }
 
     nextInterval = schedule(startDate).next().value
-    expect(nextInterval).toBeSameIntervalAs(intervalFromIntervalObject(e4))
+    expect(nextInterval).toBeSameIntervalAs(lib.intervalFromIntervalObject(e4))
 
-    schedule = Fridays()
+    schedule = lib.Fridays()
 
     let e5 = {
-        start: parseISO("2020-10-01T22:00Z"),
-        end: parseISO("2020-10-02T22:00Z")
+        start: DateTime.fromISO("2020-10-01T22:00Z").toMillis(),
+        end: DateTime.fromISO("2020-10-02T22:00Z").toMillis()
     }
 
     nextInterval = schedule(startDate).next().value
-    expect(nextInterval).toBeSameIntervalAs(intervalFromIntervalObject(e5))
+    expect(nextInterval).toBeSameIntervalAs(lib.intervalFromIntervalObject(e5))
 
-    schedule = Saturdays()
+    schedule = lib.Saturdays()
 
     let e6 = {
-        start: parseISO("2020-10-02T22:00Z"),
-        end: parseISO("2020-10-03T22:00Z")
+        start: DateTime.fromISO("2020-10-02T22:00Z").toMillis(),
+        end: DateTime.fromISO("2020-10-03T22:00Z").toMillis()
     }
 
     nextInterval = schedule(startDate).next().value
-    expect(nextInterval).toBeSameIntervalAs(intervalFromIntervalObject(e6))
+    expect(nextInterval).toBeSameIntervalAs(lib.intervalFromIntervalObject(e6))
 
 
-    schedule = Sundays()
+    schedule = lib.Sundays()
 
     let e7 = {
-        start: parseISO("2020-10-03T22:00Z"),
-        end: parseISO("2020-10-04T22:00Z")
+        start: DateTime.fromISO("2020-10-03T22:00Z").toMillis(),
+        end: DateTime.fromISO("2020-10-04T22:00Z").toMillis()
     }
     nextInterval = schedule(startDate).next().value
-    expect(nextInterval).toBeSameIntervalAs(intervalFromIntervalObject(e7))
+    expect(nextInterval).toBeSameIntervalAs(lib.intervalFromIntervalObject(e7))
 
 })
 
 test("Weekends", () => {
-    let schedule = Weekends()
-    let startDate = parseISO("2020-09-28T00:00Z")
+    let schedule = lib.Weekends()
+    let startDate = DateTime.fromISO("2020-09-28T00:00Z")
 
     let e1 = {
-        start: parseISO("2020-10-02T22:00Z"),
-        end: parseISO("2020-10-04T22:00Z")
+        start: DateTime.fromISO("2020-10-02T22:00Z").toMillis(),
+        end: DateTime.fromISO("2020-10-04T22:00Z").toMillis()
     }
     let nextInterval = schedule(startDate).next().value
-    expect(nextInterval).toBeSameIntervalAs(intervalFromIntervalObject(e1))
+    expect(nextInterval).toBeSameIntervalAs(lib.intervalFromIntervalObject(e1))
 })
 
 test("WorkingDays", () => {
-    let schedule = WorkingDays()
-    let startDate = parseISO("2020-09-28T00:00Z")
+    let schedule = lib.WorkingDays()
+    let startDate = DateTime.fromISO("2020-09-28T00:00Z")
 
     let e1 = {
-        start: parseISO("2020-09-28T00:00Z"),
-        end: parseISO("2020-10-02T22:00Z")
+        start: DateTime.fromISO("2020-09-28T00:00Z").toMillis(),
+        end: DateTime.fromISO("2020-10-02T22:00Z").toMillis()
     }
 
     let nextInterval = schedule(startDate).next().value
-    expect(nextInterval).toBeSameIntervalAs(intervalFromIntervalObject(e1))
+    expect(nextInterval).toBeSameIntervalAs(lib.intervalFromIntervalObject(e1))
 })

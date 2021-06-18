@@ -1,52 +1,51 @@
-import {intervalFromIntervalObject, ScheduleFromIntervals} from "schedule.js"
-import {dateTimeFromDateOrNumber} from "schedule.js/functions/dateLibrary"
+import {LuxonScheduleFns as lib} from "schedule.js"
 
 test("Basic schedule from intervals", () => {
     let startDate = 0
     let intervals = [
-        intervalFromIntervalObject({start: 0, end: 10}),
-        intervalFromIntervalObject({start: 20, end: 30})
+        lib.intervalFromIntervalObject({start: 0, end: 10}),
+        lib.intervalFromIntervalObject({start: 20, end: 30})
     ]
 
-    let schedule = ScheduleFromIntervals(...intervals)
-    let generator = schedule(dateTimeFromDateOrNumber(startDate))
+    let schedule = lib.ScheduleFromIntervals(...intervals)
+    let generator = schedule(lib.dateTimeFromDateOrNumber(startDate))
 
     let e1 = {start: 0, end: 10}
     let e2 = {start: 20, end: 30}
 
     let value = generator.next()
     expect(value.done).toBe(false)
-    expect(value.value).toBeSameIntervalAs(intervalFromIntervalObject(e1))
+    expect(value.value).toBeSameIntervalAs(lib.intervalFromIntervalObject(e1))
 
     value = generator.next()
     expect(value.done).toBe(false)
-    expect(value.value).toBeSameIntervalAs(intervalFromIntervalObject(e2))
+    expect(value.value).toBeSameIntervalAs(lib.intervalFromIntervalObject(e2))
 
     expect(generator.next()).toStrictEqual({value: undefined, done: true})
 })
 
 test("Schedule from empty list of intervals", () => {
     let startDate = 0
-    let schedule = ScheduleFromIntervals()
-    let generator = schedule(dateTimeFromDateOrNumber(startDate))
+    let schedule = lib.ScheduleFromIntervals()
+    let generator = schedule(lib.dateTimeFromDateOrNumber(startDate))
     expect(generator.next()).toStrictEqual({value: undefined, done: true})
 })
 
 test("Schedule from intervals with startDate in interval", () => {
     let startDate = 25
     let intervals = [
-        intervalFromIntervalObject({start: 0, end: 10}),
-        intervalFromIntervalObject({start: 20, end: 30})
+        lib.intervalFromIntervalObject({start: 0, end: 10}),
+        lib.intervalFromIntervalObject({start: 20, end: 30})
     ]
 
-    let schedule = ScheduleFromIntervals(...intervals)
-    let generator = schedule(dateTimeFromDateOrNumber(startDate))
+    let schedule = lib.ScheduleFromIntervals(...intervals)
+    let generator = schedule(lib.dateTimeFromDateOrNumber(startDate))
 
     let e1 = {start: 25, end: 30}
 
     let value = generator.next()
     expect(value.done).toBe(false)
-    expect(value.value).toBeSameIntervalAs(intervalFromIntervalObject(e1))
+    expect(value.value).toBeSameIntervalAs(lib.intervalFromIntervalObject(e1))
 
     expect(generator.next()).toStrictEqual({value: undefined, done: true})
 })
@@ -54,12 +53,12 @@ test("Schedule from intervals with startDate in interval", () => {
 test("Schedule from intervals with startDate after all intervals", () => {
     let startDate = 35
     let intervals = [
-        intervalFromIntervalObject({start: 0, end: 10}),
-        intervalFromIntervalObject({start: 20, end: 30})
+        lib.intervalFromIntervalObject({start: 0, end: 10}),
+        lib.intervalFromIntervalObject({start: 20, end: 30})
     ]
 
-    let schedule = ScheduleFromIntervals(...intervals)
-    let generator = schedule(dateTimeFromDateOrNumber(startDate))
+    let schedule = lib.ScheduleFromIntervals(...intervals)
+    let generator = schedule(lib.dateTimeFromDateOrNumber(startDate))
 
     expect(generator.next()).toStrictEqual({value: undefined, done: true})
 })
@@ -67,23 +66,23 @@ test("Schedule from intervals with startDate after all intervals", () => {
 test("Basic schedule from intervals, reverse direction", () => {
     let startDate = 50
     let intervals = [
-        intervalFromIntervalObject({start: 0, end: 10}),
-        intervalFromIntervalObject({start: 20, end: 30})
+        lib.intervalFromIntervalObject({start: 0, end: 10}),
+        lib.intervalFromIntervalObject({start: 20, end: 30})
     ]
 
-    let schedule = ScheduleFromIntervals(...intervals)
-    let generator = schedule(dateTimeFromDateOrNumber(startDate), "backward")
+    let schedule = lib.ScheduleFromIntervals(...intervals)
+    let generator = schedule(lib.dateTimeFromDateOrNumber(startDate), "backward")
 
     let e1 = {start: 20, end: 30}
     let e2 = {start: 0, end: 10}
 
     let value = generator.next()
     expect(value.done).toBe(false)
-    expect(value.value).toBeSameIntervalAs(intervalFromIntervalObject(e1))
+    expect(value.value).toBeSameIntervalAs(lib.intervalFromIntervalObject(e1))
 
     value = generator.next()
     expect(value.done).toBe(false)
-    expect(value.value).toBeSameIntervalAs(intervalFromIntervalObject(e2))
+    expect(value.value).toBeSameIntervalAs(lib.intervalFromIntervalObject(e2))
 
     expect(generator.next()).toStrictEqual({value: undefined, done: true})
 })
@@ -91,23 +90,23 @@ test("Basic schedule from intervals, reverse direction", () => {
 test("Basic schedule from intervals, reverse direction, startDate in interval", () => {
     let startDate = 25
     let intervals = [
-        intervalFromIntervalObject({start: 0, end: 10}),
-        intervalFromIntervalObject({start: 20, end: 30})
+        lib.intervalFromIntervalObject({start: 0, end: 10}),
+        lib.intervalFromIntervalObject({start: 20, end: 30})
     ]
 
-    let schedule = ScheduleFromIntervals(...intervals)
-    let generator = schedule(dateTimeFromDateOrNumber(startDate), "backward")
+    let schedule = lib.ScheduleFromIntervals(...intervals)
+    let generator = schedule(lib.dateTimeFromDateOrNumber(startDate), "backward")
 
     let e1 = {start: 20, end: 25}
     let e2 = {start: 0, end: 10}
 
     let value = generator.next()
     expect(value.done).toBe(false)
-    expect(value.value).toBeSameIntervalAs(intervalFromIntervalObject(e1))
+    expect(value.value).toBeSameIntervalAs(lib.intervalFromIntervalObject(e1))
 
     value = generator.next()
     expect(value.done).toBe(false)
-    expect(value.value).toBeSameIntervalAs(intervalFromIntervalObject(e2))
+    expect(value.value).toBeSameIntervalAs(lib.intervalFromIntervalObject(e2))
 
     expect(generator.next()).toStrictEqual({value: undefined, done: true})
 })

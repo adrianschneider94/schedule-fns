@@ -1,5 +1,5 @@
-import {Duration, multiplyDuration, Schedule} from "../index"
-import {addDuration, createInterval} from "../functions/dateLibrary"
+import {ScheduleFnsLibrary} from "../implementations"
+import {Schedule} from "schedule.js"
 
 /**
  * Shifts a schedule by a duration.
@@ -8,11 +8,12 @@ import {addDuration, createInterval} from "../functions/dateLibrary"
  * @param duration
  * @category Operations
  */
-export function shiftSchedule(schedule: Schedule, duration: Duration): Schedule {
-    return function* (startDate, direction) {
-        let generator = schedule(addDuration(startDate, multiplyDuration(duration, -1)), direction)
+export function shiftSchedule<DT, I, D>(this: ScheduleFnsLibrary<DT, I, D>, schedule: Schedule<DT, I, D>, duration: D): Schedule<DT, I, D> {
+    let generator: Schedule<DT, I, D> = function* (this: ScheduleFnsLibrary<DT, I, D>, startDate, direction) {
+        let generator = schedule(this.addDuration(startDate, this.multiplyDuration(duration, -1)), direction)
         for (let entry of generator) {
-            yield createInterval(addDuration(entry.start, duration), addDuration(entry.end, duration))
+            yield this.createInterval(this.addDuration(this.getIntervalStart(entry), duration), this.addDuration(this.getIntervalEnd(entry), duration))
         }
     }
+    return generator.bind(this)
 }

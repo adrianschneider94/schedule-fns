@@ -1,7 +1,6 @@
-import {Interval, Schedule} from "../index"
-import {mergeIntervals} from "../functions/intervals"
-import {directionToInt, isWithinInterval} from "../functions/misc"
-import {createInterval, isEqualOrAfter, isEqualOrBefore} from "../functions/dateLibrary"
+import {Schedule} from "../index"
+import {directionToInt} from "../misc/misc"
+import {ScheduleFnsLibrary} from "../implementations"
 
 /**
  * Returns a schedule from the given intervals.
@@ -10,24 +9,25 @@ import {createInterval, isEqualOrAfter, isEqualOrBefore} from "../functions/date
  * @constructor
  * @category Schedules
  */
-export function ScheduleFromIntervals(...intervals: Array<Interval>): Schedule {
-    return function* (startDate, direction = "forward") {
+export function ScheduleFromIntervals<DT, I, D>(this: ScheduleFnsLibrary<DT, I, D>, ...intervals: Array<I>): Schedule<DT, I, D> {
+    let generator: Schedule<DT, I, D> = function* (this: ScheduleFnsLibrary<DT, I, D>, startDate, direction = "forward") {
         let directionInt = directionToInt(direction)
 
         if (directionInt === 1) {
-            intervals = mergeIntervals(...intervals).filter(interval => isEqualOrAfter(interval.end, startDate))
+            intervals = this.mergeIntervals(...intervals).filter(interval => this.isEqualOrAfter(this.getIntervalEnd(interval), startDate))
         } else {
-            intervals = mergeIntervals(...intervals).filter(interval => isEqualOrBefore(interval.start, startDate)).reverse()
+            intervals = this.mergeIntervals(...intervals).filter(interval => this.isEqualOrBefore(this.getIntervalStart(interval), startDate)).reverse()
         }
 
         for (const interval of intervals) {
-            if (directionInt === 1 && isWithinInterval(startDate, interval)) {
-                yield createInterval(startDate, interval.end)
-            } else if (directionInt === -1 && isWithinInterval(startDate, interval)) {
-                yield createInterval(interval.start, startDate)
+            if (directionInt === 1 && this.intervalContains(interval, startDate)) {
+                yield this.createInterval(startDate, this.getIntervalEnd(interval))
+            } else if (directionInt === -1 && this.intervalContains(interval, startDate)) {
+                yield this.createInterval(this.getIntervalStart(interval), startDate)
             } else {
                 yield interval
             }
         }
     }
+    return generator.bind(this)
 }

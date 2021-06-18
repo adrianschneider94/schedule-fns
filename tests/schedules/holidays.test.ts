@@ -1,10 +1,10 @@
-import {Holidays, intervalFromISOStrings} from "schedule.js"
-import {parseISO} from "schedule.js/functions/misc"
+import {LuxonScheduleFns as lib} from "schedule.js"
+import {DateTime} from "luxon"
 
 test("Holidays in Bavaria", () => {
-    let schedule = Holidays("DE", "BY", {types: ["public"]})
+    let schedule = lib.Holidays("DE", "BY", {types: ["public"]})
 
-    let generator = schedule(parseISO("2019-12-26T05:00:00.000+0100"))
+    let generator = schedule(DateTime.fromISO("2019-12-26T05:00:00.000+0100"))
 
     let e1 = {
         start: "2019-12-26T04:00:00.000Z",
@@ -21,21 +21,21 @@ test("Holidays in Bavaria", () => {
 
     let value = generator.next()
     expect(value.done).toBeFalsy()
-    expect(value.value).toBeSameIntervalAs(intervalFromISOStrings(e1))
+    expect(value.value).toBeSameIntervalAs(lib.intervalFromISOStrings(e1))
 
     value = generator.next()
     expect(value.done).toBeFalsy()
-    expect(value.value).toBeSameIntervalAs(intervalFromISOStrings(e2))
+    expect(value.value).toBeSameIntervalAs(lib.intervalFromISOStrings(e2))
 
     value = generator.next()
     expect(value.done).toBeFalsy()
-    expect(value.value).toBeSameIntervalAs(intervalFromISOStrings(e3))
+    expect(value.value).toBeSameIntervalAs(lib.intervalFromISOStrings(e3))
 })
 
 test("Holidays in Bavaria, backward", () => {
-    let schedule = Holidays("DE", "BY", {types: ["public"]})
+    let schedule = lib.Holidays("DE", "BY", {types: ["public"]})
 
-    let generator = schedule(parseISO("2020-01-01T05:00:00.000+0100"), "backward")
+    let generator = schedule(DateTime.fromISO("2020-01-01T05:00:00.000+0100"), "backward")
 
     let e1 = {
         start: "2019-12-31T23:00:00.000Z",
@@ -49,9 +49,9 @@ test("Holidays in Bavaria, backward", () => {
 
     let value = generator.next()
     expect(value.done).toBeFalsy()
-    expect(value.value).toBeSameIntervalAs(intervalFromISOStrings(e1))
+    expect(value.value).toBeSameIntervalAs(lib.intervalFromISOStrings(e1))
 
     value = generator.next()
     expect(value.done).toBeFalsy()
-    expect(value.value).toBeSameIntervalAs(intervalFromISOStrings(e2))
+    expect(value.value).toBeSameIntervalAs(lib.intervalFromISOStrings(e2))
 })

@@ -1,7 +1,6 @@
-import {InfintyDateTime, Interval, MAX_RECURSIONS, NegInfinityDateTime, Schedule} from "../index"
-import {directionToInt, isArrayEmpty} from "../functions/misc"
-import {areIntervalsConnected, joinIntervals} from "../functions/intervals"
-import {compareAsc, compareDesc, isEqual} from "../functions/dateLibrary"
+import {MAX_RECURSIONS, Schedule} from "../index"
+import {directionToInt, isArrayEmpty} from "../misc/misc"
+import {ScheduleFnsLibrary} from "../implementations"
 
 /**
  * Get the interval that starts first of a given set of intervals.
@@ -9,8 +8,8 @@ import {compareAsc, compareDesc, isEqual} from "../functions/dateLibrary"
  * @param intervals
  * @internal
  */
-function getFirstInterval(intervals: Array<Interval>) {
-    return [...intervals].filter(x => x !== undefined).sort((a, b) => compareAsc(a.start, b.start))[0]
+export function getFirstInterval<DT, I, D>(this: ScheduleFnsLibrary<DT, I, D>, intervals: Array<I>) {
+    return [...intervals].filter(x => x !== undefined).sort((a, b) => this.compareAsc(this.getIntervalStart(a), this.getIntervalEnd(b)))[0]
 }
 
 /**
@@ -19,8 +18,8 @@ function getFirstInterval(intervals: Array<Interval>) {
  * @param intervals
  * @internal
  */
-function getLastInterval(intervals: Array<Interval>) {
-    return [...intervals].filter(x => x !== undefined).sort((a, b) => compareDesc(a.end, b.end))[0]
+export function getLastInterval<DT, I, D>(this: ScheduleFnsLibrary<DT, I, D>, intervals: Array<I>) {
+    return [...intervals].filter(x => x !== undefined).sort((a, b) => this.compareDesc(this.getIntervalEnd(a), this.getIntervalEnd(b)))[0]
 }
 
 /**
@@ -29,8 +28,8 @@ function getLastInterval(intervals: Array<Interval>) {
  * @param schedules
  * @category Operations
  */
-export function joinSchedules(...schedules: Array<Schedule>): Schedule {
-    return function* (startDate, direction = "forward") {
+export function joinSchedules<DT, I, D>(this: ScheduleFnsLibrary<DT, I, D>, ...schedules: Array<Schedule<DT, I, D>>): Schedule<DT, I, D> {
+    let generator: Schedule<DT, I, D> = function* (this: ScheduleFnsLibrary<DT, I, D>, startDate, direction = "forward") {
         if (isArrayEmpty(schedules)) {
             return
         }
@@ -39,20 +38,20 @@ export function joinSchedules(...schedules: Array<Schedule>): Schedule {
 
         let generators = schedules.map(schedule => schedule(startDate, direction))
         let currentEntries = generators.map(generator => generator.next())
-        let currentInterval: Interval
+        let currentInterval: I
 
         if (directionInt === 1) {
-            currentInterval = getFirstInterval([...currentEntries].map(x => x?.value))
+            currentInterval = this.getFirstInterval([...currentEntries].map(x => x?.value))
         } else {
-            currentInterval = getLastInterval([...currentEntries].map(x => x?.value))
+            currentInterval = this.getLastInterval([...currentEntries].map(x => x?.value))
         }
         let recursions = 0
 
         while (recursions <= MAX_RECURSIONS) {
             let updated = false
             for (const [i, entry] of currentEntries.entries()) {
-                if (entry?.value && areIntervalsConnected(currentInterval, entry.value)) {
-                    currentInterval = joinIntervals(currentInterval, entry.value)
+                if (entry?.value && this.areIntervalsConnected(currentInterval, entry.value)) {
+                    currentInterval = this.joinIntervals(currentInterval, entry.value)
                     currentEntries[i] = generators[i].next()
                     updated = true
                 }
@@ -60,17 +59,18 @@ export function joinSchedules(...schedules: Array<Schedule>): Schedule {
             if (!updated) {
                 yield currentInterval
                 recursions = 0
-                if (currentEntries.every(x => x.done) || (directionInt === 1 && isEqual(currentInterval.end, InfintyDateTime)) || (directionInt === -1 && isEqual(currentInterval.start, NegInfinityDateTime))) {
+                if (currentEntries.every(x => x.done) || (directionInt === 1 && this.isEqual(this.getIntervalEnd(currentInterval), this.infinityDateTime)) || (directionInt === -1 && this.isEqual(this.getIntervalStart(currentInterval), this.negativeInfinityDateTime))) {
                     return
                 }
                 if (directionInt === 1) {
-                    currentInterval = getFirstInterval([...currentEntries].map(x => x?.value))
+                    currentInterval = this.getFirstInterval([...currentEntries].map(x => x?.value))
                 } else {
-                    currentInterval = getLastInterval([...currentEntries].map(x => x?.value))
+                    currentInterval = this.getLastInterval([...currentEntries].map(x => x?.value))
                 }
             }
             recursions++
         }
         throw Error("Maximal number of recursions reached.")
     }
+    return generator.bind(this)
 }

@@ -1,5 +1,4 @@
-import {durationFromDurationObject, intervalFromIntervalObject, ScheduleFromIntervals, shiftSchedule} from "schedule.js"
-import {dateTimeFromDateOrNumber} from "schedule.js/functions/dateLibrary"
+import {LuxonScheduleFns as lib} from "schedule.js"
 
 test("Shift schedule", () => {
     let i1 = {start: 0, end: 10000}
@@ -9,15 +8,15 @@ test("Shift schedule", () => {
     let e1 = {start: 5000, end: 11000}
     let e2 = {start: 21000, end: 31000}
 
-    let schedule = ScheduleFromIntervals(intervalFromIntervalObject(i1), intervalFromIntervalObject(i2))
-    let shifted = shiftSchedule(schedule, durationFromDurationObject(d))
+    let schedule = lib.ScheduleFromIntervals(lib.intervalFromIntervalObject(i1), lib.intervalFromIntervalObject(i2))
+    let shifted = lib.shiftSchedule(schedule, lib.durationFromDurationObject(d))
 
-    let generator = shifted(dateTimeFromDateOrNumber(startDate))
+    let generator = shifted(lib.dateTimeFromDateOrNumber(startDate))
     let entry = generator.next()
-    expect(entry.value).toBeSameIntervalAs(intervalFromIntervalObject(e1))
+    expect(entry.value).toBeSameIntervalAs(lib.intervalFromIntervalObject(e1))
 
     entry = generator.next()
-    expect(entry.value).toBeSameIntervalAs(intervalFromIntervalObject(e2))
+    expect(entry.value).toBeSameIntervalAs(lib.intervalFromIntervalObject(e2))
 })
 
 test("Shift schedule backward", () => {
@@ -27,10 +26,10 @@ test("Shift schedule backward", () => {
     let startDate = 5000
     let e1 = {start: 1000, end: 5000}
 
-    let schedule = ScheduleFromIntervals(intervalFromIntervalObject(i1), intervalFromIntervalObject(i2))
-    let shifted = shiftSchedule(schedule, durationFromDurationObject(d))
+    let schedule = lib.ScheduleFromIntervals(lib.intervalFromIntervalObject(i1), lib.intervalFromIntervalObject(i2))
+    let shifted = lib.shiftSchedule(schedule, lib.durationFromDurationObject(d))
 
-    let generator = shifted(dateTimeFromDateOrNumber(startDate), "backward")
+    let generator = shifted(lib.dateTimeFromDateOrNumber(startDate), "backward")
     let entry = generator.next()
-    expect(entry.value).toBeSameIntervalAs(intervalFromIntervalObject(e1))
+    expect(entry.value).toBeSameIntervalAs(lib.intervalFromIntervalObject(e1))
 })

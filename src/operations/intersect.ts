@@ -1,7 +1,6 @@
 import {MAX_RECURSIONS, Schedule} from "../index"
-import {directionToInt, isArrayEmpty} from "../functions/misc"
-import {intersectIntervals} from "../functions/intervals"
-import {compareAsc, compareDesc, isEqual, isEqualOrAfter, isEqualOrBefore} from "../functions/dateLibrary"
+import {directionToInt, isArrayEmpty} from "../misc/misc"
+import {ScheduleFnsLibrary} from "../implementations"
 
 /**
  * Intersects schedules.
@@ -9,8 +8,8 @@ import {compareAsc, compareDesc, isEqual, isEqualOrAfter, isEqualOrBefore} from 
  * @param schedules
  * @category Operations
  */
-export function intersectSchedules(...schedules: Array<Schedule>): Schedule {
-    return function* (startDate, direction = "forward") {
+export function intersectSchedules<DT, I, D>(this: ScheduleFnsLibrary<DT, I, D>, ...schedules: Array<Schedule<DT, I, D>>): Schedule<DT, I, D> {
+    let generator: Schedule<DT, I, D> = function* (this: ScheduleFnsLibrary<DT, I, D>, startDate, direction = "forward") {
         if (isArrayEmpty(schedules)) {
             return
         }
@@ -25,11 +24,11 @@ export function intersectSchedules(...schedules: Array<Schedule>): Schedule {
                 return
             }
             try {
-                let intersection = intersectIntervals(...currentEntries.map(x => x.value))
+                let intersection = this.intersectIntervals(...currentEntries.map(x => x.value))
                 yield intersection
                 recursions = 0
                 currentEntries = currentEntries.map((entry, i) => {
-                    if ((directionInt === 1 && isEqualOrBefore(entry.value.end, intersection.end)) || (directionInt === -1 && isEqualOrAfter(entry.value.start, intersection.start))) {
+                    if ((directionInt === 1 && this.isEqualOrBefore(entry.value.end, intersection.end)) || (directionInt === -1 && this.isEqualOrAfter(entry.value.start, intersection.start))) {
                         return generators[i].next()
                     } else {
                         return entry
@@ -38,11 +37,11 @@ export function intersectSchedules(...schedules: Array<Schedule>): Schedule {
             } catch (e) {
                 let i: number
                 if (directionInt === 1) {
-                    let firstEnd = [...currentEntries].sort((a, b) => compareAsc(a.value.end, b.value.end))[0].value.end
-                    i = currentEntries.findIndex(x => isEqual(x.value.end, firstEnd))
+                    let firstEnd = [...currentEntries].sort((a, b) => this.compareAsc(a.value.end, b.value.end))[0].value.end
+                    i = currentEntries.findIndex(x => this.isEqual(x.value.end, firstEnd))
                 } else {
-                    let lastStart = [...currentEntries].sort((a, b) => compareDesc(a.value.start, b.value.start))[0].value.start
-                    i = currentEntries.findIndex(x => isEqual(x.value.start, lastStart))
+                    let lastStart = [...currentEntries].sort((a, b) => this.compareDesc(a.value.start, b.value.start))[0].value.start
+                    i = currentEntries.findIndex(x => this.isEqual(x.value.start, lastStart))
                 }
                 currentEntries[i] = generators[i].next()
             }
@@ -50,4 +49,5 @@ export function intersectSchedules(...schedules: Array<Schedule>): Schedule {
         }
         throw Error("Maximal number of recursions reached.")
     }
+    return generator.bind(this)
 }

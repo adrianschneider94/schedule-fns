@@ -1,5 +1,4 @@
-import {intervalFromIntervalObject, ScheduleFromIntervals, subtractSchedules} from "schedule.js"
-import {dateTimeFromDateOrNumber} from "schedule.js/functions/dateLibrary"
+import {LuxonScheduleFns as lib} from "schedule.js"
 
 test("Subtract schedules", () => {
     let i1 = {start: 0, end: 10}
@@ -10,23 +9,23 @@ test("Subtract schedules", () => {
     let e2 = {start: 3, end: 4}
     let e3 = {start: 5, end: 10}
 
-    let schedule1 = ScheduleFromIntervals(intervalFromIntervalObject(i1))
-    let schedule2 = ScheduleFromIntervals(intervalFromIntervalObject(i2_1), intervalFromIntervalObject(i2_2))
-    let subtractedSchedule = subtractSchedules(schedule1, schedule2)
+    let schedule1 = lib.ScheduleFromIntervals(lib.intervalFromIntervalObject(i1))
+    let schedule2 = lib.ScheduleFromIntervals(lib.intervalFromIntervalObject(i2_1), lib.intervalFromIntervalObject(i2_2))
+    let subtractedSchedule = lib.subtractSchedules(schedule1, schedule2)
 
-    let generator = subtractedSchedule(dateTimeFromDateOrNumber(startDate))
+    let generator = subtractedSchedule(lib.dateTimeFromDateOrNumber(startDate))
 
     let value = generator.next()
     expect(value.done).toBe(false)
-    expect(value.value).toBeSameIntervalAs(intervalFromIntervalObject(e1))
+    expect(value.value).toBeSameIntervalAs(lib.intervalFromIntervalObject(e1))
 
     value = generator.next()
     expect(value.done).toBe(false)
-    expect(value.value).toBeSameIntervalAs(intervalFromIntervalObject(e2))
+    expect(value.value).toBeSameIntervalAs(lib.intervalFromIntervalObject(e2))
 
     value = generator.next()
     expect(value.done).toBe(false)
-    expect(value.value).toBeSameIntervalAs(intervalFromIntervalObject(e3))
+    expect(value.value).toBeSameIntervalAs(lib.intervalFromIntervalObject(e3))
 
     expect(generator.next()).toStrictEqual({value: undefined, done: true})
 })

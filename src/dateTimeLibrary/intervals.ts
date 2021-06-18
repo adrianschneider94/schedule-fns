@@ -1,16 +1,5 @@
-import {DateTime, Interval} from "../index"
-import {isArrayEmpty} from "./misc"
-import {areTwoIntervalsEqual, compareAsc, intersectTwoIntervals, isIntervalEmpty, joinTwoIntervals} from "./dateLibrary"
-
-export type IntervalObject = {
-    start: Date | number | DateTime
-    end: Date | number | DateTime
-}
-
-export type IntervalAsISOStrings = {
-    start: string
-    end: string
-}
+import {isArrayEmpty} from "../misc/misc"
+import {DateTimeLibrary} from "./index"
 
 /**
  * Determines if the given intervals are intersecting.
@@ -21,13 +10,13 @@ export type IntervalAsISOStrings = {
  * @category Interval functions
  * @internal
  */
-export function areIntervalsIntersecting(...intervals: Array<Interval>): boolean {
+export function areIntervalsIntersecting<DT, I, D>(this: DateTimeLibrary<DT, I, D>, ...intervals: Array<I>): boolean {
     if (isArrayEmpty(intervals) || intervals.length === 1) {
         return true
     }
     return intervals.every(left => intervals.every(right => {
         try {
-            intersectTwoIntervals(left, right)
+            this.intersectTwoIntervals(left, right)
             return true
         } catch {
             return false
@@ -42,7 +31,7 @@ export function areIntervalsIntersecting(...intervals: Array<Interval>): boolean
  * @category Interval functions
  * @internal
  */
-export function areIntervalsConnected(...intervals: Array<Interval>): boolean {
+export function areIntervalsConnected<DT, I, D>(this: DateTimeLibrary<DT, I, D>, ...intervals: Array<I>): boolean {
     if (isArrayEmpty(intervals)) {
         return true
     }
@@ -51,7 +40,7 @@ export function areIntervalsConnected(...intervals: Array<Interval>): boolean {
             return false
         } else {
             try {
-                intersectTwoIntervals(left, right)
+                this.intersectTwoIntervals(left, right)
                 return true
             } catch {
                 return false
@@ -67,11 +56,11 @@ export function areIntervalsConnected(...intervals: Array<Interval>): boolean {
  * @category Interval functions
  * @internal
  */
-export function areIntervalsEqual(...intervals: Array<Interval>): boolean {
+export function areIntervalsEqual<DT, I, D>(this: DateTimeLibrary<DT, I, D>, ...intervals: Array<I>): boolean {
     if (isArrayEmpty(intervals)) {
         return true
     }
-    return intervals.every(interval => (areTwoIntervalsEqual(interval, intervals[0])))
+    return intervals.every(interval => (this.areTwoIntervalsEqual(interval, intervals[0])))
 }
 
 /**
@@ -83,14 +72,14 @@ export function areIntervalsEqual(...intervals: Array<Interval>): boolean {
  * @category Interval functions
  * @internal
  */
-export function joinIntervals(...intervals: Array<Interval>): Interval {
+export function joinIntervals<DT, I, D>(this: DateTimeLibrary<DT, I, D>, ...intervals: Array<I>): I {
     if (isArrayEmpty(intervals)) {
         throw Error("Need to provide at least one interval to join.")
     }
-    if (!areIntervalsConnected(...intervals)) {
+    if (!this.areIntervalsConnected(...intervals)) {
         throw Error("Can't join intervals as they are disjoint!")
     }
-    return intervals.reduce((aggregate, current) => joinTwoIntervals(aggregate, current))
+    return intervals.reduce((aggregate, current) => this.joinTwoIntervals(aggregate, current))
 }
 
 /**
@@ -100,22 +89,24 @@ export function joinIntervals(...intervals: Array<Interval>): Interval {
  * @category Interval functions
  * @internal
  */
-export function mergeIntervals(...intervals: Array<Interval>): Array<Interval> {
+export function mergeIntervals<DT, I, D>(this: DateTimeLibrary<DT, I, D>, ...intervals: Array<I>): Array<I> {
     if (isArrayEmpty(intervals)) {
         return []
     }
 
-    function reducer(aggregate: Array<Interval>, currentValue: Interval): Array<Interval> {
+    function reducer(this: DateTimeLibrary<DT, I, D>, aggregate: Array<I>, currentValue: I): Array<I> {
         let lastInterval = aggregate.slice(-1)[0]
-        if (areIntervalsConnected(lastInterval, currentValue)) {
-            return [...aggregate.slice(0, -1), joinTwoIntervals(lastInterval, currentValue)]
+        if (this.areIntervalsConnected(lastInterval, currentValue)) {
+            return [...aggregate.slice(0, -1), this.joinTwoIntervals(lastInterval, currentValue)]
         } else {
             return [...aggregate, currentValue]
         }
     }
 
-    let sortedIntervals = [...intervals].sort((a, b) => compareAsc(a.start, b.start))
-    return sortedIntervals.slice(1).reduce(reducer, [sortedIntervals[0]])
+    let bound_reducer = reducer.bind(this)
+
+    let sortedIntervals = [...intervals].sort((a, b) => this.compareAsc(this.getIntervalStart(a), this.getIntervalStart(b)))
+    return sortedIntervals.slice(1).reduce(bound_reducer, [sortedIntervals[0]])
 }
 
 /**
@@ -125,12 +116,12 @@ export function mergeIntervals(...intervals: Array<Interval>): Array<Interval> {
  * @category Interval functions
  * @internal
  */
-export function intersectIntervals(...intervals: Array<Interval>): Interval {
+export function intersectIntervals<DT, I, D>(this: DateTimeLibrary<DT, I, D>, ...intervals: Array<I>): I {
     if (isArrayEmpty(intervals)) {
         throw Error("Please provide at least one interval!")
     }
-    let result = intervals.reduce((aggregate, current) => intersectTwoIntervals(aggregate, current))
-    if (isIntervalEmpty(result)) {
+    let result = intervals.reduce((aggregate, current) => this.intersectTwoIntervals(aggregate, current))
+    if (this.isIntervalEmpty(result)) {
         throw Error("Reuslt is an empty interval!")
     }
     return result
