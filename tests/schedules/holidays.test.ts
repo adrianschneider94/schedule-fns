@@ -2,7 +2,7 @@ import {LuxonScheduleFns as lib} from "schedule.js"
 import {DateTime} from "luxon"
 
 test("Holidays in Bavaria", () => {
-    let schedule = lib.Holidays("DE", "BY", {types: ["public"]})
+    let schedule = lib.Holidays({country: "DE", state: "BY", options: {types: ["public"]}})
 
     let generator = schedule(DateTime.fromISO("2019-12-26T05:00:00.000+0100"))
 
@@ -33,7 +33,7 @@ test("Holidays in Bavaria", () => {
 })
 
 test("Holidays in Bavaria, backward", () => {
-    let schedule = lib.Holidays("DE", "BY", {types: ["public"]})
+    let schedule = lib.Holidays({country: "DE", state: "BY", options: {types: ["public"]}})
 
     let generator = schedule(DateTime.fromISO("2020-01-01T05:00:00.000+0100"), "backward")
 

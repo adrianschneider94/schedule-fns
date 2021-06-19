@@ -1,12 +1,15 @@
 import {DateTime as LuxonDateTime, DateTime, Duration, DurationOptions, Interval} from "luxon"
 import {DurationObject, IntervalAsISOStrings, IntervalObject} from "schedule.js"
-import {ScheduleFnsLibrary} from "./index"
+import {ScheduleFnsLibrary} from "../abstract"
 
-export const DateInfinity = 253402300799999
-export const NegDateInfinity = -253402300799999
+const DateInfinity = 253402300799999
+const NegDateInfinity = -253402300799999
 
 
 export class LuxonImplementation extends ScheduleFnsLibrary<DateTime, Interval, Duration> {
+    infinityDateTime: DateTime = LuxonDateTime.fromMillis(DateInfinity)
+    negativeInfinityDateTime: DateTime = LuxonDateTime.fromMillis(NegDateInfinity)
+
     public durationFromDurationObject(duration: DurationObject): Duration {
         return Duration.fromObject(duration)
     }
@@ -16,7 +19,7 @@ export class LuxonImplementation extends ScheduleFnsLibrary<DateTime, Interval, 
     }
 
     public multiplyDuration(duration: Duration, factor: number): Duration {
-        return Duration.fromObject({
+        let args = {
             years: duration.years ? duration.years * factor : 0,
             quarters: duration.quarters ? duration.quarters * factor : 0,
             months: duration.months ? duration.months * factor : 0,
@@ -28,7 +31,8 @@ export class LuxonImplementation extends ScheduleFnsLibrary<DateTime, Interval, 
             milliseconds: duration.milliseconds ? duration.milliseconds * factor : 0,
             locale: duration.locale,
             numberingSystem: duration.numberingSystem as DurationOptions["numberingSystem"]
-        })
+        }
+        return Duration.fromObject(args)
     }
 
     public durationSum(left: Duration, right: Duration): Duration {
@@ -66,8 +70,8 @@ export class LuxonImplementation extends ScheduleFnsLibrary<DateTime, Interval, 
     }
 
     public intervalFromIntervalObject(intervalObject: IntervalObject): Interval {
-        let startDateTime = intervalObject.start instanceof DateTime ? intervalObject.start : this.dateTimeFromDateOrNumber(intervalObject.start)
-        let endDateTime = intervalObject.end instanceof DateTime ? intervalObject.end : this.dateTimeFromDateOrNumber(intervalObject.end)
+        let startDateTime = this.dateTimeFromDateOrNumber(intervalObject.start)
+        let endDateTime = this.dateTimeFromDateOrNumber(intervalObject.end)
         return Interval.fromDateTimes(startDateTime, endDateTime)
     }
 
@@ -155,9 +159,6 @@ export class LuxonImplementation extends ScheduleFnsLibrary<DateTime, Interval, 
     public getYear(date: DateTime): number {
         return date.year
     }
-
-    infinityDateTime: DateTime = LuxonDateTime.fromMillis(DateInfinity)
-    negativeInfinityDateTime: DateTime = LuxonDateTime.fromMillis(NegDateInfinity)
 
     setISODay(date: DateTime, day: 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7): DateTime {
         return date.set({weekday: day})

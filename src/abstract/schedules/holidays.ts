@@ -1,30 +1,37 @@
 import DateHolidays, {Country, Options} from "date-holidays"
 
-import {Schedule} from "../index"
+import {Schedule} from "schedule.js"
 import {directionToInt} from "../misc/misc"
-import {ScheduleFnsLibrary} from "../implementations"
+import {ScheduleFnsLibrary} from "../library"
 
+type Opts = {
+    country: Country | string,
+    state?: string,
+    region?: string,
+    options?: Options
+}
 
-export function Holidays<DT, I, D>(this: ScheduleFnsLibrary<DT, I, D>, country?: Country | string, opts?: Options): Schedule<DT, I, D>
-export function Holidays<DT, I, D>(this: ScheduleFnsLibrary<DT, I, D>, country?: string, state?: string, opts?: Options): Schedule<DT, I, D>
-export function Holidays<DT, I, D>(this: ScheduleFnsLibrary<DT, I, D>, country?: string, state?: string, region?: string, opts?: Options): Schedule<DT, I, D>
+export type Holidays<DT, I, D> = (this: ScheduleFnsLibrary<DT, I, D>, options: Opts) => Schedule<DT, I, D>
+
 
 /**
  * Returns a schedule according to the holiday calendar of a region.
  *
  * The API resembles the API of date-holidays which is used internally. See the
  * [documentation of date-holidays](https://github.com/commenthol/date-holidays) for further information.
- *
- * @param args
- * @constructor
- * @category Schedules
  */
-export function Holidays<DT, I, D>(this: ScheduleFnsLibrary<DT, I, D>, ...args: any): Schedule<DT, I, D> {
+export const Holidays: Holidays<any, any, any> = function <DT, I, D>(this: ScheduleFnsLibrary<DT, I, D>, options: Opts): Schedule<DT, I, D> {
     let generator: Schedule<DT, I, D> = function* (this: ScheduleFnsLibrary<DT, I, D>, startDate, direction = "forward") {
         let directionInt = directionToInt(direction)
 
         let holidays = new DateHolidays()
-        holidays.init(...args)
+        if (options.country && typeof options.country == "string" && options.state && options.region) {
+            holidays.init(options.country, options.state, options.region, options.options)
+        } else if (options.country && typeof options.country == "string" && options.state) {
+            holidays.init(options.country, options.state, options.options)
+        } else {
+            holidays.init(options.country, options.options)
+        }
 
         let year = this.getYear(startDate)
         while (true) {

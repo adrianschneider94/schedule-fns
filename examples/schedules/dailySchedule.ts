@@ -1,6 +1,8 @@
-import {DailySchedule, parseISO, take} from "schedule.js"
+import {DailySchedule} from "schedule.js/luxon"
+import {DateTime} from "luxon"
+import {take} from "schedule.js"
 
-let startDate = parseISO("2020-09-01T00:00Z")
+let startDate = DateTime.fromISO("2020-09-01T00:00Z")
 
 let workHours = DailySchedule("08:00", "17:00")
 for (let interval of take(workHours(startDate), 3)) {

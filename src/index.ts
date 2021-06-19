@@ -49,4 +49,5 @@ export type IntervalAsISOStrings = {
     end: string
 }
 
-export {LuxonImplementation, LuxonScheduleFns} from "./implementations/luxon"
+export {take} from "./abstract/misc/misc"
+export {LuxonScheduleFns} from "./luxon/implementation"

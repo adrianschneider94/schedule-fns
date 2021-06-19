@@ -1,5 +1,5 @@
 import {LuxonScheduleFns as lib} from "schedule.js"
-import {directionToInt, isArrayEmpty, take} from "schedule.js/misc/misc"
+import {directionToInt, isArrayEmpty, take} from "schedule.js/abstract/misc/misc"
 
 test("Empty array", () => {
     expect(isArrayEmpty([])).toStrictEqual(true)

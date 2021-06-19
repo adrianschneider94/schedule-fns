@@ -19,7 +19,8 @@ export function isArrayEmpty<T>(array: Array<T>) {
  * @param schedule
  * @category Helper functions
  */
-export function isWithinSchedule<DT, I, D>(this: DateTimeLibrary<DT, I, D>, date: DT, schedule: Schedule<DT, I, D>) {
+export type isWithinSchedule<DT, I, D> = (this: DateTimeLibrary<DT, I, D>, date: DT, schedule: Schedule<DT, I, D>) => boolean
+export const isWithinSchedule: isWithinSchedule<any, any, any> = function <DT, I, D>(this: DateTimeLibrary<DT, I, D>, date: DT, schedule: Schedule<DT, I, D>): boolean {
     let generator = schedule(date)
     let interval = generator.next()?.value as I | undefined
 

@@ -1,10 +1,12 @@
-import {DailySchedule, parseISO, subtractSchedules, take} from "schedule.js"
+import {DailySchedule, subtractSchedules} from "schedule.js/luxon"
+import {DateTime} from "luxon"
+import {take} from "schedule.js"
 
 let workHours = DailySchedule("08:00", "17:00")
 let breaks = DailySchedule("12:30", "13:30")
 let workTime = subtractSchedules(workHours, breaks)
 
-let startDate = parseISO("2020-09-02")
+let startDate = DateTime.fromISO("2020-09-02")
 for (let interval of take(workTime(startDate), 3)) {
     console.log(interval.toISO())
 }
