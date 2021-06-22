@@ -89,7 +89,7 @@ export class LuxonImplementation extends ScheduleFnsLibrary<DateTime, Interval, 
     }
 
     public areTwoIntervalsEqual(left: Interval, right: Interval): boolean {
-        return left.equals(right)
+        return left.start.toMillis() === right.start.toMillis() && left.end.toMillis() == right.end.toMillis()
     }
 
     public joinTwoIntervals(left: Interval, right: Interval): Interval {
@@ -162,6 +162,10 @@ export class LuxonImplementation extends ScheduleFnsLibrary<DateTime, Interval, 
 
     setISODay(date: DateTime, day: 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7): DateTime {
         return date.set({weekday: day})
+    }
+
+    parseISO(dateString: string): DateTime {
+        return DateTime.fromISO(dateString)
     }
 }
 

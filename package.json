@@ -28,12 +28,13 @@
     "generateReadme": "node generateReadme.js && git add README.md"
   },
   "dependencies": {
-    "@types/luxon": "^1.26.0",
+    "date-fns": "^2.22.1",
     "date-holidays": "^1.6.2",
     "luxon": "^1.26.0"
   },
   "devDependencies": {
     "@types/jest": "^26.0.14",
+    "@types/luxon": "^1.26.0",
     "browserify": "^17.0.0",
     "jest": "^26.4.2",
     "pre-commit": "^1.2.2",

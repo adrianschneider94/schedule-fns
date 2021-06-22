@@ -1,32 +1,48 @@
-import {LuxonScheduleFns as lib} from "schedule.js"
-import {DateTime} from "luxon"
+import each from "jest-each"
+import {implementation} from "../jest.setup"
 
-test("From", () => {
-    let startDate = DateTime.fromISO("2020-09-01T13:00Z")
-    let schedule = lib.From(startDate)
+each(implementation).test("From", (lib) => {
+    let startDate = 300000
+    let schedule = lib.From(lib.dateTimeFromDateOrNumber(startDate))
 
-    let start = DateTime.fromISO("2020-09-01T14:00Z")
-    let e1 = {start: start.toMillis(), end: Infinity}
-    let e2 = {start: startDate.toMillis(), end: start.toMillis()}
+    let start = 400000
+    let e1 = {start: start, end: Infinity}
+    let e2 = {start: startDate, end: start}
 
-    let generator = schedule(start)
-    expect(generator.next().value).toBeSameIntervalAs(lib.intervalFromIntervalObject(e1))
-
-    generator = schedule(start, "backward")
-    expect(generator.next().value).toBeSameIntervalAs(lib.intervalFromIntervalObject(e2))
+    let generator = schedule(lib.dateTimeFromDateOrNumber(start))
+    let next = generator.next().value
+    expect(next).toBeSameIntervalAs(lib.intervalFromIntervalObject(e1))
 })
 
-test("Until", () => {
-    let endDate = DateTime.fromISO("2020-09-01T14:00Z")
-    let schedule = lib.Until(endDate)
+each(implementation).test("From (backwards)", (lib) => {
+    let startDate = 300000
+    let schedule = lib.From(lib.dateTimeFromDateOrNumber(startDate))
 
-    let start = DateTime.fromISO("2020-09-01T13:00Z")
-    let e1 = {start: start.toMillis(), end: endDate.toMillis()}
-    let e2 = {start: -Infinity, end: start.toMillis()}
+    let start = 400000
+    let expected = {start: startDate, end: start}
 
-    let generator = schedule(start)
-    expect(generator.next().value).toBeSameIntervalAs(lib.intervalFromIntervalObject(e1))
+    let generator = schedule(lib.dateTimeFromDateOrNumber(start), "backward")
+    expect(generator.next().value).toBeSameIntervalAs(lib.intervalFromIntervalObject(expected))
+})
 
-    generator = schedule(start, "backward")
-    expect(generator.next().value).toBeSameIntervalAs(lib.intervalFromIntervalObject(e2))
+each(implementation).test("Until", (lib) => {
+    let endDate = 400000
+    let schedule = lib.Until(lib.dateTimeFromDateOrNumber(endDate))
+
+    let start = 300000
+    let expected = {start: start, end: endDate}
+
+    let generator = schedule(lib.dateTimeFromDateOrNumber(start))
+    expect(generator.next().value).toBeSameIntervalAs(lib.intervalFromIntervalObject(expected))
+})
+
+each(implementation).test("Until (backwards)", (lib) => {
+    let endDate = 400000
+    let schedule = lib.Until(lib.dateTimeFromDateOrNumber(endDate))
+
+    let start = 300000
+    let expected = {start: -Infinity, end: start}
+
+    let generator = schedule(lib.dateTimeFromDateOrNumber(start), "backward")
+    expect(generator.next().value).toBeSameIntervalAs(lib.intervalFromIntervalObject(expected))
 })

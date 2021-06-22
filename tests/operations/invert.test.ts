@@ -1,7 +1,8 @@
-import {LuxonScheduleFns as lib} from "schedule.js"
+import each from "jest-each"
+import {implementation} from "../jest.setup"
 
 
-test("Invert simple schedule", () => {
+each(implementation).test("Invert simple schedule", (lib) => {
     let i1 = {start: 0, end: 10}
     let i2 = {start: 20, end: 30}
     let startDate = 0
@@ -24,7 +25,7 @@ test("Invert simple schedule", () => {
     expect(generator.next()).toStrictEqual({value: undefined, done: true})
 })
 
-test("Invert empty schedule", () => {
+each(implementation).test("Invert empty schedule", (lib) => {
     let startDate = 0
     let e = {start: 0, end: Infinity}
 
@@ -39,7 +40,7 @@ test("Invert empty schedule", () => {
 })
 
 
-test("Invert schedule with first interval after startDate", () => {
+each(implementation).test("Invert schedule with first interval after startDate", (lib) => {
     let i = {start: 0, end: 20}
     let startDate = -20
 
@@ -62,7 +63,7 @@ test("Invert schedule with first interval after startDate", () => {
     expect(generator.next()).toStrictEqual({value: undefined, done: true})
 })
 
-test("Invert schedule with infinity", () => {
+each(implementation).test("Invert schedule with infinity", (lib) => {
     let i = {start: 0, end: Infinity}
     let startDate = 0
 
@@ -73,7 +74,7 @@ test("Invert schedule with infinity", () => {
     expect(generator.next()).toStrictEqual({value: undefined, done: true})
 })
 
-test("Invert schedule, reverse order", () => {
+each(implementation).test("Invert schedule, reverse order", (lib) => {
     let i1 = {start: 0, end: 10}
     let i2 = {start: 20, end: 30}
     let startDate = 50
@@ -101,7 +102,7 @@ test("Invert schedule, reverse order", () => {
     expect(generator.next()).toStrictEqual({value: undefined, done: true})
 })
 
-test("Invert empty schedule, reverse direction", () => {
+each(implementation).test("Invert empty schedule, reverse direction", (lib) => {
     let startDate = 50
     let e1 = {start: -Infinity, end: 50}
 

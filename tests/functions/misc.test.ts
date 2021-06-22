@@ -1,5 +1,6 @@
-import {LuxonScheduleFns as lib} from "schedule.js"
 import {directionToInt, isArrayEmpty, take} from "schedule.js/abstract/misc/misc"
+import each from "jest-each"
+import {implementation} from "../jest.setup"
 
 test("Empty array", () => {
     expect(isArrayEmpty([])).toStrictEqual(true)
@@ -10,7 +11,7 @@ test("Not empty array", () => {
 })
 
 
-test("isWithinSchedule 1", () => {
+each(implementation).test("isWithinSchedule 1", (lib) => {
     let i1 = {start: 0, end: 10}
     let i2 = {start: 30, end: 40}
     let i3 = {start: 60, end: 70}
@@ -21,7 +22,7 @@ test("isWithinSchedule 1", () => {
 })
 
 
-test("isWithinSchedule 2", () => {
+each(implementation).test("isWithinSchedule 2", (lib) => {
     let i1 = {start: 0, end: 10}
     let i2 = {start: 30, end: 40}
     let i3 = {start: 60, end: 70}
@@ -32,7 +33,7 @@ test("isWithinSchedule 2", () => {
 })
 
 
-test("isWithinSchedule 3", () => {
+each(implementation).test("isWithinSchedule 3", (lib) => {
     let startDate = 0
     let duration = {seconds: 1}
     let period = {seconds: 2}
@@ -42,7 +43,7 @@ test("isWithinSchedule 3", () => {
     expect(lib.isWithinSchedule(lib.dateTimeFromDateOrNumber(date), schedule)).toBe(false)
 })
 
-test("isWithinSchedule 4", () => {
+each(implementation).test("isWithinSchedule 4", (lib) => {
     let i1 = {start: 0, end: 10}
     let i2 = {start: 30, end: 40}
     let i3 = {start: 60, end: 70}

@@ -1,6 +1,7 @@
-import {LuxonScheduleFns as lib} from "schedule.js"
+import each from "jest-each"
+import {implementation} from "../jest.setup"
 
-test("Symmetric difference of schedules", () => {
+each(implementation).test("Symmetric difference of schedules", (lib) => {
     let i1 = {start: 0, end: 2}
     let i2 = {start: 1, end: 3}
     let startDate = 0

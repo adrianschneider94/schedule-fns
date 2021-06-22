@@ -51,3 +51,4 @@ export type IntervalAsISOStrings = {
 
 export {take} from "./abstract/misc/misc"
 export {LuxonScheduleFns} from "./luxon/implementation"
+export {DateFnsScheduleFns} from "./date-fns/implementation"

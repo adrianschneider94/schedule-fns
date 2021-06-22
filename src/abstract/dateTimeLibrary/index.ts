@@ -68,6 +68,8 @@ export abstract class DateTimeLibrary<DateTime, Interval, Duration> {
 
     public abstract setISODay(date: DateTime, day: 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7): DateTime
 
+    public abstract parseISO(dateString: string): DateTime
+
     abstract infinityDateTime: DateTime
     abstract negativeInfinityDateTime: DateTime
 

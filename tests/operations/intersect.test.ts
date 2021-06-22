@@ -1,13 +1,14 @@
-import {LuxonScheduleFns as lib} from "schedule.js"
+import each from "jest-each"
+import {implementation} from "../jest.setup"
 
-test("Intersect no schedules", () => {
+each(implementation).test("Intersect no schedules", (lib) => {
     let startDate = 0
     let intersectedSchedule = lib.intersectSchedules()
     let generator = intersectedSchedule(lib.dateTimeFromDateOrNumber(startDate))
     expect(generator.next()).toStrictEqual({value: undefined, done: true})
 })
 
-test("Intersect single schedule", () => {
+each(implementation).test("Intersect single schedule", (lib) => {
     let i1 = {start: 0, end: 1}
     let i2 = {start: 2, end: 3}
 
@@ -31,7 +32,7 @@ test("Intersect single schedule", () => {
     expect(generator.next()).toStrictEqual({value: undefined, done: true})
 })
 
-test("Intersect two simple schedules", () => {
+each(implementation).test("Intersect two simple schedules", (lib) => {
     let i1 = {start: 0, end: 2}
     let i2 = {start: 1, end: 3}
 
@@ -51,7 +52,7 @@ test("Intersect two simple schedules", () => {
     expect(generator.next()).toStrictEqual({value: undefined, done: true})
 })
 
-test("Intersect two simple schedules, reverse direction", () => {
+each(implementation).test("Intersect two simple schedules, reverse direction", (lib) => {
     let i1 = {start: 0, end: 2}
     let i2 = {start: 1, end: 3}
 
@@ -72,7 +73,7 @@ test("Intersect two simple schedules, reverse direction", () => {
     expect(generator.next()).toStrictEqual({value: undefined, done: true})
 })
 
-test("Intersect two schedules", () => {
+each(implementation).test("Intersect two schedules", (lib) => {
     let i1 = {start: 0, end: 10}
     let i2_1 = {start: 1, end: 2}
     let i2_2 = {start: 3, end: 4}
@@ -97,7 +98,7 @@ test("Intersect two schedules", () => {
     expect(generator.next()).toStrictEqual({value: undefined, done: true})
 })
 
-test("Intersect two schedules, reverse direction", () => {
+each(implementation).test("Intersect two schedules, reverse direction", (lib) => {
     let i1_1 = {start: -5, end: -2}
     let i1_2 = {start: 0, end: 10}
 
@@ -127,7 +128,7 @@ test("Intersect two schedules, reverse direction", () => {
     expect(generator.next()).toStrictEqual({value: undefined, done: true})
 })
 
-test("Intersect two disjoint schedules", () => {
+each(implementation).test("Intersect two disjoint schedules", (lib) => {
     let i1_1 = {start: 0, end: 1}
     let i2_1 = {start: 2, end: 3}
     let i2_2 = {start: 4, end: 5}
@@ -142,7 +143,7 @@ test("Intersect two disjoint schedules", () => {
     expect(generator.next()).toStrictEqual({value: undefined, done: true})
 })
 
-test("Intersect schedules: Reach maximal number of recursions", () => {
+each(implementation).test("Intersect schedules: Reach maximal number of recursions", (lib) => {
     let startMoment1 = 0
     let startMoment2 = 1000
     let duration = {seconds: 0.5}

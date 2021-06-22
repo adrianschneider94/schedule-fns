@@ -1,6 +1,7 @@
-import {LuxonScheduleFns as lib} from "schedule.js"
+import each from "jest-each"
+import {implementation} from "../jest.setup"
 
-test("Shift schedule", () => {
+each(implementation).test("Shift schedule", (lib) => {
     let i1 = {start: 0, end: 10000}
     let i2 = {start: 20000, end: 30000}
     let d = {seconds: 1}
@@ -19,7 +20,7 @@ test("Shift schedule", () => {
     expect(entry.value).toBeSameIntervalAs(lib.intervalFromIntervalObject(e2))
 })
 
-test("Shift schedule backward", () => {
+each(implementation).test("Shift schedule backward", (lib) => {
     let i1 = {start: 0, end: 10000}
     let i2 = {start: 20000, end: 30000}
     let d = {seconds: 1}

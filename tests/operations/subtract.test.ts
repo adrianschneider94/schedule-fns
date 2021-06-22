@@ -1,6 +1,7 @@
-import {LuxonScheduleFns as lib} from "schedule.js"
+import each from "jest-each"
+import {implementation} from "../jest.setup"
 
-test("Subtract schedules", () => {
+each(implementation).test("Subtract schedules", (lib) => {
     let i1 = {start: 0, end: 10}
     let i2_1 = {start: 2, end: 3}
     let i2_2 = {start: 4, end: 5}

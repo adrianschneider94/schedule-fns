@@ -1,7 +1,8 @@
-import {LuxonScheduleFns as lib} from "schedule.js"
+import each from "jest-each"
+import {implementation} from "../jest.setup"
 
 
-test("Join single schedule", () => {
+each(implementation).test("Join single schedule", (lib) => {
     let i1 = {start: 0, end: 1}
     let i2 = {start: 2, end: 3}
     let startDate = 0
@@ -24,7 +25,7 @@ test("Join single schedule", () => {
     expect(generator.next()).toStrictEqual({value: undefined, done: true})
 })
 
-test("Join two simple schedules", () => {
+each(implementation).test("Join two simple schedules", (lib) => {
     let i1_1 = {start: 0, end: 10}
     let i1_2 = {start: 19, end: 30}
     let i2 = {start: 9, end: 20}
@@ -43,7 +44,7 @@ test("Join two simple schedules", () => {
     expect(generator.next()).toStrictEqual({value: undefined, done: true})
 })
 
-test("Join three simple schedules", () => {
+each(implementation).test("Join three simple schedules", (lib) => {
     let i1_1 = {start: 0, end: 1}
     let i1_2 = {start: 3, end: 4}
     let i2_1 = {start: 1, end: 2}
@@ -71,20 +72,20 @@ test("Join three simple schedules", () => {
     expect(generator.next()).toStrictEqual({value: undefined, done: true})
 })
 
-test("Join three simple schedules, reverse order", () => {
-    let i1_1 = {start: 0, end: 1}
-    let i1_2 = {start: 3, end: 4}
+each(implementation).test("Join three simple schedules, reverse order", (lib) => {
+    let i1_1 = {start: 0, end: 10}
+    let i1_2 = {start: 30, end: 40}
 
-    let i2_1 = {start: 1, end: 2}
-    let i2_2 = {start: 5, end: 6}
+    let i2_1 = {start: 10, end: 20}
+    let i2_2 = {start: 50, end: 60}
 
-    let i3_1 = {start: 2, end: 3}
-    let i3_2 = {start: 6, end: 7}
+    let i3_1 = {start: 20, end: 30}
+    let i3_2 = {start: 60, end: 70}
 
-    let startDate = 6.5
+    let startDate = 65
 
-    let e1 = {start: 5, end: 6.5}
-    let e2 = {start: 0, end: 4}
+    let e1 = {start: 50, end: 65}
+    let e2 = {start: 0, end: 40}
 
     let schedule1 = lib.ScheduleFromIntervals(lib.intervalFromIntervalObject(i1_1), lib.intervalFromIntervalObject(i1_2))
     let schedule2 = lib.ScheduleFromIntervals(lib.intervalFromIntervalObject(i2_1), lib.intervalFromIntervalObject(i2_2))
@@ -103,7 +104,7 @@ test("Join three simple schedules, reverse order", () => {
     expect(generator.next()).toStrictEqual({value: undefined, done: true})
 })
 
-test("Join two schedules (with infinity)", () => {
+each(implementation).test("Join two schedules (with infinity)", (lib) => {
     let i1 = {start: 0, end: Infinity}
     let i2 = {start: 1, end: 2}
     let startDate = -10
@@ -121,7 +122,7 @@ test("Join two schedules (with infinity)", () => {
     expect(generator.next()).toStrictEqual({value: undefined, done: true})
 })
 
-test("Join two schedules (one long-running)", () => {
+each(implementation).test("Join two schedules (one long-running)", (lib) => {
     let i1 = {start: 0, end: 1000}
     let i2_1 = {start: 1, end: 2}
     let i2_2 = {start: 3, end: 4}
@@ -147,7 +148,7 @@ test("Join two schedules (one long-running)", () => {
     expect(generator.next()).toStrictEqual({value: undefined, done: true})
 })
 
-test("Join no schedules", () => {
+each(implementation).test("Join no schedules", (lib) => {
     let startDate = 0
 
     let joinedSchedule = lib.joinSchedules()
@@ -155,7 +156,7 @@ test("Join no schedules", () => {
     expect(generator.next()).toStrictEqual({value: undefined, done: true})
 })
 
-test("Join schedules: Reach maximal number of recursions", () => {
+each(implementation).test("Join schedules: Reach maximal number of recursions", (lib) => {
     let sd = 0
     let d = {seconds: 1}
     let p = {seconds: 2}

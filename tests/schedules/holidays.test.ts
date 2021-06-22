@@ -1,10 +1,11 @@
 import {LuxonScheduleFns as lib} from "schedule.js"
-import {DateTime} from "luxon"
+import each from "jest-each"
+import {implementation} from "../jest.setup"
 
-test("Holidays in Bavaria", () => {
+each(implementation).test("Holidays in Bavaria", (lib) => {
     let schedule = lib.Holidays({country: "DE", state: "BY", options: {types: ["public"]}})
 
-    let generator = schedule(DateTime.fromISO("2019-12-26T05:00:00.000+0100"))
+    let generator = schedule(lib.parseISO("2019-12-26T05:00:00.000+0100"))
 
     let e1 = {
         start: "2019-12-26T04:00:00.000Z",
@@ -32,10 +33,10 @@ test("Holidays in Bavaria", () => {
     expect(value.value).toBeSameIntervalAs(lib.intervalFromISOStrings(e3))
 })
 
-test("Holidays in Bavaria, backward", () => {
+each(implementation).test("Holidays in Bavaria, backward", (lib) => {
     let schedule = lib.Holidays({country: "DE", state: "BY", options: {types: ["public"]}})
 
-    let generator = schedule(DateTime.fromISO("2020-01-01T05:00:00.000+0100"), "backward")
+    let generator = schedule(lib.parseISO("2020-01-01T05:00:00.000+0100"), "backward")
 
     let e1 = {
         start: "2019-12-31T23:00:00.000Z",

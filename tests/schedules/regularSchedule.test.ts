@@ -1,6 +1,7 @@
-import {LuxonScheduleFns as lib} from "schedule.js"
+import each from "jest-each"
+import {implementation} from "../jest.setup"
 
-test("RegularSchedule", () => {
+each(implementation).test("RegularSchedule", (lib) => {
     let sD = 0
     let d = {seconds: 1}
     let p = {seconds: 2}
@@ -26,7 +27,7 @@ test("RegularSchedule", () => {
     expect(value.value).toBeSameIntervalAs(lib.intervalFromIntervalObject(e3))
 })
 
-test("RegularSchedule with offset start 1", () => {
+each(implementation).test("RegularSchedule with offset start 1", (lib) => {
     let sD = 0
     let d = {seconds: 1}
     let p = {seconds: 2}
@@ -48,7 +49,7 @@ test("RegularSchedule with offset start 1", () => {
     expect(value.value).toBeSameIntervalAs(lib.intervalFromIntervalObject(e2))
 })
 
-test("RegularSchedule with offset start 2", () => {
+each(implementation).test("RegularSchedule with offset start 2", (lib) => {
     let sD = 0
     let d = {seconds: 1}
     let p = {seconds: 2}
@@ -70,7 +71,7 @@ test("RegularSchedule with offset start 2", () => {
 })
 
 
-test("RegularSchedule backward", () => {
+each(implementation).test("RegularSchedule backward", (lib) => {
     let sD = 0
     let d = {seconds: 1}
     let p = {seconds: 2}

@@ -103,10 +103,10 @@ export function mergeIntervals<DT, I, D>(this: DateTimeLibrary<DT, I, D>, ...int
         }
     }
 
-    let bound_reducer = reducer.bind(this)
+    let boundReducer = reducer.bind(this)
 
     let sortedIntervals = [...intervals].sort((a, b) => this.compareAsc(this.getIntervalStart(a), this.getIntervalStart(b)))
-    return sortedIntervals.slice(1).reduce(bound_reducer, [sortedIntervals[0]])
+    return sortedIntervals.slice(1).reduce(boundReducer, [sortedIntervals[0]])
 }
 
 /**

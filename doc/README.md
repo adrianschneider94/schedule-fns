@@ -15,7 +15,7 @@ This package provides functions to work with schedules (work hours, opening hour
 ## Example
 
 ```typescript
-// #include<examples/basic.ts>
+// #include<examples/luxon/basic.ts>
 ```
 
 ## API
@@ -43,23 +43,23 @@ This package provides functions to work with schedules (work hours, opening hour
 #### Daily Schedule
 
 ```typescript
-// #include<examples/schedules/dailySchedule.ts>
+// #include<examples/luxon/schedules/dailySchedule.ts>
 ```
 
 #### Regular Schedule
 ```typescript
-// #include<examples/schedules/regularSchedule.ts> 
+// #include<examples/luxon/schedules/regularSchedule.ts> 
 ```
 
 #### Schedule from Intervals
 
 ```typescript
-// #include<examples/schedules/scheduleFromIntervals.ts> 
+// #include<examples/luxon/schedules/scheduleFromIntervals.ts> 
 ```
 
 #### Holidays
 ```typescript
-// #include<examples/schedules/holidays.ts> 
+// #include<examples/luxon/schedules/holidays.ts> 
 ```
 
 The holiday calender is created by the excellent [date-holidays](https://github.com/commenthol/date-holidays) package.
@@ -67,52 +67,52 @@ The signature of `Holidays` matches the signature of date-holidays `init` method
 
 #### Weekdays
 ```typescript
-// #include<examples/schedules/weekdays.ts> 
+// #include<examples/luxon/schedules/weekdays.ts> 
 ```
 
 #### Simple Schedules
 ```typescript
-// #include<examples/schedules/simple.ts> 
+// #include<examples/luxon/schedules/simple.ts> 
 ```
 
 ### Operations
 #### Invert
 ```typescript
-// #include<examples/operations/invert.ts> 
+// #include<examples/luxon/operations/invert.ts> 
 ```
 #### Join
 ```typescript
-// #include<examples/operations/join.ts> 
+// #include<examples/luxon/operations/join.ts> 
 ```
 
 #### Intersect
 ```typescript
-// #include<examples/operations/intersect.ts> 
+// #include<examples/luxon/operations/intersect.ts> 
 ```
 
 #### Subtract
 ```typescript
-// #include<examples/operations/subtract.ts> 
+// #include<examples/luxon/operations/subtract.ts> 
 ```
 
 #### Symmetric Difference
 ```typescript
-// #include<examples/operations/symmetricDifference.ts> 
+// #include<examples/luxon/operations/symmetricDifference.ts> 
 ```
 
 #### Shift
 ```typescript
-// #include<examples/operations/shift.ts> 
+// #include<examples/luxon/operations/shift.ts> 
 ```
 
 ### Miscellaneous
 #### Add Duration
 ```typescript
-// #include<examples/miscellaneous/addDuration.ts> 
+// #include<examples/luxon/miscellaneous/addDuration.ts> 
 ```
 #### isWithinSchedule
 ```typescript
-// #include<examples/miscellaneous/isWithinSchedule.ts> 
+// #include<examples/luxon/miscellaneous/isWithinSchedule.ts> 
 ```
 
 ## Implementation
